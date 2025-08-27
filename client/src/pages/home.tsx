@@ -13,7 +13,7 @@ import { EnhancedProgressBar } from '@/components/enhanced-progress-bar';
 import { TokenBalance } from '@/components/TokenBalance';
 import { DailyChallenges } from '@/components/DailyChallenges';
 import { MoodTracker } from '@/components/MoodTracker';
-import { StartupBuilding } from '@/components/StartupBuilding';
+import MissionBasedBuilding from '@/components/MissionBasedBuilding';
 import { MicroLearning } from '@/components/MicroLearning';
 import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
@@ -330,7 +330,7 @@ export default function Home() {
 
   const renderStartupTab = () => (
     <div className="animate-fadeIn p-4 space-y-6">
-      <StartupBuilding />
+      <MissionBasedBuilding />
       <FinancialGoalWizard />
     </div>
   );

@@ -163,6 +163,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Save step responses for a day
+  app.post('/api/save-step-responses', async (req, res) => {
+    try {
+      const { day, stepResponses } = req.body;
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      let completion = await storage.getDailyCompletion(userId, day);
+      
+      if (completion) {
+        completion = await storage.updateDailyCompletion(userId, day, {
+          stepResponses
+        });
+      } else {
+        completion = await storage.createDailyCompletion({
+          userId: userId,
+          day,
+          completed: false,
+          stepResponses
+        });
+      }
+
+      res.json({ completion });
+    } catch (error) {
+      console.error('Error saving step responses:', error);
+      res.status(500).json({ message: 'Failed to save step responses' });
+    }
+  });
+
   // Get specific day completion
   app.get('/api/day/:day', async (req, res) => {
     try {

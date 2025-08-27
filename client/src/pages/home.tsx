@@ -124,6 +124,7 @@ export default function Home() {
             mission={currentMission}
             isCompleted={isCurrentDayCompleted}
             onComplete={handleMissionComplete}
+            currentDay={progress.currentDay}
           />
         ) : (
           <Card className="shadow-sm border border-border bg-gradient-to-br from-success/10 to-accent/10">

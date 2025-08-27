@@ -47,6 +47,7 @@ export const dailyCompletions = pgTable("daily_completions", {
   completedAt: timestamp("completed_at"),
   notes: text("notes"), // User's personal notes for the day
   reflections: text("reflections"), // End-of-day reflections
+  stepResponses: jsonb("step_responses"), // JSON object with step responses {step1: "response", step2: "response"}
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

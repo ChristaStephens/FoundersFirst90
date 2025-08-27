@@ -1,11 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, CheckCircle2 } from "lucide-react";
 import { Mission } from "@/types/mission";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface DailyMissionProps {
   mission: Mission;
@@ -17,7 +18,9 @@ interface DailyMissionProps {
 export function DailyMission({ mission, isCompleted, onComplete, currentDay }: DailyMissionProps) {
   const [stepResponses, setStepResponses] = useState<Record<string, string>>({});
   const [hasChanges, setHasChanges] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   // Fetch existing step responses for this day
   const { data: dayData } = useQuery({
@@ -46,6 +49,14 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/day', currentDay] });
       setHasChanges(false);
+      setJustSaved(true);
+      toast({
+        title: "Responses Saved!",
+        description: "Your progress has been saved successfully.",
+        duration: 3000,
+      });
+      // Clear the "just saved" state after animation
+      setTimeout(() => setJustSaved(false), 3000);
     }
   });
 
@@ -128,16 +139,26 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
           </div>
           
           {/* Save Responses Button */}
-          {hasChanges && (
+          {(hasChanges || justSaved) && (
             <div className="mt-4 flex justify-end">
               <Button
                 onClick={saveResponses}
                 disabled={saveResponsesMutation.isPending}
-                variant="outline"
+                variant={justSaved ? "default" : "outline"}
                 size="sm"
                 data-testid="button-save-responses"
+                className={justSaved ? "bg-green-600 hover:bg-green-700" : ""}
               >
-                {saveResponsesMutation.isPending ? 'Saving...' : 'Save Responses'}
+                {saveResponsesMutation.isPending ? (
+                  'Saving...'
+                ) : justSaved ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    Saved!
+                  </>
+                ) : (
+                  'Save Responses'
+                )}
               </Button>
             </div>
           )}

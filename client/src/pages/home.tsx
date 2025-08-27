@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DailyMission } from '@/components/daily-mission';
 import { ProgressDashboard } from '@/components/progress-dashboard';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { CalendarSplash } from '@/components/calendar-splash';
 import { DailyNotes, PreviousDayReview } from '@/components/daily-notes';
 import { BuildingProgress } from '@/components/building-progress';
+import { CompletionCelebration } from '@/components/completion-celebration';
+import { MilestonePrompt } from '@/components/milestone-prompt';
+import { EnhancedProgressBar } from '@/components/enhanced-progress-bar';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,6 +19,10 @@ import tymfloWordmark from '@/assets/tymflo-wordmark.png';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebratedDay, setCelebratedDay] = useState(0);
+  const [showMilestonePrompt, setShowMilestonePrompt] = useState(false);
+  const [milestoneDay, setMilestoneDay] = useState(0);
   const { 
     progress, 
     completions, 
@@ -35,6 +42,23 @@ export default function Home() {
     currentReflections,
     setCurrentReflections
   } = useLocalProgress();
+
+  // Check for milestone achievements
+  useEffect(() => {
+    if (!progress) return;
+    
+    const milestones = [7, 30, 60, 90];
+    const shouldShowMilestone = milestones.find(milestone => 
+      progress.currentDay >= milestone && 
+      !localStorage.getItem(`milestone_shown_${milestone}`)
+    );
+
+    if (shouldShowMilestone) {
+      setMilestoneDay(shouldShowMilestone);
+      setShowMilestonePrompt(true);
+      localStorage.setItem(`milestone_shown_${shouldShowMilestone}`, 'true');
+    }
+  }, [progress?.currentDay]);
 
   if (isLoading) {
     return (
@@ -66,6 +90,10 @@ export default function Home() {
       notes: currentNotes,
       reflections: currentReflections
     });
+    
+    // Show celebration
+    setCelebratedDay(progress.currentDay);
+    setShowCelebration(true);
   };
 
   const handleSaveNotes = () => {
@@ -82,39 +110,14 @@ export default function Home() {
 
   const renderTodayTab = () => (
     <div className="animate-fadeIn pb-4">
-      {/* Header Progress Overview */}
+      {/* Enhanced Progress Overview */}
       <div className="p-4">
-        <Card className="shadow-sm border border-border">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-medium text-muted-foreground">Your Progress</h2>
-              <span className="text-2xl animate-pulse-subtle">🔥</span>
-            </div>
-            
-            <div className="mb-3">
-              <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                <span>Progress</span>
-                <span data-testid="header-progress-percentage">{getProgressPercentage()}%</span>
-              </div>
-              <Progress value={getProgressPercentage()} className="h-2" />
-            </div>
-            
-            <div className="flex justify-between text-center">
-              <div>
-                <div className="text-lg font-bold text-primary" data-testid="header-current-streak">{progress.streak}</div>
-                <div className="text-xs text-muted-foreground">Day Streak</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-accent" data-testid="header-completed-days">{progress.totalCompletedDays}</div>
-                <div className="text-xs text-muted-foreground">Completed</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-secondary" data-testid="header-best-streak">{progress.bestStreak}</div>
-                <div className="text-xs text-muted-foreground">Best Streak</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <EnhancedProgressBar 
+          currentDay={progress.currentDay}
+          totalDays={90}
+          streak={progress.streak}
+          completedToday={isCurrentDayCompleted}
+        />
       </div>
 
       {/* Today's Mission */}
@@ -349,6 +352,23 @@ export default function Home() {
 
       {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      
+      {/* Celebration Modal */}
+      {showCelebration && (
+        <CompletionCelebration
+          day={celebratedDay}
+          streak={progress.streak}
+          onClose={() => setShowCelebration(false)}
+        />
+      )}
+      
+      {/* Milestone Prompt Modal */}
+      {showMilestonePrompt && (
+        <MilestonePrompt
+          milestone={milestoneDay}
+          onClose={() => setShowMilestonePrompt(false)}
+        />
+      )}
     </div>
   );
 }

@@ -20,6 +20,7 @@
   --success: hsl(16, 50%, 75%); /* #E8A598 */
   --success-foreground: hsl(0, 0%, 17%);
   --progress: hsl(41, 100%, 48%);
+  --progress-bg: hsl(41, 30%, 90%);
   --border: hsl(31, 15%, 87%);
   --ring: hsl(262, 30%, 33%);
   --popover: hsl(0, 0%, 100%);
@@ -74,6 +75,33 @@
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
+}
+
+@keyframes progress-fill {
+  from { width: 0%; }
+  to { width: var(--target-width); }
+}
+
+@keyframes celebrate {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  50% { transform: scale(1.2) rotate(5deg); }
+  75% { transform: scale(1.1) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Enhanced progress bar styles */
+.progress-bar {
+  background: linear-gradient(90deg, 
+    hsl(41, 100%, 48%) 0%, 
+    hsl(41, 100%, 55%) 50%, 
+    hsl(41, 100%, 62%) 100%);
+  box-shadow: 0 2px 8px rgba(247, 168, 0, 0.3);
+  animation: progress-fill 1s ease-out;
+}
+
+.celebration-animation {
+  animation: celebrate 0.6s ease-in-out;
 }
 
 .animate-fadeIn {

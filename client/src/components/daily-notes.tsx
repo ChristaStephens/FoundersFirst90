@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Save, BookOpen, Target, Lightbulb } from "lucide-react";
+import { Save, BookOpen, Target, Lightbulb, Check, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface DailyNotesProps {
   day: number;
@@ -14,6 +15,7 @@ interface DailyNotesProps {
   onReflectionsChange: (reflections: string) => void;
   onSave: () => void;
   isCompleted: boolean;
+  isSaving?: boolean;
 }
 
 export function DailyNotes({ 
@@ -23,9 +25,34 @@ export function DailyNotes({
   onNotesChange, 
   onReflectionsChange, 
   onSave,
-  isCompleted 
+  isCompleted,
+  isSaving = false
 }: DailyNotesProps) {
   const [activeTab, setActiveTab] = useState<'notes' | 'reflections'>('notes');
+  const [justSaved, setJustSaved] = useState(false);
+  const { toast } = useToast();
+
+  const handleSave = async () => {
+    try {
+      await onSave();
+      setJustSaved(true);
+      toast({
+        title: "Saved!",
+        description: `Your ${activeTab === 'notes' ? 'notes' : 'reflections'} have been saved successfully.`,
+        duration: 3000,
+      });
+      
+      // Reset the success indicator after 3 seconds
+      setTimeout(() => setJustSaved(false), 3000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save your notes. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
 
   return (
     <Card className="shadow-sm border border-border" data-testid="daily-notes-card">
@@ -115,13 +142,28 @@ export function DailyNotes({
         <Separator className="my-4" />
         
         <Button 
-          onClick={onSave}
+          onClick={handleSave}
           className="w-full"
           variant={notes || reflections ? "default" : "outline"}
+          disabled={isSaving}
           data-testid="save-notes-button"
         >
-          <Save className="h-4 w-4 mr-2" />
-          Save {activeTab === 'notes' ? 'Notes' : 'Reflections'}
+          {isSaving ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : justSaved ? (
+            <>
+              <Check className="h-4 w-4 mr-2 text-green-600" />
+              <span className="text-green-600">Saved!</span>
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              Save {activeTab === 'notes' ? 'Notes' : 'Reflections'}
+            </>
+          )}
         </Button>
       </CardContent>
     </Card>

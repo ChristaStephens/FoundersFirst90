@@ -282,6 +282,7 @@ export default function Home() {
           onReflectionsChange={setCurrentReflections}
           onSave={handleSaveNotes}
           isCompleted={isCurrentDayCompleted}
+          isSaving={isSavingNotes}
         />
       </div>
 

@@ -1,0 +1,167 @@
+# Replit Prompt: Build Founder's First 90 App
+
+## Copy this entire prompt into Replit Agent:
+
+---
+
+**Build me a React web app called "Founder's First 90" - a daily habit tracker for entrepreneurs launching their first business. Here are the complete specifications:**
+
+## App Concept & Purpose
+Create a daily task app that guides new entrepreneurs through their first 90 days of building a business. Each day presents ONE specific action item to complete, with progress tracking and streak mechanics to maintain momentum. The goal is to transform idea-stage founders into revenue-generating businesses in 90 days through daily action, not education.
+
+## Technical Requirements
+- **Framework:** React with functional components and hooks
+- **Styling:** Tailwind CSS for responsive design
+- **Data Storage:** localStorage for user progress (no backend needed initially)
+- **State Management:** React useState and useEffect hooks
+- **Deployment:** Standard Replit web hosting
+
+## Core Features to Build
+
+### 1. Daily Mission Display
+- Shows current day (Day X of 90)
+- Displays today's specific mission/task
+- Shows mission description and action steps
+- Includes 2-3 curated external resource links
+- Large "Mark Complete" button that changes state when clicked
+
+### 2. Progress Tracking
+- Visual progress bar showing completion percentage (X/90 days)
+- Current streak counter (days completed in a row)
+- Personal best streak display
+- Simple statistics: total days completed, success rate
+
+### 3. Mission Database
+Create a JSON file with 15 sample daily missions (I'll expand to 90 later). Each mission should have:
+```json
+{
+  "day": 1,
+  "title": "Define Your One-Sentence Business Idea",  
+  "description": "Clarity beats complexity. If you can't explain it in one sentence, your customers won't understand it either.",
+  "task": "Write one sentence that clearly explains what your business does and for whom.",
+  "steps": [
+    "Complete this template: 'I help [target customer] achieve [desired outcome] by [your solution]'",
+    "Test it on 3 people - can they repeat it back to you?", 
+    "Refine until it's crystal clear"
+  ],
+  "resources": [
+    {"title": "Value Proposition Canvas Template", "url": "https://www.strategyzer.com/canvas/value-proposition-canvas", "type": "template"},
+    {"title": "Crafting Your Elevator Pitch", "url": "https://www.youtube.com/watch?v=2b3xG_YjgvI", "type": "video"}
+  ],
+  "successCriteria": "You have one clear sentence that anyone can understand and remember."
+}
+```
+
+### 4. User Flow
+- **Home Screen:** Current day, today's mission, progress stats, completion button
+- **Progress Screen:** Calendar view of completed days, streak tracking, achievement badges  
+- **Mission Detail:** Full mission with steps, resources, and completion tracking
+- **Simple navigation** between these 3 main screens
+
+## TymFlo Brand Guidelines
+
+### Colors (Use these exact TymFlo brand colors)
+- **Primary Purple:** #4A3B6B (deep purple for main buttons, headers, navigation)
+- **Secondary Purple:** #B89DD9 (lighter purple for accents, hover states)
+- **Golden Orange:** #F7A800 (for progress bars, success states, icons, sun elements)
+- **Coral Pink:** #E8A598 (for completed tasks, checkmarks, warm accents)
+- **Cream/Beige:** #E8D5C4 (light neutral for card backgrounds)
+- **Background:** #FEFEFE (clean white for main background)
+- **Text Primary:** #2D2D2D (dark charcoal for main text)
+- **Text Secondary:** #666666 (medium gray for descriptions)
+- **Border:** #E0D5D1 (soft beige for card borders)
+
+### Typography (TymFlo Brand Fonts)
+- **Main Headlines:** Use Montserrat Bold or fallback to font-bold text-2xl (for mission titles, day counters)
+- **Subheadings:** Use Montserrat Medium or fallback to font-semibold text-lg (for section headers)
+- **Body Text:** Use Montserrat Light or fallback to font-normal text-base (for descriptions, steps)
+- **Small Text:** Use Montserrat Light or fallback to font-normal text-sm (for metadata, links)
+- **Font Family:** Montserrat (primary), system sans-serif fonts as fallback
+
+### Logo & Branding (TymFlo Brand Elements)
+- **App Name:** "Founder's First 90" in Montserrat Bold, deep purple
+- **Subtitle:** "by TymFlo" in smaller, secondary gray text
+- **Logo Element:** Use a simple sun icon or star symbol in golden orange to match TymFlo's solar branding
+- **Tagline:** "Turn your startup idea into revenue in 90 days"
+- **Favicon:** Use a simple "90" in a golden orange circle or sun symbol
+
+### UI Style Guidelines
+- **Cards:** White background with subtle shadow (shadow-sm) and rounded corners (rounded-lg)
+- **Buttons:** Primary blue background, white text, rounded corners, hover effects
+- **Progress Bar:** Primary blue fill with light gray background, rounded
+- **Icons:** Use simple emoji or Tailwind's built-in icons where possible
+- **Spacing:** Generous padding and margins for clean, uncluttered feel
+- **Mobile-First:** Responsive design that works on phones first
+
+## Specific Component Requirements
+
+### Daily Mission Card
+```jsx
+// Should include:
+- Day counter (e.g., "Day 1 of 90") 
+- Mission title in headline font
+- Description paragraph
+- Numbered steps list
+- Resource links as buttons/badges
+- Large completion button
+- Visual completion state (checkmark, green border when done)
+```
+
+### Progress Dashboard  
+```jsx
+// Should include:
+- Circular or linear progress bar (X/90 completed)
+- Current streak counter with fire emoji
+- Personal best streak
+- Calendar-style view showing completed days
+- Encouraging messages based on progress
+```
+
+### Navigation
+```jsx
+// Simple tab navigation:
+- "Today" (daily mission)
+- "Progress" (stats and calendar)  
+- "Settings" (basic app settings)
+```
+
+## Sample Missions (Include these 15 in the initial database)
+
+1. Define Your One-Sentence Business Idea
+2. Identify Your First 10 Potential Customers  
+3. Create a Simple Landing Page
+4. Conduct Your First Customer Interview
+5. Define Your Minimum Viable Product (MVP)
+6. Set Up Social Media Profiles
+7. Create Your First Marketing Message
+8. Build an Email List of 10 People
+9. Price Your Product or Service  
+10. Create Your First Sales Process
+11. Make Your First Sales Attempt
+12. Get Customer Feedback on Pricing
+13. Refine Your Value Proposition
+14. Set Up Basic Analytics Tracking
+15. Plan Your First Marketing Campaign
+
+## Key User Experience Notes
+- **Mobile-optimized:** Most users will check this on their phone daily
+- **Fast loading:** Keep it simple, no heavy images or animations
+- **Motivational tone:** Use encouraging copy and celebrate small wins
+- **Daily habit focus:** Design to be checked once per day, not binge-used  
+- **Progress visibility:** Make advancement feel tangible and rewarding
+- **External links:** Resources should open in new tabs/windows
+
+## Success Metrics to Track (add simple counters)
+- Days completed
+- Current streak  
+- Longest streak
+- Completion percentage
+- Days since starting
+
+## Additional Features (if time permits)
+- Achievement badges for milestones (Day 7, 30, 60, 90)
+- Motivational quotes or tips
+- Simple photo upload for task completion proof
+- Basic sharing functionality for social media
+
+**Build this as a clean, professional, mobile-friendly React app that embodies the TymFlo brand while focusing on daily action and progress tracking. The core experience should be: open app → see today's mission → complete task → mark done → feel accomplished.**

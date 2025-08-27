@@ -14,6 +14,9 @@ import { TokenBalance } from '@/components/TokenBalance';
 import { DailyChallenges } from '@/components/DailyChallenges';
 import { MoodTracker } from '@/components/MoodTracker';
 import MissionBasedBuilding from '@/components/MissionBasedBuilding';
+import InteractiveBuilding from '@/components/InteractiveBuilding';
+import SkillProgressTracker from '@/components/SkillProgressTracker';
+import OnboardingTour, { useOnboarding } from '@/components/OnboardingTour';
 import { MicroLearning } from '@/components/MicroLearning';
 import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
@@ -31,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
   const [, setLocation] = useLocation();
+  const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDay, setCelebratedDay] = useState(0);
   const [showMilestonePrompt, setShowMilestonePrompt] = useState(false);
@@ -329,8 +333,9 @@ export default function Home() {
   );
 
   const renderStartupTab = () => (
-    <div className="animate-fadeIn p-4 space-y-6">
-      <MissionBasedBuilding />
+    <div className="animate-fadeIn p-4 space-y-6" data-testid="startup-building">
+      <InteractiveBuilding />
+      <SkillProgressTracker />
       <FinancialGoalWizard />
     </div>
   );
@@ -427,7 +432,14 @@ export default function Home() {
   );
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 text-foreground min-h-screen">
+    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 text-foreground min-h-screen" data-testid="app-container">
+      {/* Onboarding Tour */}
+      <OnboardingTour 
+        isVisible={showOnboarding}
+        onComplete={completeOnboarding}
+        onSkip={skipOnboarding}
+      />
+      
       {/* Mood Tracker */}
       <MoodTracker />
       
@@ -474,20 +486,20 @@ export default function Home() {
       {/* Main Content with Colorful Tabs */}
       <main className="max-w-md mx-auto pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white/70 backdrop-blur-sm border border-purple-200 rounded-xl p-1">
-            <TabsTrigger value="today" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs">
+          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white/70 backdrop-blur-sm border border-purple-200 rounded-xl p-1" data-testid="tab-navigation">
+            <TabsTrigger value="today" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-today">
               <Calendar className="w-4 h-4" />
             </TabsTrigger>
-            <TabsTrigger value="startup" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white rounded-lg text-xs">
+            <TabsTrigger value="startup" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-build">
               <Building2 className="w-4 h-4" />
             </TabsTrigger>
-            <TabsTrigger value="learning" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-lg text-xs">
+            <TabsTrigger value="learning" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-learn">
               <BookOpen className="w-4 h-4" />
             </TabsTrigger>
-            <TabsTrigger value="progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white rounded-lg text-xs">
+            <TabsTrigger value="progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-progress">
               <Sparkles className="w-4 h-4" />
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gray-500 data-[state=active]:to-gray-700 data-[state=active]:text-white rounded-lg text-xs">
+            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gray-500 data-[state=active]:to-gray-700 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-goals">
               <Crown className="w-4 h-4" />
             </TabsTrigger>
           </TabsList>

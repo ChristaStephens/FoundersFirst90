@@ -220,7 +220,7 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
   };
 
   return (
-    <Card className="overflow-hidden shadow-sm border border-border">
+    <Card className="overflow-hidden shadow-sm border border-border" data-testid="daily-mission">
       {/* Mission Header */}
       <div className="bg-primary text-primary-foreground p-4">
         <div className="flex items-center justify-between mb-2">

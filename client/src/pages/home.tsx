@@ -8,12 +8,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import missions from '@/data/missions.json';
 import { Mission } from '@/types/mission';
+import tymfloIcon from '@/assets/tymflo-icon.png';
+import tymfloWordmark from '@/assets/tymflo-wordmark.png';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
   const { progress, achievements, completeDay, isDayCompleted, getProgressPercentage, resetProgress } = useProgress();
 
-  const currentMission = missions.find((mission: Mission) => mission.day === progress.currentDay);
+  const currentMission = missions.find((mission) => mission.day === progress.currentDay) as Mission | undefined;
   const isCurrentDayCompleted = isDayCompleted(progress.currentDay);
 
   const handleMissionComplete = () => {
@@ -72,12 +74,21 @@ export default function Home() {
             onComplete={handleMissionComplete}
           />
         ) : (
-          <Card className="shadow-sm border border-border">
+          <Card className="shadow-sm border border-border bg-gradient-to-br from-success/10 to-accent/10">
             <CardContent className="p-8 text-center">
-              <div className="text-4xl mb-4">🎉</div>
-              <h2 className="text-xl font-bold text-foreground mb-2">Congratulations!</h2>
-              <p className="text-muted-foreground">
-                You've completed all 90 days of Founder's First 90!
+              <img src={tymfloIcon} alt="TymFlo" className="w-16 h-16 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-primary mb-4">🎉 Congratulations, Founder! 🎉</h2>
+              <p className="text-muted-foreground mb-4">
+                You've completed all 90 days of Founder's First 90! You've transformed from idea to action, and hopefully from startup dream to real business.
+              </p>
+              <div className="bg-accent/20 rounded-lg p-4 mb-4">
+                <p className="text-sm font-medium text-foreground">
+                  "Success is not final, failure is not fatal: it is the courage to continue that counts."
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">- Winston Churchill</p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Keep building, keep growing, and remember - this is just the beginning of your entrepreneurial journey!
               </p>
             </CardContent>
           </Card>
@@ -88,7 +99,11 @@ export default function Home() {
       <div className="p-4">
         <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 text-center">
           <p className="text-sm text-foreground font-medium mb-1">
-            "The best time to plant a tree was 20 years ago. The second best time is now."
+            {progress.currentDay <= 30 
+              ? "Every expert was once a beginner. Every pro was once an amateur." 
+              : progress.currentDay <= 60 
+              ? "Success is the sum of small efforts repeated day-in and day-out."
+              : "You are closer than you think. Keep pushing forward."}
           </p>
           <p className="text-xs text-muted-foreground">- Daily Motivation</p>
         </div>
@@ -202,7 +217,7 @@ export default function Home() {
               <p className="text-xs text-muted-foreground font-light">by TymFlo</p>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="text-accent text-2xl animate-pulse-subtle">☀️</div>
+              <img src={tymfloIcon} alt="TymFlo" className="w-8 h-8" />
               <div className="text-right">
                 <div className="text-sm font-medium text-foreground" data-testid="header-current-day">
                   Day {progress.currentDay}

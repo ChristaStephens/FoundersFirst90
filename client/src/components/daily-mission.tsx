@@ -26,7 +26,12 @@ export function DailyMission({ mission, isCompleted, onComplete }: DailyMissionP
       <div className="bg-primary text-primary-foreground p-4">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-bold" data-testid="mission-title">{mission.title}</h2>
-          <span className="text-2xl opacity-80">🎯</span>
+          <div className="flex items-center space-x-1">
+            <span className="text-lg opacity-90">Day</span>
+            <div className="bg-accent text-accent-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+              {mission.day}
+            </div>
+          </div>
         </div>
         <p className="text-sm opacity-90 font-light" data-testid="mission-description">
           {mission.description}

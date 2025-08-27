@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Coins, Gem, ShoppingCart, Zap } from 'lucide-react';
+import { Coins, Gem, ShoppingCart, Zap, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { useLocation } from 'wouter';
 
 interface StoreItem {
   id: string;
@@ -35,6 +36,7 @@ interface StoreData {
 export default function Store() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const { data: storeData, isLoading: storeLoading } = useQuery<StoreData>({
     queryKey: ['/api/gamification/store'],
@@ -141,7 +143,17 @@ export default function Store() {
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 p-4" data-testid="store-page">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="relative text-center space-y-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation('/')}
+            className="absolute left-0 top-0 p-2"
+            data-testid="back-to-home"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            Back
+          </Button>
           <div className="flex items-center justify-center gap-2 mb-4">
             <ShoppingCart className="h-8 w-8 text-orange-500" />
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Achievement Store</h1>

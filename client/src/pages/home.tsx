@@ -17,6 +17,7 @@ import MissionBasedBuilding from '@/components/MissionBasedBuilding';
 import InteractiveBuilding from '@/components/InteractiveBuilding';
 import SkillProgressTracker from '@/components/SkillProgressTracker';
 import OnboardingTour, { useOnboarding } from '@/components/OnboardingTour';
+import EnhancedIntegration from '@/components/EnhancedIntegration';
 import { MicroLearning } from '@/components/MicroLearning';
 import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
@@ -334,6 +335,7 @@ export default function Home() {
 
   const renderStartupTab = () => (
     <div className="animate-fadeIn p-4 space-y-6" data-testid="startup-building">
+      <EnhancedIntegration />
       <InteractiveBuilding />
       <SkillProgressTracker />
       <FinancialGoalWizard />

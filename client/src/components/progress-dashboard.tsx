@@ -53,8 +53,8 @@ export function ProgressDashboard({ progress, achievements, progressPercentage }
           
           {/* Week Calendar */}
           <div className="grid grid-cols-7 gap-1 mb-4">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-              <div key={day} className="text-center text-xs text-muted-foreground py-2 font-medium">
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+              <div key={`day-header-${index}`} className="text-center text-xs text-muted-foreground py-2 font-medium">
                 {day}
               </div>
             ))}

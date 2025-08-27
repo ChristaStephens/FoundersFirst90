@@ -460,20 +460,30 @@ export default function Home() {
       />
 
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-40 shadow-sm">
+      <header className="bg-card/90 backdrop-blur-sm border-b border-border sticky top-0 z-40 shadow-lg">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold text-primary" data-testid="app-title">Founder's First 90</h1>
-              <p className="text-xs text-muted-foreground font-light">by TymFlo</p>
+            <div className="group hover-wiggle">
+              <h1 className="text-xl font-bold text-primary transition-all duration-300 group-hover:text-purple-600 group-hover:scale-105" data-testid="app-title">
+                Founder's First 90
+              </h1>
+              <p className="text-xs text-muted-foreground font-light transition-all duration-300 group-hover:text-purple-500">
+                by TymFlo
+              </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <img src={tymfloIcon} alt="TymFlo" className="w-8 h-8" />
-              <div className="text-right">
-                <div className="text-sm font-medium text-foreground" data-testid="header-current-day">
+            <div className="flex items-center space-x-2 group hover-lift">
+              <img 
+                src={tymfloIcon} 
+                alt="TymFlo" 
+                className="w-8 h-8 transition-all duration-300 group-hover:scale-110 group-hover:animate-float hover-rotate" 
+              />
+              <div className="text-right group-hover:animate-wiggle">
+                <div className="text-sm font-medium text-foreground transition-all duration-300 group-hover:text-primary" data-testid="header-current-day">
                   Day {progress.currentDay}
                 </div>
-                <div className="text-xs text-muted-foreground">of 90</div>
+                <div className="text-xs text-muted-foreground transition-all duration-300 group-hover:text-primary/70">
+                  of 90
+                </div>
               </div>
             </div>
           </div>
@@ -488,21 +498,46 @@ export default function Home() {
       {/* Main Content with Colorful Tabs */}
       <main className="max-w-md mx-auto pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white/70 backdrop-blur-sm border border-purple-200 rounded-xl p-1" data-testid="tab-navigation">
-            <TabsTrigger value="today" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-today">
-              <Calendar className="w-4 h-4" />
+          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-xl p-1 shadow-lg hover-glow" data-testid="tab-navigation">
+            <TabsTrigger 
+              value="today" 
+              className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 
+              data-testid="tab-today"
+            >
+              <Calendar className="w-4 h-4 group-data-[state=active]:animate-wiggle group-hover:animate-float transition-transform duration-200" />
+              <div className="absolute inset-0 rounded-lg bg-pink-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
             </TabsTrigger>
-            <TabsTrigger value="startup" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-build">
-              <Building2 className="w-4 h-4" />
+            <TabsTrigger 
+              value="startup" 
+              className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 
+              data-testid="tab-build"
+            >
+              <Building2 className="w-4 h-4 group-data-[state=active]:animate-heartbeat group-hover:animate-float transition-transform duration-200" />
+              <div className="absolute inset-0 rounded-lg bg-blue-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
             </TabsTrigger>
-            <TabsTrigger value="learning" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-learn">
-              <BookOpen className="w-4 h-4" />
+            <TabsTrigger 
+              value="learning" 
+              className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 
+              data-testid="tab-learn"
+            >
+              <BookOpen className="w-4 h-4 group-data-[state=active]:animate-jello group-hover:animate-float transition-transform duration-200" />
+              <div className="absolute inset-0 rounded-lg bg-green-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
             </TabsTrigger>
-            <TabsTrigger value="progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-progress">
-              <Sparkles className="w-4 h-4" />
+            <TabsTrigger 
+              value="progress" 
+              className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 
+              data-testid="tab-progress"
+            >
+              <Sparkles className="w-4 h-4 group-data-[state=active]:animate-sparkle group-hover:animate-float transition-transform duration-200" />
+              <div className="absolute inset-0 rounded-lg bg-orange-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gray-500 data-[state=active]:to-gray-700 data-[state=active]:text-white rounded-lg text-xs" data-testid="tab-goals">
-              <Crown className="w-4 h-4" />
+            <TabsTrigger 
+              value="settings" 
+              className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-gray-500 data-[state=active]:to-gray-700 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 
+              data-testid="tab-goals"
+            >
+              <Crown className="w-4 h-4 group-data-[state=active]:animate-wiggle group-hover:animate-float transition-transform duration-200" />
+              <div className="absolute inset-0 rounded-lg bg-gray-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
             </TabsTrigger>
           </TabsList>
           

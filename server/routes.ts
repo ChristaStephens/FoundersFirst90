@@ -404,6 +404,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create one-time payment for full access
   app.post("/api/create-payment", async (req, res) => {
     try {
+      const { discount = 0 } = req.body; // discount in cents
       const userId = await getDemoUserId();
       if (!userId) {
         return res.status(404).json({ message: 'User not found' });
@@ -438,15 +439,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Calculate final amount with discount
+      const baseAmount = 2999; // $29.99
+      const finalAmount = Math.max(baseAmount - discount, 1999); // Minimum $19.99
+      const discountApplied = baseAmount - finalAmount;
+
       // Create one-time payment for full 90-day access
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: 2999, // $29.99
+        amount: finalAmount,
         currency: 'usd',
         customer: customer.id,
-        description: 'Founder\'s First 90 - Complete 90-Day Journey',
+        description: discountApplied > 0 
+          ? `Founder's First 90 - Complete 90-Day Journey (${discountApplied/100} discount applied)`
+          : 'Founder\'s First 90 - Complete 90-Day Journey',
         metadata: {
           userId: userId,
-          productType: 'full_access'
+          productType: 'full_access',
+          originalAmount: baseAmount.toString(),
+          discountAmount: discountApplied.toString()
         },
         automatic_payment_methods: {
           enabled: true,
@@ -455,7 +465,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         clientSecret: paymentIntent.client_secret,
-        customerId: customer.id
+        customerId: customer.id,
+        finalAmount,
+        discountApplied
       });
     } catch (error: any) {
       console.error("Error creating payment:", error);

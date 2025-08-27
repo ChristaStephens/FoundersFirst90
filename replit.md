@@ -33,7 +33,7 @@ Preferred communication style: Simple, everyday language.
 - **Mission Data**: Static JSON file containing 90 daily missions with structured format
 - **User Progress**: Stored in localStorage with progress tracking, streak counting, and achievement unlocking
 - **Achievement System**: Milestone-based rewards for completion streaks and total progress
-- **Monetization Model**: One-time purchase system ($29.99) with 7-day free trial and Stripe payment processing
+- **Monetization Model**: One-time purchase system ($29.99) with 7-day free trial, smart discount system ($10 off after 3+ visits), and Stripe payment processing
 
 ### State Management Strategy
 - **Custom Hooks**: 

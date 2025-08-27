@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { Crown, Check, Zap, Users, BarChart3, Shield } from 'lucide-react';
+import { Crown, Check, Zap, Users, BarChart3, Shield, Clock } from 'lucide-react';
 
 // Stripe setup
 if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
@@ -82,9 +82,75 @@ function PaymentForm({ plan, clientSecret, onSuccess }: {
   );
 }
 
+// Countdown Timer Component
+function CountdownTimer({ expiry }: { expiry: Date }) {
+  const [timeLeft, setTimeLeft] = useState('');
+
+  useEffect(() => {
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const distance = expiry.getTime() - now;
+
+      if (distance < 0) {
+        setTimeLeft('EXPIRED');
+        return;
+      }
+
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [expiry]);
+
+  return <span className="font-mono font-bold text-red-600">{timeLeft}</span>;
+}
+
+// Discount tracking hook
+function useDiscountTracking() {
+  const [showDiscount, setShowDiscount] = useState(false);
+  const [discountExpiry, setDiscountExpiry] = useState<Date | null>(null);
+
+  useEffect(() => {
+    // Track visits to subscription page
+    const visits = JSON.parse(localStorage.getItem('subscriptionVisits') || '[]');
+    const today = new Date().toDateString();
+    
+    // Add today's visit if not already recorded
+    if (!visits.includes(today)) {
+      visits.push(today);
+      localStorage.setItem('subscriptionVisits', JSON.stringify(visits));
+    }
+
+    // Show discount if user has visited 3+ times over different days and hasn't purchased
+    const hasActiveDiscount = localStorage.getItem('discountOffered');
+    if (visits.length >= 3 && !hasActiveDiscount) {
+      setShowDiscount(true);
+      // Set 48-hour discount expiry
+      const expiry = new Date(Date.now() + 48 * 60 * 60 * 1000);
+      setDiscountExpiry(expiry);
+      localStorage.setItem('discountOffered', expiry.toISOString());
+    } else if (hasActiveDiscount) {
+      const expiry = new Date(hasActiveDiscount);
+      if (expiry > new Date()) {
+        setShowDiscount(true);
+        setDiscountExpiry(expiry);
+      }
+    }
+  }, []);
+
+  return { showDiscount, discountExpiry };
+}
+
 export default function SubscriptionPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { showDiscount, discountExpiry } = useDiscountTracking();
 
   const [clientSecret, setClientSecret] = useState('');
   const [showPayment, setShowPayment] = useState(false);
@@ -122,10 +188,13 @@ export default function SubscriptionPage() {
     },
   });
 
-  // Create payment mutation
+  // Create payment mutation  
   const createPaymentMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('POST', '/api/create-payment');
+      const discountAmount = showDiscount ? 1000 : 0; // $10 discount in cents
+      const response = await apiRequest('POST', '/api/create-payment', { 
+        discount: discountAmount 
+      });
       return response.json();
     },
     onSuccess: (data) => {
@@ -152,7 +221,9 @@ export default function SubscriptionPage() {
   const handlePaymentSuccess = () => {
     setShowPayment(false);
     setClientSecret('');
-    setSelectedPlan(null);
+    // Clear discount tracking after successful purchase
+    localStorage.removeItem('discountOffered');
+    localStorage.removeItem('subscriptionVisits');
     queryClient.invalidateQueries({ queryKey: ['/api/subscription/status'] });
     toast({
       title: "Welcome to Premium!",
@@ -184,7 +255,7 @@ export default function SubscriptionPage() {
                 Complete Your Subscription
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                {selectedPlan === 'yearly' ? '$49.99/year' : '$9.99/month'}
+                {showDiscount ? '$19.99 (Limited time discount!)' : '$29.99'}
               </p>
             </CardHeader>
             <CardContent>
@@ -235,6 +306,22 @@ export default function SubscriptionPage() {
           </Card>
         )}
 
+        {/* Limited Time Discount Banner */}
+        {showDiscount && discountExpiry && !hasAccess && (
+          <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-lg mb-8 mx-auto max-w-2xl">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Clock className="w-5 h-5" />
+              <span className="font-bold text-lg">LIMITED TIME OFFER!</span>
+            </div>
+            <div className="text-center">
+              <p className="mb-2">🎉 Special discount just for you! Get $10 off your purchase</p>
+              <p className="text-sm">
+                Offer expires in: <CountdownTimer expiry={discountExpiry} />
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Free Trial CTA */}
         {!hasAccess && !subscription?.trialEndsAt && (
           <Card className="max-w-md mx-auto mb-8 border-[#FF6B35] bg-gradient-to-r from-[#FF6B35]/10 to-purple-500/10">
@@ -265,9 +352,19 @@ export default function SubscriptionPage() {
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">Complete Access</CardTitle>
               <div className="text-5xl font-bold text-[#FF6B35] mb-2">
-                $29.99
+                {showDiscount ? (
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="line-through text-gray-400 text-3xl">$29.99</span>
+                    <span>$19.99</span>
+                  </div>
+                ) : (
+                  '$29.99'
+                )}
               </div>
-              <p className="text-sm text-green-600 font-medium">Full 90-day journey • No recurring fees</p>
+              <p className="text-sm text-green-600 font-medium">
+                Full 90-day journey • No recurring fees
+                {showDiscount && ' • Limited time discount!'}
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
               <ul className="space-y-3">
@@ -305,6 +402,8 @@ export default function SubscriptionPage() {
                   </>
                 ) : hasAccess ? (
                   'Access Granted'
+                ) : showDiscount ? (
+                  'Get Full Access - $19.99 (Save $10!)'
                 ) : (
                   'Get Full Access - $29.99'
                 )}
@@ -337,6 +436,29 @@ export default function SubscriptionPage() {
             </div>
           </div>
         </div>
+
+        {/* Debug section for testing (remove in production) */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-8 text-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // Simulate 3 visits over different days
+                const mockVisits = [
+                  new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toDateString(), // 2 days ago
+                  new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toDateString(), // 1 day ago
+                  new Date().toDateString() // today
+                ];
+                localStorage.setItem('subscriptionVisits', JSON.stringify(mockVisits));
+                window.location.reload();
+              }}
+              className="text-xs"
+            >
+              🧪 Test Discount (Dev Only)
+            </Button>
+          </div>
+        )}
 
         {/* Testimonial */}
         <div className="mt-16 text-center max-w-2xl mx-auto">

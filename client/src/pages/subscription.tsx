@@ -85,7 +85,7 @@ function PaymentForm({ plan, clientSecret, onSuccess }: {
 export default function SubscriptionPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly' | null>(null);
+
   const [clientSecret, setClientSecret] = useState('');
   const [showPayment, setShowPayment] = useState(false);
 
@@ -122,10 +122,10 @@ export default function SubscriptionPage() {
     },
   });
 
-  // Create subscription mutation
-  const createSubscriptionMutation = useMutation({
-    mutationFn: async (plan: 'monthly' | 'yearly') => {
-      const response = await apiRequest('POST', '/api/create-subscription', { plan });
+  // Create payment mutation
+  const createPaymentMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('POST', '/api/create-payment');
       return response.json();
     },
     onSuccess: (data) => {
@@ -145,9 +145,8 @@ export default function SubscriptionPage() {
     startTrialMutation.mutate();
   };
 
-  const handleSelectPlan = (plan: 'monthly' | 'yearly') => {
-    setSelectedPlan(plan);
-    createSubscriptionMutation.mutate(plan);
+  const handlePurchase = () => {
+    createPaymentMutation.mutate();
   };
 
   const handlePaymentSuccess = () => {
@@ -257,100 +256,69 @@ export default function SubscriptionPage() {
           </Card>
         )}
 
-        {/* Pricing Plans */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Monthly Plan */}
-          <Card className="relative overflow-hidden border-2 hover:border-purple-500 transition-colors">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Monthly Plan</CardTitle>
-              <div className="text-4xl font-bold text-purple-600">
-                $9.99
-                <span className="text-lg text-gray-500">/month</span>
-              </div>
-              <p className="text-sm text-gray-600">Perfect for getting started</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <ul className="space-y-3">
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Complete 90-day journey</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Full community access</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Progress analytics</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Priority support</span>
-                </li>
-              </ul>
-              <Button 
-                onClick={() => handleSelectPlan('monthly')}
-                disabled={createSubscriptionMutation.isPending || hasAccess}
-                className="w-full"
-                variant={hasAccess ? "secondary" : "default"}
-                data-testid="button-select-monthly"
-              >
-                {hasAccess ? 'Current Plan' : 'Choose Monthly'}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Yearly Plan */}
+        {/* One-Time Purchase */}
+        <div className="max-w-lg mx-auto">
           <Card className="relative overflow-hidden border-2 border-[#FF6B35] bg-gradient-to-br from-[#FF6B35]/5 to-purple-500/5">
             <div className="absolute top-0 right-0 bg-[#FF6B35] text-white px-3 py-1 text-sm font-medium rounded-bl-lg">
-              Best Value
+              One-Time Payment
             </div>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Annual Plan</CardTitle>
-              <div className="text-4xl font-bold text-[#FF6B35]">
-                $49.99
-                <span className="text-lg text-gray-500">/year</span>
+              <CardTitle className="text-2xl">Complete Access</CardTitle>
+              <div className="text-5xl font-bold text-[#FF6B35] mb-2">
+                $29.99
               </div>
-              <p className="text-sm text-green-600 font-medium">Save $69.89 per year!</p>
+              <p className="text-sm text-green-600 font-medium">Full 90-day journey • No recurring fees</p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <ul className="space-y-3">
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>Complete 90-day journey</span>
+                  <span>Complete 90-day transformation journey</span>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>Full community access</span>
+                  <span>Daily missions with expert guidance</span>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>Advanced analytics</span>
+                  <span>Progress tracking & achievement system</span>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>VIP support</span>
+                  <span>Full community access & networking</span>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>Exclusive content</span>
+                  <span>Lifetime access to your progress</span>
                 </li>
               </ul>
               <Button 
-                onClick={() => handleSelectPlan('yearly')}
-                disabled={createSubscriptionMutation.isPending || hasAccess}
-                className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90"
-                data-testid="button-select-yearly"
+                onClick={handlePurchase}
+                disabled={createPaymentMutation.isPending || hasAccess}
+                className="w-full h-12 text-lg bg-[#FF6B35] hover:bg-[#FF6B35]/90"
+                data-testid="button-purchase-full-access"
               >
-                {hasAccess ? 'Current Plan' : 'Choose Annual'}
+                {createPaymentMutation.isPending ? (
+                  <>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                    Processing...
+                  </>
+                ) : hasAccess ? (
+                  'Access Granted'
+                ) : (
+                  'Get Full Access - $29.99'
+                )}
               </Button>
+              <p className="text-center text-sm text-gray-600">
+                Secure payment powered by Stripe • 30-day money-back guarantee
+              </p>
             </CardContent>
           </Card>
         </div>
 
         {/* Features Section */}
         <div className="mt-16 max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Why Choose Premium?</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">What's Included in Your Journey?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <Users className="w-12 h-12 text-purple-600 mx-auto mb-4" />
@@ -373,11 +341,38 @@ export default function SubscriptionPage() {
         {/* Testimonial */}
         <div className="mt-16 text-center max-w-2xl mx-auto">
           <blockquote className="text-xl italic text-gray-700 mb-4">
-            "The community features alone are worth the subscription. Having other founders to bounce ideas off of made all the difference in my journey."
+            "The one-time payment made this so accessible. No worrying about monthly fees - just focus on building my business over 90 days."
           </blockquote>
           <cite className="text-gray-600">— Sarah K., TechFlow Founder</cite>
         </div>
       </div>
+
+      {/* Payment Modal */}
+      {showPayment && clientSecret && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Complete Your Purchase</h2>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowPayment(false)}
+                data-testid="button-close-payment"
+              >
+                ×
+              </Button>
+            </div>
+            
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <PaymentForm 
+                plan="premium" 
+                clientSecret={clientSecret}
+                onSuccess={handlePaymentSuccess} 
+              />
+            </Elements>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

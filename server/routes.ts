@@ -401,10 +401,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create payment intent for subscription
-  app.post("/api/create-subscription", async (req, res) => {
+  // Create one-time payment for full access
+  app.post("/api/create-payment", async (req, res) => {
     try {
-      const { plan } = req.body; // 'monthly' or 'yearly'
       const userId = await getDemoUserId();
       if (!userId) {
         return res.status(404).json({ message: 'User not found' });
@@ -413,6 +412,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if user already has access
+      if (user.subscriptionStatus === 'active') {
+        return res.status(400).json({ message: 'User already has premium access' });
       }
 
       let customer;
@@ -434,55 +438,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create subscription with prices based on plan
-      const prices = {
-        monthly: 999, // $9.99
-        yearly: 4999  // $49.99
-      };
-
-      const subscription = await stripe.subscriptions.create({
+      // Create one-time payment for full 90-day access
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: 2999, // $29.99
+        currency: 'usd',
         customer: customer.id,
-        items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Founder\'s First 90 Premium',
-              description: plan === 'yearly' ? 
-                'Full 90-day journey, community features & analytics (Annual)' :
-                'Full 90-day journey, community features & analytics (Monthly)'
-            },
-            recurring: {
-              interval: plan === 'yearly' ? 'year' : 'month',
-            },
-            unit_amount: prices[plan as keyof typeof prices],
-          },
-        }],
-        payment_behavior: 'default_incomplete',
-        payment_settings: { save_default_payment_method: 'on_subscription' },
-        expand: ['latest_invoice.payment_intent'],
+        description: 'Founder\'s First 90 - Complete 90-Day Journey',
+        metadata: {
+          userId: userId,
+          productType: 'full_access'
+        },
+        automatic_payment_methods: {
+          enabled: true,
+        },
       });
-
-      // Save subscription info
-      await storage.updateUserSubscription(userId, {
-        stripeSubscriptionId: subscription.id,
-        subscriptionStatus: 'trialing',
-        subscriptionPlan: plan === 'yearly' ? 'premium_yearly' : 'premium_monthly',
-        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-      });
-
-      const invoice = subscription.latest_invoice as Stripe.Invoice;
-      const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
 
       res.json({
-        subscriptionId: subscription.id,
         clientSecret: paymentIntent.client_secret,
         customerId: customer.id
       });
     } catch (error: any) {
-      console.error("Error creating subscription:", error);
+      console.error("Error creating payment:", error);
       res.status(500).json({ 
-        message: "Error creating subscription: " + error.message 
+        message: "Error creating payment: " + error.message 
       });
+    }
+  });
+
+  // Confirm payment and activate premium access
+  app.post("/api/confirm-payment", async (req, res) => {
+    try {
+      const { paymentIntentId } = req.body;
+      const userId = await getDemoUserId();
+      
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Retrieve the payment intent to confirm it was successful
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status === 'succeeded' && paymentIntent.metadata.userId === userId) {
+        // Activate premium access for the user
+        await storage.updateUserSubscription(userId, {
+          subscriptionStatus: 'active',
+          subscriptionPlan: 'premium_lifetime',
+          subscriptionEndsAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000), // 120 days access
+        });
+
+        res.json({ 
+          message: 'Payment confirmed and access activated',
+          hasAccess: true 
+        });
+      } else {
+        res.status(400).json({ message: 'Payment not successful' });
+      }
+    } catch (error: any) {
+      console.error("Error confirming payment:", error);
+      res.status(500).json({ message: "Failed to confirm payment" });
     }
   });
 
@@ -502,22 +515,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // Handle the event
     switch (event.type) {
-      case 'invoice.payment_succeeded':
-        const invoice = event.data.object;
-        const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+      case 'payment_intent.succeeded':
+        const paymentIntent = event.data.object;
+        const userId = paymentIntent.metadata.userId;
         
-        // Find user by customer ID
-        // You'll need to implement findUserByStripeCustomerId in your storage
-        // For now, we'll log the event
-        console.log('Payment succeeded for subscription:', subscription.id);
-        break;
-      case 'customer.subscription.updated':
-        const updatedSubscription = event.data.object;
-        console.log('Subscription updated:', updatedSubscription.id);
-        break;
-      case 'customer.subscription.deleted':
-        const canceledSubscription = event.data.object;
-        console.log('Subscription canceled:', canceledSubscription.id);
+        if (userId && paymentIntent.metadata.productType === 'full_access') {
+          // Activate premium access
+          await storage.updateUserSubscription(userId, {
+            subscriptionStatus: 'active',
+            subscriptionPlan: 'premium_lifetime',
+            subscriptionEndsAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000), // 120 days access
+          });
+          console.log('Premium access activated for user:', userId);
+        }
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);

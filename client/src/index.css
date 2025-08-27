@@ -4,31 +4,31 @@
 @tailwind utilities;
 
 :root {
-  /* TymFlo Brand Colors */
-  --background: hsl(0, 0%, 99%);
-  --foreground: hsl(0, 0%, 17%);
+  /* Vibrant Mobile-First Colors inspired by Finch/Office Cat */
+  --background: hsl(320, 40%, 97%);
+  --foreground: hsl(340, 30%, 15%);
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(0, 0%, 17%);
-  --primary: hsl(262, 30%, 33%); /* #4A3B6B */
-  --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(276, 40%, 70%); /* #B89DD9 */
-  --secondary-foreground: hsl(262, 30%, 33%);
-  --muted: hsl(31, 25%, 85%); /* #E8D5C4 */
-  --muted-foreground: hsl(0, 0%, 40%);
-  --accent: hsl(41, 100%, 48%); /* #F7A800 */
-  --accent-foreground: hsl(0, 0%, 17%);
-  --success: hsl(16, 50%, 75%); /* #E8A598 */
-  --success-foreground: hsl(0, 0%, 17%);
-  --progress: hsl(41, 100%, 48%);
-  --progress-bg: hsl(41, 30%, 90%);
-  --border: hsl(31, 15%, 87%);
-  --ring: hsl(262, 30%, 33%);
+  --card-foreground: hsl(340, 30%, 15%);
+  --primary: hsl(320, 70%, 55%); /* Bright Pink */
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(280, 60%, 75%); /* Bright Purple */
+  --secondary-foreground: hsl(340, 30%, 15%);
+  --muted: hsl(45, 80%, 90%); /* Bright Yellow Background */
+  --muted-foreground: hsl(340, 20%, 45%);
+  --accent: hsl(200, 90%, 60%); /* Bright Blue */
+  --accent-foreground: hsl(0, 0%, 100%);
+  --success: hsl(140, 70%, 55%); /* Bright Green */
+  --success-foreground: hsl(0, 0%, 100%);
+  --progress: hsl(30, 90%, 55%); /* Bright Orange */
+  --progress-bg: hsl(30, 40%, 95%);
+  --border: hsl(320, 20%, 85%);
+  --ring: hsl(320, 70%, 55%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(0, 0%, 17%);
+  --popover-foreground: hsl(340, 30%, 15%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --input: hsl(31, 15%, 95%);
-  --radius: 0.75rem;
+  --input: hsl(320, 20%, 96%);
+  --radius: 1rem;
   --font-sans: 'Montserrat', system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;

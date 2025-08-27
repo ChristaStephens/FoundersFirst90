@@ -12,6 +12,10 @@ import { MilestonePrompt } from '@/components/milestone-prompt';
 import { EnhancedProgressBar } from '@/components/enhanced-progress-bar';
 import { TokenBalance } from '@/components/TokenBalance';
 import { DailyChallenges } from '@/components/DailyChallenges';
+import { MoodTracker } from '@/components/MoodTracker';
+import { StartupBuilding } from '@/components/StartupBuilding';
+import { MicroLearning } from '@/components/MicroLearning';
+import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,7 +25,8 @@ import missions from '@/data/missions.json';
 import { Mission } from '@/types/mission';
 import tymfloIcon from '@/assets/tymflo-icon.png';
 import tymfloWordmark from '@/assets/tymflo-wordmark.png';
-import { Crown, Lock } from 'lucide-react';
+import { Crown, Lock, Calendar, Sparkles, Building2, BookOpen } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
@@ -322,6 +327,19 @@ export default function Home() {
     </div>
   );
 
+  const renderStartupTab = () => (
+    <div className="animate-fadeIn p-4 space-y-6">
+      <StartupBuilding />
+      <FinancialGoalWizard />
+    </div>
+  );
+
+  const renderLearningTab = () => (
+    <div className="animate-fadeIn p-4 space-y-4">
+      <MicroLearning />
+    </div>
+  );
+
   const renderSettingsTab = () => (
     <div className="animate-fadeIn p-4 space-y-4">
       {/* Profile Section */}
@@ -408,7 +426,10 @@ export default function Home() {
   );
 
   return (
-    <div className="bg-background text-foreground min-h-screen">
+    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 text-foreground min-h-screen">
+      {/* Mood Tracker */}
+      <MoodTracker />
+      
       {/* Calendar Splash Screen */}
       <CalendarSplash
         isOpen={showCalendarSplash}
@@ -449,11 +470,47 @@ export default function Home() {
         <TokenBalance />
       </div>
 
-      {/* Main Content */}
-      <main className="max-w-md mx-auto pb-20">
-        {activeTab === 'today' && renderTodayTab()}
-        {activeTab === 'progress' && renderProgressTab()}
-        {activeTab === 'settings' && renderSettingsTab()}
+      {/* Main Content with Colorful Tabs */}
+      <main className="max-w-md mx-auto pb-24">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white/70 backdrop-blur-sm border border-purple-200 rounded-xl p-1">
+            <TabsTrigger value="today" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs">
+              <Calendar className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="startup" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-600 data-[state=active]:text-white rounded-lg text-xs">
+              <Building2 className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="learning" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-lg text-xs">
+              <BookOpen className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-600 data-[state=active]:text-white rounded-lg text-xs">
+              <Sparkles className="w-4 h-4" />
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-gray-500 data-[state=active]:to-gray-700 data-[state=active]:text-white rounded-lg text-xs">
+              <Crown className="w-4 h-4" />
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="today" className="mt-0">
+            {renderTodayTab()}
+          </TabsContent>
+          
+          <TabsContent value="startup" className="mt-0">
+            {renderStartupTab()}
+          </TabsContent>
+          
+          <TabsContent value="learning" className="mt-0">
+            {renderLearningTab()}
+          </TabsContent>
+          
+          <TabsContent value="progress" className="mt-0">
+            {renderProgressTab()}
+          </TabsContent>
+          
+          <TabsContent value="settings" className="mt-0">
+            {renderSettingsTab()}
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Bottom Navigation */}

@@ -2,6 +2,14 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCompletionSchema, insertProgressSchema } from "@shared/schema";
+import Stripe from "stripe";
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2024-06-20",
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Helper function to get demo user ID
@@ -340,6 +348,222 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating accountability partnership:", error);
       res.status(500).json({ message: "Failed to create partnership" });
+    }
+  });
+
+  // ============= PAYMENT & SUBSCRIPTION ROUTES =============
+
+  // Get user subscription status
+  app.get("/api/subscription/status", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if user has active subscription or trial
+      const now = new Date();
+      let subscriptionStatus = user.subscriptionStatus || 'free';
+      
+      // Check if trial has expired
+      if (user.trialEndsAt && now > user.trialEndsAt && subscriptionStatus === 'trialing') {
+        subscriptionStatus = 'free';
+        await storage.updateUserSubscription(userId, { 
+          subscriptionStatus: 'free',
+          subscriptionPlan: 'free'
+        });
+      }
+      
+      // Check if subscription has expired
+      if (user.subscriptionEndsAt && now > user.subscriptionEndsAt && subscriptionStatus === 'active') {
+        subscriptionStatus = 'free';
+        await storage.updateUserSubscription(userId, { 
+          subscriptionStatus: 'free',
+          subscriptionPlan: 'free'
+        });
+      }
+
+      res.json({ 
+        subscriptionStatus,
+        subscriptionPlan: user.subscriptionPlan || 'free',
+        trialEndsAt: user.trialEndsAt,
+        subscriptionEndsAt: user.subscriptionEndsAt,
+        hasAccess: subscriptionStatus === 'active' || subscriptionStatus === 'trialing'
+      });
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+      res.status(500).json({ message: "Failed to fetch subscription status" });
+    }
+  });
+
+  // Create payment intent for subscription
+  app.post("/api/create-subscription", async (req, res) => {
+    try {
+      const { plan } = req.body; // 'monthly' or 'yearly'
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      let customer;
+      if (user.stripeCustomerId) {
+        // Retrieve existing customer
+        customer = await stripe.customers.retrieve(user.stripeCustomerId);
+      } else {
+        // Create new customer
+        customer = await stripe.customers.create({
+          metadata: {
+            userId: userId,
+            username: user.username
+          },
+        });
+
+        // Save customer ID to user
+        await storage.updateUserSubscription(userId, {
+          stripeCustomerId: customer.id
+        });
+      }
+
+      // Create subscription with prices based on plan
+      const prices = {
+        monthly: 999, // $9.99
+        yearly: 4999  // $49.99
+      };
+
+      const subscription = await stripe.subscriptions.create({
+        customer: customer.id,
+        items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Founder\'s First 90 Premium',
+              description: plan === 'yearly' ? 
+                'Full 90-day journey, community features & analytics (Annual)' :
+                'Full 90-day journey, community features & analytics (Monthly)'
+            },
+            recurring: {
+              interval: plan === 'yearly' ? 'year' : 'month',
+            },
+            unit_amount: prices[plan as keyof typeof prices],
+          },
+        }],
+        payment_behavior: 'default_incomplete',
+        payment_settings: { save_default_payment_method: 'on_subscription' },
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      // Save subscription info
+      await storage.updateUserSubscription(userId, {
+        stripeSubscriptionId: subscription.id,
+        subscriptionStatus: 'trialing',
+        subscriptionPlan: plan === 'yearly' ? 'premium_yearly' : 'premium_monthly',
+        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+      });
+
+      const invoice = subscription.latest_invoice as Stripe.Invoice;
+      const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+
+      res.json({
+        subscriptionId: subscription.id,
+        clientSecret: paymentIntent.client_secret,
+        customerId: customer.id
+      });
+    } catch (error: any) {
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ 
+        message: "Error creating subscription: " + error.message 
+      });
+    }
+  });
+
+  // Stripe webhook endpoint (for handling payment confirmations)
+  app.post("/api/stripe-webhook", async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+
+    try {
+      // For development, we'll accept events without signature verification
+      // In production, you should verify the signature using your webhook secret
+      event = req.body;
+    } catch (err: any) {
+      console.log(`Webhook signature verification failed:`, err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case 'invoice.payment_succeeded':
+        const invoice = event.data.object;
+        const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+        
+        // Find user by customer ID
+        // You'll need to implement findUserByStripeCustomerId in your storage
+        // For now, we'll log the event
+        console.log('Payment succeeded for subscription:', subscription.id);
+        break;
+      case 'customer.subscription.updated':
+        const updatedSubscription = event.data.object;
+        console.log('Subscription updated:', updatedSubscription.id);
+        break;
+      case 'customer.subscription.deleted':
+        const canceledSubscription = event.data.object;
+        console.log('Subscription canceled:', canceledSubscription.id);
+        break;
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.json({ received: true });
+  });
+
+  // Start free trial
+  app.post("/api/start-trial", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if user already had a trial
+      if (user.trialEndsAt) {
+        return res.status(400).json({ 
+          message: 'Trial already used',
+          hasAccess: new Date() < user.trialEndsAt 
+        });
+      }
+
+      // Start 7-day free trial
+      const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      
+      await storage.updateUserSubscription(userId, {
+        subscriptionStatus: 'trialing',
+        subscriptionPlan: 'premium_trial',
+        trialEndsAt
+      });
+
+      res.json({ 
+        message: 'Trial started successfully',
+        trialEndsAt,
+        hasAccess: true
+      });
+    } catch (error) {
+      console.error("Error starting trial:", error);
+      res.status(500).json({ message: "Failed to start trial" });
     }
   });
 

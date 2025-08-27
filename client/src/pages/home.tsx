@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from "wouter";
+import { useQuery } from '@tanstack/react-query';
 import { DailyMission } from '@/components/daily-mission';
 import { ProgressDashboard } from '@/components/progress-dashboard';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -13,10 +14,12 @@ import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import missions from '@/data/missions.json';
 import { Mission } from '@/types/mission';
 import tymfloIcon from '@/assets/tymflo-icon.png';
 import tymfloWordmark from '@/assets/tymflo-wordmark.png';
+import { Crown, Lock } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
@@ -44,6 +47,18 @@ export default function Home() {
     currentReflections,
     setCurrentReflections
   } = useLocalProgress();
+  
+  // Get subscription status
+  const { data: subscriptionData } = useQuery<{
+    subscriptionStatus: string;
+    subscriptionPlan: string;
+    trialEndsAt?: string;
+    subscriptionEndsAt?: string;
+    hasAccess: boolean;
+  }>({
+    queryKey: ['/api/subscription/status'],
+    retry: false,
+  });
 
   // Check for milestone achievements
   useEffect(() => {
@@ -85,6 +100,12 @@ export default function Home() {
   const currentDayCompletion = completions.find(c => c.day === progress.currentDay);
   const previousDayCompletion = completions.find(c => c.day === progress.currentDay - 1);
   const isCurrentDayCompleted = currentDayCompletion?.completed || false;
+  
+  // Access control logic
+  const hasAccess = subscriptionData?.hasAccess || progress.currentDay <= 7; // Free access to first 7 days
+  const subscriptionStatus = subscriptionData?.subscriptionStatus || 'free';
+  const isTrialing = subscriptionStatus === 'trialing';
+  const needsUpgrade = progress.currentDay > 7 && !hasAccess;
 
   const handleMissionComplete = () => {
     completeDay({
@@ -122,9 +143,80 @@ export default function Home() {
         />
       </div>
 
+      {/* Subscription Status Bar */}
+      {isTrialing && subscriptionData?.trialEndsAt && (
+        <div className="mx-4 mb-4">
+          <Card className="border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-[#FF6B35]" />
+                <div>
+                  <p className="text-sm font-medium text-orange-800">
+                    Premium Trial Active
+                  </p>
+                  <p className="text-xs text-orange-700">
+                    Trial ends {new Date(subscriptionData.trialEndsAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setLocation('/subscription')}
+                  className="ml-auto bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white"
+                  data-testid="button-upgrade-trial"
+                >
+                  Upgrade
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Today's Mission */}
       <div className="p-4">
-        {currentMission ? (
+        {needsUpgrade ? (
+          <Card className="shadow-lg border-2 border-[#FF6B35]/20 bg-gradient-to-br from-[#FF6B35]/5 to-purple-500/5">
+            <CardContent className="p-8 text-center">
+              <div className="relative">
+                <Lock className="w-16 h-16 text-[#FF6B35] mx-auto mb-6" />
+                <div className="absolute -top-2 -right-2 bg-[#FF6B35] rounded-full p-2">
+                  <Crown className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-[#FF6B35] bg-clip-text text-transparent">
+                Unlock Your Full Journey
+              </h2>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                You've completed your free preview! Upgrade to Premium to continue your 90-day transformation and access the complete founder's toolkit.
+              </p>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
+                <h3 className="font-semibold mb-2">What you'll unlock:</h3>
+                <ul className="text-sm text-muted-foreground space-y-1 text-left">
+                  <li>• {90 - progress.currentDay + 1} more days of expert missions</li>
+                  <li>• Community features & accountability partners</li>
+                  <li>• Advanced progress analytics</li>
+                  <li>• Export your complete journey</li>
+                </ul>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={() => setLocation('/subscription')}
+                  className="bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white px-8"
+                  data-testid="button-upgrade-premium"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Upgrade to Premium
+                </Button>
+                <Badge variant="outline" className="border-green-600 text-green-600 px-3 py-1">
+                  7-Day Free Trial
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                Start with a free trial, no credit card required
+              </p>
+            </CardContent>
+          </Card>
+        ) : currentMission ? (
           <DailyMission
             mission={currentMission}
             isCompleted={isCurrentDayCompleted}

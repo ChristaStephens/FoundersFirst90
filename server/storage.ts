@@ -31,6 +31,17 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(insertUser: InsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User>;
+  
+  // Subscription management
+  updateUserSubscription(userId: string, subscriptionData: {
+    stripeCustomerId?: string;
+    stripeSubscriptionId?: string;
+    subscriptionStatus?: string;
+    subscriptionPlan?: string;
+    trialEndsAt?: Date | null;
+    subscriptionEndsAt?: Date | null;
+  }): Promise<User>;
   
   // Progress management
   getUserProgress(userId: string): Promise<UserProgress | undefined>;
@@ -73,6 +84,32 @@ export class DatabaseStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db.insert(users).values(insertUser).returning();
     return user;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  // Subscription management
+  async updateUserSubscription(userId: string, subscriptionData: {
+    stripeCustomerId?: string;
+    stripeSubscriptionId?: string;
+    subscriptionStatus?: string;
+    subscriptionPlan?: string;
+    trialEndsAt?: Date | null;
+    subscriptionEndsAt?: Date | null;
+  }): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ ...subscriptionData, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
   }
 
   // Progress management

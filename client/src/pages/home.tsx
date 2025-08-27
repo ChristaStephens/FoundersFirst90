@@ -10,6 +10,8 @@ import { BuildingProgress } from '@/components/building-progress';
 import { CompletionCelebration } from '@/components/completion-celebration';
 import { MilestonePrompt } from '@/components/milestone-prompt';
 import { EnhancedProgressBar } from '@/components/enhanced-progress-bar';
+import { TokenBalance } from '@/components/TokenBalance';
+import { DailyChallenges } from '@/components/DailyChallenges';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -141,6 +143,11 @@ export default function Home() {
           streak={progress.streak}
           completedToday={isCurrentDayCompleted}
         />
+      </div>
+
+      {/* Daily Challenges */}
+      <div className="px-4 mb-4">
+        <DailyChallenges />
       </div>
 
       {/* Subscription Status Bar */}
@@ -437,6 +444,11 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Token Balance Display */}
+      <div className="max-w-md mx-auto px-4 py-3">
+        <TokenBalance />
+      </div>
+
       {/* Main Content */}
       <main className="max-w-md mx-auto pb-20">
         {activeTab === 'today' && renderTodayTab()}
@@ -450,6 +462,8 @@ export default function Home() {
         onTabChange={(tab) => {
           if (tab === 'community') {
             setLocation('/community');
+          } else if (tab === 'store') {
+            setLocation('/store');
           } else {
             setActiveTab(tab);
           }

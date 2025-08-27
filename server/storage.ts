@@ -8,6 +8,11 @@ import {
   postComments,
   accountabilityPartners,
   communityStats,
+  tokenTransactions,
+  storeItems,
+  userPurchases,
+  dailyChallenges,
+  userChallengeCompletions,
   type User, 
   type InsertUser, 
   type UserProgress, 
@@ -21,7 +26,15 @@ import {
   type PostComment,
   type InsertPostComment,
   type AccountabilityPartner,
-  type InsertAccountabilityPartner
+  type InsertAccountabilityPartner,
+  type TokenTransaction,
+  type InsertTokenTransaction,
+  type StoreItem,
+  type UserPurchase,
+  type InsertUserPurchase,
+  type DailyChallenge,
+  type UserChallengeCompletion,
+  type InsertUserChallengeCompletion
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc, sql } from "drizzle-orm";
@@ -67,6 +80,17 @@ export interface IStorage {
   getAccountabilityPartners(userId: string): Promise<(AccountabilityPartner & { partner: { username: string } })[]>;
   createAccountabilityPartner(partnership: InsertAccountabilityPartner): Promise<AccountabilityPartner>;
   getCommunityLeaderboard(limit: number): Promise<{ username: string; streak: number; totalDays: number; rank: number }[]>;
+  
+  // Gamification features
+  createTokenTransaction(transaction: InsertTokenTransaction): Promise<TokenTransaction>;
+  getTokenTransactions(userId: string, limit?: number): Promise<TokenTransaction[]>;
+  getStoreItems(): Promise<StoreItem[]>;
+  createUserPurchase(purchase: InsertUserPurchase): Promise<UserPurchase>;
+  getUserPurchases(userId: string): Promise<(UserPurchase & { storeItem: StoreItem })[]>;
+  getDailyChallenges(): Promise<DailyChallenge[]>;
+  getUserChallengeCompletions(userId: string, date: string): Promise<UserChallengeCompletion[]>;
+  createUserChallengeCompletion(completion: InsertUserChallengeCompletion): Promise<UserChallengeCompletion>;
+  updateTokens(userId: string, founderCoins: number, visionGems: number): Promise<UserProgress>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -199,7 +223,7 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(users, eq(communityPosts.userId, users.id))
       .orderBy(desc(communityPosts.createdAt))
       .limit(limit);
-    return posts;
+    return posts.filter(post => post.user && post.user.username !== null) as (CommunityPost & { user: { username: string } })[];
   }
 
   async createCommunityPost(post: InsertCommunityPost): Promise<CommunityPost> {
@@ -247,22 +271,22 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(users, eq(postComments.userId, users.id))
       .where(eq(postComments.postId, postId))
       .orderBy(asc(postComments.createdAt));
-    return comments;
+    return comments.filter(comment => comment.user && comment.user.username !== null) as (PostComment & { user: { username: string } })[];
   }
 
-  async createComment(comment: InsertPostComment): Promise<PostComment> {
+  async createComment(commentData: InsertPostComment): Promise<PostComment> {
     const [newComment] = await db.transaction(async (tx) => {
       // Add comment
       const [comment] = await tx
         .insert(postComments)
-        .values(comment)
+        .values(commentData)
         .returning();
       // Update comments count
       await tx
         .update(communityPosts)
         .set({ commentsCount: sql`${communityPosts.commentsCount} + 1` })
         .where(eq(communityPosts.id, comment.postId));
-      return [comment];
+      return comment;
     });
     return newComment;
   }
@@ -284,7 +308,7 @@ export class DatabaseStorage implements IStorage {
       .from(accountabilityPartners)
       .leftJoin(users, eq(accountabilityPartners.partnerId, users.id))
       .where(eq(accountabilityPartners.userId, userId));
-    return partners;
+    return partners.filter(partner => partner.partner && partner.partner.username !== null) as (AccountabilityPartner & { partner: { username: string } })[];
   }
 
   async createAccountabilityPartner(partnership: InsertAccountabilityPartner): Promise<AccountabilityPartner> {
@@ -304,13 +328,111 @@ export class DatabaseStorage implements IStorage {
       })
       .from(userProgress)
       .leftJoin(users, eq(userProgress.userId, users.id))
+      .where(sql`${users.username} IS NOT NULL`)
       .orderBy(desc(userProgress.streak), desc(userProgress.totalCompletedDays))
       .limit(limit);
 
     return leaderboard.map((entry, index) => ({
-      ...entry,
+      username: entry.username!,
+      streak: entry.streak,
+      totalDays: entry.totalDays,
       rank: index + 1,
     }));
+  }
+
+  // Gamification methods
+  async createTokenTransaction(transaction: InsertTokenTransaction): Promise<TokenTransaction> {
+    const [newTransaction] = await db
+      .insert(tokenTransactions)
+      .values(transaction)
+      .returning();
+    return newTransaction;
+  }
+
+  async getTokenTransactions(userId: string, limit: number = 10): Promise<TokenTransaction[]> {
+    return await db
+      .select()
+      .from(tokenTransactions)
+      .where(eq(tokenTransactions.userId, userId))
+      .orderBy(desc(tokenTransactions.createdAt))
+      .limit(limit);
+  }
+
+  async getStoreItems(): Promise<StoreItem[]> {
+    return await db
+      .select()
+      .from(storeItems)
+      .where(eq(storeItems.isActive, true))
+      .orderBy(asc(storeItems.sortOrder), asc(storeItems.name));
+  }
+
+  async createUserPurchase(purchase: InsertUserPurchase): Promise<UserPurchase> {
+    const [newPurchase] = await db
+      .insert(userPurchases)
+      .values(purchase)
+      .returning();
+    return newPurchase;
+  }
+
+  async getUserPurchases(userId: string): Promise<(UserPurchase & { storeItem: StoreItem })[]> {
+    const purchases = await db
+      .select({
+        id: userPurchases.id,
+        userId: userPurchases.userId,
+        storeItemId: userPurchases.storeItemId,
+        quantity: userPurchases.quantity,
+        totalCost: userPurchases.totalCost,
+        tokenType: userPurchases.tokenType,
+        purchasedAt: userPurchases.purchasedAt,
+        storeItem: storeItems,
+      })
+      .from(userPurchases)
+      .leftJoin(storeItems, eq(userPurchases.storeItemId, storeItems.id))
+      .where(eq(userPurchases.userId, userId))
+      .orderBy(desc(userPurchases.purchasedAt));
+    
+    return purchases.filter(purchase => purchase.storeItem !== null) as (UserPurchase & { storeItem: StoreItem })[];
+  }
+
+  async getDailyChallenges(): Promise<DailyChallenge[]> {
+    return await db
+      .select()
+      .from(dailyChallenges)
+      .where(eq(dailyChallenges.isActive, true))
+      .orderBy(asc(dailyChallenges.name));
+  }
+
+  async getUserChallengeCompletions(userId: string, date: string): Promise<UserChallengeCompletion[]> {
+    return await db
+      .select()
+      .from(userChallengeCompletions)
+      .where(
+        and(
+          eq(userChallengeCompletions.userId, userId),
+          eq(userChallengeCompletions.completedDate, date)
+        )
+      );
+  }
+
+  async createUserChallengeCompletion(completion: InsertUserChallengeCompletion): Promise<UserChallengeCompletion> {
+    const [newCompletion] = await db
+      .insert(userChallengeCompletions)
+      .values(completion)
+      .returning();
+    return newCompletion;
+  }
+
+  async updateTokens(userId: string, founderCoins: number, visionGems: number): Promise<UserProgress> {
+    const [updatedProgress] = await db
+      .update(userProgress)
+      .set({
+        founderCoins,
+        visionGems,
+        updatedAt: new Date(),
+      })
+      .where(eq(userProgress.userId, userId))
+      .returning();
+    return updatedProgress;
   }
 }
 

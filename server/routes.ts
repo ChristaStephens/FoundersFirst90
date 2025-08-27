@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCompletionSchema, insertProgressSchema } from "@shared/schema";
+import { seedGamificationData } from "./seed-gamification";
 import Stripe from "stripe";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -45,6 +46,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalCompletedDays: 0
         });
       }
+
+      // Seed gamification data (store items and challenges)
+      await seedGamificationData();
 
       res.json({ user, progress });
     } catch (error) {
@@ -348,6 +352,361 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating accountability partnership:", error);
       res.status(500).json({ message: "Failed to create partnership" });
+    }
+  });
+
+  // ============= GAMIFICATION ROUTES =============
+  
+  // Get user token balance and statistics
+  app.get("/api/gamification/tokens", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+
+      res.json({ 
+        founderCoins: progress.founderCoins,
+        visionGems: progress.visionGems,
+        experiencePoints: progress.experiencePoints,
+        entrepreneurLevel: progress.entrepreneurLevel,
+        streakRestoresUsed: progress.streakRestoresUsed
+      });
+    } catch (error) {
+      console.error("Error fetching tokens:", error);
+      res.status(500).json({ message: "Failed to fetch tokens" });
+    }
+  });
+
+  // Get token transaction history
+  app.get("/api/gamification/transactions", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const limit = parseInt(req.query.limit as string) || 20;
+      const transactions = await storage.getTokenTransactions(userId, limit);
+      res.json({ transactions });
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      res.status(500).json({ message: "Failed to fetch transactions" });
+    }
+  });
+
+  // Award tokens for completing tasks/challenges
+  app.post("/api/gamification/award-tokens", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const { tokenType, amount, reason, metadata } = req.body;
+      
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+
+      // Update token balance
+      const newCoins = tokenType === 'founder_coins' 
+        ? progress.founderCoins + amount 
+        : progress.founderCoins;
+      const newGems = tokenType === 'vision_gems' 
+        ? progress.visionGems + amount 
+        : progress.visionGems;
+
+      // Create transaction record
+      await storage.createTokenTransaction({
+        userId,
+        type: 'earned',
+        tokenType,
+        amount,
+        reason,
+        metadata
+      });
+
+      // Update user's token balance
+      const updatedProgress = await storage.updateTokens(userId, newCoins, newGems);
+      
+      res.json({ 
+        success: true,
+        founderCoins: updatedProgress.founderCoins,
+        visionGems: updatedProgress.visionGems
+      });
+    } catch (error) {
+      console.error("Error awarding tokens:", error);
+      res.status(500).json({ message: "Failed to award tokens" });
+    }
+  });
+
+  // Get store items
+  app.get("/api/gamification/store", async (req, res) => {
+    try {
+      const items = await storage.getStoreItems();
+      res.json({ items });
+    } catch (error) {
+      console.error("Error fetching store items:", error);
+      res.status(500).json({ message: "Failed to fetch store items" });
+    }
+  });
+
+  // Purchase store item
+  app.post("/api/gamification/purchase", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const { storeItemId, quantity = 1 } = req.body;
+      
+      // Get store item details
+      const items = await storage.getStoreItems();
+      const item = items.find(i => i.id === storeItemId);
+      if (!item) {
+        return res.status(404).json({ message: 'Store item not found' });
+      }
+
+      const totalCost = item.cost * quantity;
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+
+      // Check if user has enough tokens
+      const currentBalance = item.tokenType === 'founder_coins' 
+        ? progress.founderCoins 
+        : progress.visionGems;
+        
+      if (currentBalance < totalCost) {
+        return res.status(400).json({ message: 'Insufficient tokens' });
+      }
+
+      // Deduct tokens and create purchase record
+      const newCoins = item.tokenType === 'founder_coins' 
+        ? progress.founderCoins - totalCost 
+        : progress.founderCoins;
+      const newGems = item.tokenType === 'vision_gems' 
+        ? progress.visionGems - totalCost 
+        : progress.visionGems;
+
+      // Create purchase and transaction records
+      const purchase = await storage.createUserPurchase({
+        userId,
+        storeItemId,
+        quantity,
+        totalCost,
+        tokenType: item.tokenType
+      });
+
+      await storage.createTokenTransaction({
+        userId,
+        type: 'spent',
+        tokenType: item.tokenType,
+        amount: totalCost,
+        reason: 'store_purchase',
+        metadata: { itemName: item.name, quantity }
+      });
+
+      // Update token balance
+      const updatedProgress = await storage.updateTokens(userId, newCoins, newGems);
+
+      res.json({ 
+        success: true,
+        purchase,
+        founderCoins: updatedProgress.founderCoins,
+        visionGems: updatedProgress.visionGems
+      });
+    } catch (error) {
+      console.error("Error purchasing item:", error);
+      res.status(500).json({ message: "Failed to purchase item" });
+    }
+  });
+
+  // Get daily challenges
+  app.get("/api/gamification/challenges", async (req, res) => {
+    try {
+      const challenges = await storage.getDailyChallenges();
+      res.json({ challenges });
+    } catch (error) {
+      console.error("Error fetching challenges:", error);
+      res.status(500).json({ message: "Failed to fetch challenges" });
+    }
+  });
+
+  // Get daily challenges with user completion status
+  app.get("/api/gamification/challenges/daily", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const challenges = await storage.getDailyChallenges();
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      const completions = await storage.getUserChallengeCompletions(userId, today);
+      
+      // Add completion status to challenges
+      const challengesWithStatus = challenges.map(challenge => ({
+        ...challenge,
+        completedAt: completions.find(c => c.challengeId === challenge.id)?.completedAt || null
+      }));
+      
+      const completedCount = completions.length;
+      const totalCount = challenges.length;
+      
+      res.json({ 
+        challenges: challengesWithStatus,
+        completedCount,
+        totalCount
+      });
+    } catch (error) {
+      console.error("Error fetching daily challenges:", error);
+      res.status(500).json({ message: "Failed to fetch daily challenges" });
+    }
+  });
+
+  // Complete daily challenge
+  app.post("/api/gamification/challenges/:challengeId/complete", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const { challengeId } = req.params;
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+
+      // Check if already completed today
+      const existingCompletion = await storage.getUserChallengeCompletions(userId, today);
+      if (existingCompletion.some(c => c.challengeId === challengeId)) {
+        return res.status(400).json({ message: 'Challenge already completed today' });
+      }
+
+      // Get challenge details
+      const challenges = await storage.getDailyChallenges();
+      const challenge = challenges.find(c => c.id === challengeId);
+      if (!challenge) {
+        return res.status(404).json({ message: 'Challenge not found' });
+      }
+
+      // Create completion record
+      await storage.createUserChallengeCompletion({
+        userId,
+        challengeId,
+        completedDate: today,
+        rewardClaimed: true
+      });
+
+      // Award tokens
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+
+      const newCoins = challenge.rewardTokenType === 'founder_coins' 
+        ? progress.founderCoins + challenge.rewardAmount 
+        : progress.founderCoins;
+      const newGems = challenge.rewardTokenType === 'vision_gems' 
+        ? progress.visionGems + challenge.rewardAmount 
+        : progress.visionGems;
+
+      await storage.createTokenTransaction({
+        userId,
+        type: 'earned',
+        tokenType: challenge.rewardTokenType,
+        amount: challenge.rewardAmount,
+        reason: 'daily_challenge',
+        metadata: { challengeName: challenge.name }
+      });
+
+      const updatedProgress = await storage.updateTokens(userId, newCoins, newGems);
+
+      res.json({ 
+        success: true,
+        challenge,
+        founderCoins: updatedProgress.founderCoins,
+        visionGems: updatedProgress.visionGems
+      });
+    } catch (error) {
+      console.error("Error completing challenge:", error);
+      res.status(500).json({ message: "Failed to complete challenge" });
+    }
+  });
+
+  // Complete daily challenge (alternative route for frontend compatibility)
+  app.post("/api/gamification/challenges/complete", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const { challengeId } = req.body;
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+
+      // Check if already completed today
+      const existingCompletion = await storage.getUserChallengeCompletions(userId, today);
+      if (existingCompletion.some(c => c.challengeId === challengeId)) {
+        return res.status(400).json({ message: 'Challenge already completed today' });
+      }
+
+      // Get challenge details
+      const challenges = await storage.getDailyChallenges();
+      const challenge = challenges.find(c => c.id === challengeId);
+      if (!challenge) {
+        return res.status(404).json({ message: 'Challenge not found' });
+      }
+
+      // Create completion record
+      await storage.createUserChallengeCompletion({
+        userId,
+        challengeId,
+        completedDate: today,
+        rewardClaimed: true
+      });
+
+      // Award tokens
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+
+      const newCoins = challenge.rewardTokenType === 'founder_coins' 
+        ? progress.founderCoins + challenge.rewardAmount 
+        : progress.founderCoins;
+      const newGems = challenge.rewardTokenType === 'vision_gems' 
+        ? progress.visionGems + challenge.rewardAmount 
+        : progress.visionGems;
+
+      await storage.createTokenTransaction({
+        userId,
+        type: 'earned',
+        tokenType: challenge.rewardTokenType,
+        amount: challenge.rewardAmount,
+        reason: 'daily_challenge',
+        metadata: { challengeName: challenge.name }
+      });
+
+      const updatedProgress = await storage.updateTokens(userId, newCoins, newGems);
+
+      res.json({ 
+        success: true,
+        challenge,
+        founderCoins: updatedProgress.founderCoins,
+        visionGems: updatedProgress.visionGems
+      });
+    } catch (error) {
+      console.error("Error completing challenge:", error);
+      res.status(500).json({ message: "Failed to complete challenge" });
     }
   });
 

@@ -31,7 +31,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User progress tracking
+// User progress tracking with gamification
 export const userProgress = pgTable("user_progress", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
@@ -41,6 +41,15 @@ export const userProgress = pgTable("user_progress", {
   bestStreak: integer("best_streak").notNull().default(0),
   buildingLevel: integer("building_level").notNull().default(1),
   totalCompletedDays: integer("total_completed_days").notNull().default(0),
+  
+  // Gamification fields
+  founderCoins: integer("founder_coins").notNull().default(50), // Primary currency - start with 50 coins
+  visionGems: integer("vision_gems").notNull().default(3), // Premium currency - start with 3 gems
+  experiencePoints: integer("experience_points").notNull().default(0),
+  entrepreneurLevel: integer("entrepreneur_level").notNull().default(1), // User's entrepreneur level
+  lastActivityDate: varchar("last_activity_date"),
+  streakRestoresUsed: integer("streak_restores_used").notNull().default(0),
+  
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -242,6 +251,125 @@ export const insertAccountabilityPartnerSchema = createInsertSchema(accountabili
   id: true,
   createdAt: true,
 });
+
+// Gamification Tables
+
+// Token transactions - track all coin/gem earnings and spending
+export const tokenTransactions = pgTable("token_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // earned, spent
+  tokenType: varchar("token_type", { length: 20 }).notNull(), // founder_coins, vision_gems
+  amount: integer("amount").notNull(),
+  reason: varchar("reason", { length: 100 }).notNull(), // task_completion, streak_milestone, store_purchase, streak_restore
+  metadata: jsonb("metadata"), // Additional context like day number, item purchased, etc
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Achievement store items that users can purchase with tokens
+export const storeItems = pgTable("store_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // streak_tools, customization, power_ups, charity
+  tokenType: varchar("token_type", { length: 20 }).notNull(), // founder_coins, vision_gems
+  cost: integer("cost").notNull(),
+  iconEmoji: varchar("icon_emoji", { length: 10 }),
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User purchases from the store
+export const userPurchases = pgTable("user_purchases", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  storeItemId: varchar("store_item_id").references(() => storeItems.id).notNull(),
+  quantity: integer("quantity").default(1),
+  totalCost: integer("total_cost").notNull(),
+  tokenType: varchar("token_type", { length: 20 }).notNull(),
+  purchasedAt: timestamp("purchased_at").defaultNow(),
+});
+
+// Daily challenges for bonus token earning
+export const dailyChallenges = pgTable("daily_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  challengeType: varchar("challenge_type", { length: 50 }).notNull(), // early_bird, perfectionist, note_taker, community_engage
+  rewardTokenType: varchar("reward_token_type", { length: 20 }).notNull(),
+  rewardAmount: integer("reward_amount").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User daily challenge completions
+export const userChallengeCompletions = pgTable("user_challenge_completions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  challengeId: varchar("challenge_id").references(() => dailyChallenges.id).notNull(),
+  completedDate: varchar("completed_date").notNull(), // YYYY-MM-DD format
+  rewardClaimed: boolean("reward_claimed").default(false),
+  completedAt: timestamp("completed_at").defaultNow(),
+});
+
+// Gamification relations
+export const tokenTransactionsRelations = relations(tokenTransactions, ({ one }) => ({
+  user: one(users, {
+    fields: [tokenTransactions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const userPurchasesRelations = relations(userPurchases, ({ one }) => ({
+  user: one(users, {
+    fields: [userPurchases.userId],
+    references: [users.id],
+  }),
+  storeItem: one(storeItems, {
+    fields: [userPurchases.storeItemId],
+    references: [storeItems.id],
+  }),
+}));
+
+export const userChallengeCompletionsRelations = relations(userChallengeCompletions, ({ one }) => ({
+  user: one(users, {
+    fields: [userChallengeCompletions.userId],
+    references: [users.id],
+  }),
+  challenge: one(dailyChallenges, {
+    fields: [userChallengeCompletions.challengeId],
+    references: [dailyChallenges.id],
+  }),
+}));
+
+// Gamification schemas
+export const insertTokenTransactionSchema = createInsertSchema(tokenTransactions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserPurchaseSchema = createInsertSchema(userPurchases).omit({
+  id: true,
+  purchasedAt: true,
+});
+
+export const insertUserChallengeCompletionSchema = createInsertSchema(userChallengeCompletions).omit({
+  id: true,
+  completedAt: true,
+});
+
+// Gamification types
+export type TokenTransaction = typeof tokenTransactions.$inferSelect;
+export type InsertTokenTransaction = z.infer<typeof insertTokenTransactionSchema>;
+export type StoreItem = typeof storeItems.$inferSelect;
+export type InsertStoreItem = typeof storeItems.$inferInsert;
+export type UserPurchase = typeof userPurchases.$inferSelect;
+export type InsertUserPurchase = z.infer<typeof insertUserPurchaseSchema>;
+export type DailyChallenge = typeof dailyChallenges.$inferSelect;
+export type InsertDailyChallenge = typeof dailyChallenges.$inferInsert;
+export type UserChallengeCompletion = typeof userChallengeCompletions.$inferSelect;
+export type InsertUserChallengeCompletion = z.infer<typeof insertUserChallengeCompletionSchema>;
 
 // Community types
 export type AccountabilityPartner = typeof accountabilityPartners.$inferSelect;

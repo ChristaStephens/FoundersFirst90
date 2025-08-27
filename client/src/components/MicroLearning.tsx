@@ -77,9 +77,9 @@ const learningModules: LearningModule[] = [
         'Create a simple landing page to test interest'
       ],
       resources: [
-        { title: 'The Lean Startup Method', url: '#', type: 'article' },
-        { title: 'MVP Examples That Worked', url: '#', type: 'video' },
-        { title: 'Figma for Quick Prototyping', url: '#', type: 'tool' }
+        { title: 'Build Your First MVP Guide', url: '#', type: 'article' },
+        { title: 'MVP Success Stories', url: '#', type: 'video' },
+        { title: 'Free Prototyping Tools', url: '#', type: 'tool' }
       ],
       quiz: {
         question: 'What is the primary goal of an MVP?',
@@ -118,9 +118,9 @@ const learningModules: LearningModule[] = [
         'Adjust your value proposition based on feedback'
       ],
       resources: [
-        { title: 'Customer Interview Guide', url: '#', type: 'article' },
-        { title: 'Validation Interview Examples', url: '#', type: 'video' },
-        { title: 'Calendly for Scheduling', url: '#', type: 'tool' }
+        { title: 'Customer Interview Best Practices', url: '#', type: 'article' },
+        { title: 'Validation Techniques That Work', url: '#', type: 'video' },
+        { title: 'Free Scheduling Tools', url: '#', type: 'tool' }
       ]
     }
   },
@@ -149,9 +149,9 @@ const learningModules: LearningModule[] = [
         'Create pricing tiers with clear value differences'
       ],
       resources: [
-        { title: 'Value-Based Pricing Guide', url: '#', type: 'article' },
-        { title: 'Pricing Strategy Case Studies', url: '#', type: 'video' },
-        { title: 'Price Testing Tools', url: '#', type: 'tool' }
+        { title: 'Smart Pricing Strategies', url: '#', type: 'article' },
+        { title: 'Pricing Psychology Examples', url: '#', type: 'video' },
+        { title: 'Free A/B Testing Tools', url: '#', type: 'tool' }
       ]
     }
   },
@@ -180,9 +180,9 @@ const learningModules: LearningModule[] = [
         'Produce 1 piece of valuable content weekly'
       ],
       resources: [
-        { title: 'Growth Hacking Playbook', url: '#', type: 'article' },
-        { title: 'Viral Growth Case Studies', url: '#', type: 'video' },
-        { title: 'Analytics Setup Guide', url: '#', type: 'tool' }
+        { title: 'Growth Strategy Framework', url: '#', type: 'article' },
+        { title: 'Organic Growth Techniques', url: '#', type: 'video' },
+        { title: 'Free Analytics Tools', url: '#', type: 'tool' }
       ]
     }
   },
@@ -211,9 +211,9 @@ const learningModules: LearningModule[] = [
         'Establish clear goals and success metrics'
       ],
       resources: [
-        { title: 'Founder Leadership Guide', url: '#', type: 'article' },
-        { title: 'Building High-Performance Teams', url: '#', type: 'video' },
-        { title: 'Team Communication Tools', url: '#', type: 'tool' }
+        { title: 'Leadership Fundamentals', url: '#', type: 'article' },
+        { title: 'Team Building Strategies', url: '#', type: 'video' },
+        { title: 'Free Communication Tools', url: '#', type: 'tool' }
       ]
     }
   }

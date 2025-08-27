@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, Coffee, Gift, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import tymfloIcon from "@/assets/tymflo-icon.png";
+import { useAudio } from "@/hooks/use-audio";
 
 interface MilestonePromptProps {
   milestone: number;
@@ -11,6 +12,7 @@ interface MilestonePromptProps {
 
 export function MilestonePrompt({ milestone, onClose }: MilestonePromptProps) {
   const [showPayment, setShowPayment] = useState(false);
+  const { playMilestone } = useAudio();
 
   const getMilestoneContent = () => {
     switch (milestone) {
@@ -53,6 +55,11 @@ export function MilestonePrompt({ milestone, onClose }: MilestonePromptProps) {
   };
 
   const content = getMilestoneContent();
+
+  // Play milestone sound when component mounts
+  useEffect(() => {
+    playMilestone();
+  }, [playMilestone]);
 
   if (showPayment) {
     return (

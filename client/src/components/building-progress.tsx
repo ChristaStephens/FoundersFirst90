@@ -21,24 +21,68 @@ export function BuildingProgress({ level, completedDays }: BuildingProgressProps
 
   const getBuildingLevels = (currentLevel: number) => {
     const levels = [];
-    const maxLevels = Math.min(Math.floor(currentLevel / 15) + 1, 6);
+    const completedFloors = Math.floor(currentLevel / 15);
+    const progressInCurrentFloor = (currentLevel % 15) / 15;
     
     for (let i = 0; i < 6; i++) {
-      const isBuilt = i < Math.floor(currentLevel / 15);
-      const isCurrentLevel = i === Math.floor(currentLevel / 15);
+      const isBuilt = i < completedFloors;
+      const isCurrentLevel = i === completedFloors;
+      const isFuture = i > completedFloors;
+      
+      let className = '';
+      let style = { width: `${Math.max(30 + i * 10, 30)}px` };
+      
+      if (isBuilt) {
+        // Completed floors - solid and colorful
+        className = `h-10 mx-1 rounded-sm transition-all duration-700 shadow-lg
+          ${i % 2 === 0 ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-green-500 to-green-600'}
+          border-2 border-white/20 animate-bounce-subtle`;
+      } else if (isCurrentLevel) {
+        // Currently building floor - animated construction
+        const buildProgress = progressInCurrentFloor * 100;
+        className = `h-10 mx-1 rounded-sm transition-all duration-500 relative overflow-hidden
+          bg-gradient-to-r from-amber-200 to-amber-300 border-2 border-amber-400
+          animate-pulse shadow-md`;
+        style = { 
+          ...style, 
+          backgroundImage: `linear-gradient(to right, 
+            hsl(43, 89%, 70%) 0%, 
+            hsl(43, 89%, 70%) ${buildProgress}%, 
+            hsl(43, 30%, 85%) ${buildProgress}%, 
+            hsl(43, 30%, 85%) 100%)`
+        };
+      } else if (isFuture) {
+        // Future floors - blueprint style
+        className = `h-8 mx-1 rounded-sm transition-all duration-500 opacity-40
+          bg-transparent border-2 border-dashed border-slate-400`;
+      }
       
       levels.push(
         <div
           key={i}
-          className={`h-8 mx-1 rounded-sm transition-all duration-500 ${
-            isBuilt 
-              ? 'bg-primary shadow-sm' 
-              : isCurrentLevel 
-              ? 'bg-primary/50 animate-pulse' 
-              : 'bg-muted border border-dashed border-muted-foreground/30'
-          }`}
-          style={{ width: `${Math.max(20 + i * 8, 20)}px` }}
-        />
+          className={className}
+          style={style}
+        >
+          {/* Construction effects for current level */}
+          {isCurrentLevel && (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+              <div className="absolute top-0 right-1 text-xs text-amber-700 animate-bounce">🔨</div>
+            </>
+          )}
+          
+          {/* Windows for completed floors */}
+          {isBuilt && (
+            <div className="absolute inset-1 flex items-center justify-center">
+              <div className="grid grid-cols-3 gap-1">
+                {[...Array(6)].map((_, idx) => (
+                  <div key={idx} className="w-1 h-1 bg-yellow-200 rounded-full animate-twinkle" 
+                       style={{ animationDelay: `${idx * 0.2}s` }} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       );
     }
     return levels.reverse(); // Stack from bottom up

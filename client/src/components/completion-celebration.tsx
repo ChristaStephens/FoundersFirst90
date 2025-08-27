@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Confetti, Trophy, Star, Zap } from "lucide-react";
+import { Confetti, Trophy, Star, Zap, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import tymfloIcon from "@/assets/tymflo-icon.png";
+import { useAudio } from "@/hooks/use-audio";
+import { SocialShare } from "./social-share";
 
 interface CompletionCelebrationProps {
   day: number;
@@ -12,13 +14,18 @@ interface CompletionCelebrationProps {
 
 export function CompletionCelebration({ day, streak, onClose }: CompletionCelebrationProps) {
   const [showConfetti, setShowConfetti] = useState(true);
+  const [showSocialShare, setShowSocialShare] = useState(false);
+  const { playSuccess } = useAudio();
 
   useEffect(() => {
+    // Play celebration sound when component mounts
+    playSuccess();
+    
     const timer = setTimeout(() => {
       setShowConfetti(false);
     }, 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [playSuccess]);
 
   const getMilestoneMessage = () => {
     if (day === 1) return "🎉 Welcome to your entrepreneurial journey!";
@@ -90,16 +97,38 @@ export function CompletionCelebration({ day, streak, onClose }: CompletionCelebr
               </div>
             </div>
 
-            <Button 
-              onClick={onClose} 
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
-              data-testid="button-close-celebration"
-            >
-              Continue Your Journey
-            </Button>
+            {/* Action buttons */}
+            <div className="space-y-3">
+              <Button
+                onClick={() => setShowSocialShare(true)}
+                variant="outline"
+                className="w-full border-accent text-accent hover:bg-accent/10 font-semibold"
+                data-testid="button-share-success"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Share Your Success
+              </Button>
+              
+              <Button 
+                onClick={onClose} 
+                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+                data-testid="button-close-celebration"
+              >
+                Continue Your Journey
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
+      
+      {/* Social Share Modal */}
+      <SocialShare
+        isOpen={showSocialShare}
+        onClose={() => setShowSocialShare(false)}
+        day={day}
+        streak={streak}
+        achievement={streak >= 7 ? `${streak}-day streak` : undefined}
+      />
     </div>
   );
 }

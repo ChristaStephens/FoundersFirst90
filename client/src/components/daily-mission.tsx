@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAudio } from "@/hooks/use-audio";
 
 interface DailyMissionProps {
   mission: Mission;
@@ -21,6 +22,7 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
   const [justSaved, setJustSaved] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { playSave, playComplete } = useAudio();
 
   // Fetch existing step responses for this day
   const { data: dayData } = useQuery({
@@ -50,6 +52,7 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
       queryClient.invalidateQueries({ queryKey: ['/api/day', currentDay] });
       setHasChanges(false);
       setJustSaved(true);
+      playSave(); // Play save sound
       toast({
         title: "Responses Saved!",
         description: "Your progress has been saved successfully.",
@@ -147,15 +150,22 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
                 variant={justSaved ? "default" : "outline"}
                 size="sm"
                 data-testid="button-save-responses"
-                className={justSaved ? "bg-green-600 hover:bg-green-700" : ""}
+                className={`transition-all duration-300 ${
+                  justSaved 
+                    ? "bg-green-600 hover:bg-green-700 text-white animate-save-success scale-105 shadow-lg" 
+                    : "hover:scale-105"
+                }`}
               >
                 {saveResponsesMutation.isPending ? (
-                  'Saving...'
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    Saving...
+                  </div>
                 ) : justSaved ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                  <div className="flex items-center animate-celebration">
+                    <CheckCircle2 className="w-4 h-4 mr-1 animate-bounce" />
                     Saved!
-                  </>
+                  </div>
                 ) : (
                   'Save Responses'
                 )}
@@ -198,8 +208,11 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
         {/* Completion Button */}
         {!isCompleted ? (
           <Button
-            onClick={onComplete}
-            className="w-full bg-primary text-primary-foreground py-4 rounded-lg font-semibold text-base hover:bg-primary/90 transition-colors"
+            onClick={() => {
+              playComplete(); // Play completion sound
+              onComplete();
+            }}
+            className="w-full bg-primary text-primary-foreground py-4 rounded-lg font-semibold text-base hover:bg-primary/90 hover:scale-105 transition-all duration-200 shadow-lg"
             data-testid="complete-mission-btn"
           >
             <span className="mr-2">🎯</span>

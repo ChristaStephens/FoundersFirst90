@@ -31,9 +31,13 @@ import tymfloIcon from '@/assets/tymflo-icon.png';
 import tymfloWordmark from '@/assets/tymflo-wordmark.png';
 import { Crown, Lock, Calendar, Sparkles, Building2, BookOpen } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import PrivacyPolicy from './privacy-policy';
+import TermsOfService from './terms-of-service';
+import Support from './support';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
+  const [currentPage, setCurrentPage] = useState('home');
   const [, setLocation] = useLocation();
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
   const [showCelebration, setShowCelebration] = useState(false);
@@ -88,6 +92,19 @@ export default function Home() {
       localStorage.setItem(`milestone_shown_${shouldShowMilestone}`, 'true');
     }
   }, [progress?.currentDay]);
+
+  // Page routing
+  if (currentPage === 'support') {
+    return <Support onBack={() => setCurrentPage('home')} />;
+  }
+  
+  if (currentPage === 'privacy') {
+    return <PrivacyPolicy onBack={() => setCurrentPage('home')} />;
+  }
+  
+  if (currentPage === 'terms') {
+    return <TermsOfService onBack={() => setCurrentPage('home')} />;
+  }
 
   if (isLoading) {
     return (
@@ -389,24 +406,52 @@ export default function Home() {
           <h2 className="text-lg font-bold text-foreground mb-4">Support</h2>
           <div className="space-y-3">
             <button 
-              className="flex items-center justify-between w-full text-left"
+              onClick={() => setCurrentPage('support')}
+              className="flex items-center justify-between w-full text-left hover:bg-gray-50 p-2 rounded transition-colors"
               data-testid="help-button"
             >
               <span className="text-sm text-foreground">Help & FAQ</span>
               <span className="text-muted-foreground">→</span>
             </button>
             <button 
-              className="flex items-center justify-between w-full text-left"
+              onClick={() => setCurrentPage('support')}
+              className="flex items-center justify-between w-full text-left hover:bg-gray-50 p-2 rounded transition-colors"
               data-testid="contact-button"
             >
               <span className="text-sm text-foreground">Contact Support</span>
               <span className="text-muted-foreground">→</span>
             </button>
             <button 
-              className="flex items-center justify-between w-full text-left"
+              onClick={() => setCurrentPage('support')}
+              className="flex items-center justify-between w-full text-left hover:bg-gray-50 p-2 rounded transition-colors"
               data-testid="feedback-button"
             >
               <span className="text-sm text-foreground">Send Feedback</span>
+              <span className="text-muted-foreground">→</span>
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Legal */}
+      <Card className="shadow-sm border border-border">
+        <CardContent className="p-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">Legal</h2>
+          <div className="space-y-3">
+            <button 
+              onClick={() => setCurrentPage('privacy')}
+              className="flex items-center justify-between w-full text-left hover:bg-gray-50 p-2 rounded transition-colors"
+              data-testid="privacy-button"
+            >
+              <span className="text-sm text-foreground">Privacy Policy</span>
+              <span className="text-muted-foreground">→</span>
+            </button>
+            <button 
+              onClick={() => setCurrentPage('terms')}
+              className="flex items-center justify-between w-full text-left hover:bg-gray-50 p-2 rounded transition-colors"
+              data-testid="terms-button"
+            >
+              <span className="text-sm text-foreground">Terms of Service</span>
               <span className="text-muted-foreground">→</span>
             </button>
           </div>

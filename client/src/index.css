@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* TymFlo Brand Colors */
+  --background: hsl(0, 0%, 99%);
+  --foreground: hsl(0, 0%, 17%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0, 0%, 17%);
+  --primary: hsl(262, 30%, 33%); /* #4A3B6B */
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(276, 40%, 70%); /* #B89DD9 */
+  --secondary-foreground: hsl(262, 30%, 33%);
+  --muted: hsl(31, 25%, 85%); /* #E8D5C4 */
+  --muted-foreground: hsl(0, 0%, 40%);
+  --accent: hsl(41, 100%, 48%); /* #F7A800 */
+  --accent-foreground: hsl(0, 0%, 17%);
+  --success: hsl(16, 50%, 75%); /* #E8A598 */
+  --success-foreground: hsl(0, 0%, 17%);
+  --progress: hsl(41, 100%, 48%);
+  --border: hsl(31, 15%, 87%);
+  --ring: hsl(262, 30%, 33%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(0, 0%, 17%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --input: hsl(31, 15%, 95%);
+  --radius: 0.75rem;
+  --font-sans: 'Montserrat', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+}
+
+.dark {
+  --background: hsl(0, 0%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --card: hsl(0, 0%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --popover: hsl(0, 0%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --primary: hsl(262, 30%, 33%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(276, 40%, 70%);
+  --secondary-foreground: hsl(262, 30%, 33%);
+  --muted: hsl(0, 0%, 14.9%);
+  --muted-foreground: hsl(0, 0%, 63.9%);
+  --accent: hsl(41, 100%, 48%);
+  --accent-foreground: hsl(0, 0%, 9%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 14.9%);
+  --input: hsl(0, 0%, 14.9%);
+  --ring: hsl(262, 30%, 33%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s infinite;
+}
+
+/* Progress bar animation */
+.progress-fill {
+  transition: width 0.8s ease-in-out;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(31, 15%, 95%);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(262, 30%, 33%);
+  border-radius: 2px;
+}

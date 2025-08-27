@@ -1,0 +1,382 @@
+[
+  {
+    "day": 1,
+    "title": "Define Your One-Sentence Business Idea",
+    "description": "Clarity beats complexity. If you can't explain it in one sentence, your customers won't understand it either.",
+    "task": "Write one sentence that clearly explains what your business does and for whom.",
+    "steps": [
+      "Complete this template: 'I help [target customer] achieve [desired outcome] by [your solution]'",
+      "Test it on 3 people - can they repeat it back to you?",
+      "Refine until it's crystal clear",
+      "Write it down and keep it visible"
+    ],
+    "resources": [
+      {
+        "title": "Value Proposition Canvas Template",
+        "url": "https://www.strategyzer.com/canvas/value-proposition-canvas",
+        "type": "template"
+      },
+      {
+        "title": "Crafting Your Elevator Pitch",
+        "url": "https://www.youtube.com/watch?v=2b3xG_YjgvI",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have one clear sentence that anyone can understand and remember."
+  },
+  {
+    "day": 2,
+    "title": "Identify Your First 10 Potential Customers",
+    "description": "Your business idea means nothing without people who will pay for it.",
+    "task": "Create a list of 10 specific people who might pay for your solution.",
+    "steps": [
+      "Think about people you know who have the problem you're solving",
+      "Use LinkedIn, Facebook, or your contacts to find them",
+      "Write down their names and contact information",
+      "Note why each person might need your solution"
+    ],
+    "resources": [
+      {
+        "title": "Customer Avatar Template",
+        "url": "https://blog.hubspot.com/marketing/buyer-persona-research",
+        "type": "template"
+      },
+      {
+        "title": "Finding Your First Customers",
+        "url": "https://www.youtube.com/watch?v=xZi9krhkzR8",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have a list with 10 names and contact methods."
+  },
+  {
+    "day": 3,
+    "title": "Create a Simple Landing Page",
+    "description": "You need a digital presence to test interest and collect leads before building anything complex.",
+    "task": "Build a one-page website that explains your idea and collects email addresses.",
+    "steps": [
+      "Choose a simple tool like Carrd, Unbounce, or even a Google Form",
+      "Write a clear headline using your one-sentence pitch",
+      "Add 2-3 bullet points explaining the benefits",
+      "Include an email signup form with a call-to-action"
+    ],
+    "resources": [
+      {
+        "title": "Carrd - Simple Landing Pages",
+        "url": "https://carrd.co",
+        "type": "tool"
+      },
+      {
+        "title": "Landing Page Best Practices",
+        "url": "https://blog.hubspot.com/marketing/landing-page-best-practices",
+        "type": "article"
+      }
+    ],
+    "successCriteria": "You have a live URL where people can learn about your idea and sign up."
+  },
+  {
+    "day": 4,
+    "title": "Conduct Your First Customer Interview",
+    "description": "Talking to real people reveals what you can't learn from research alone.",
+    "task": "Have a 15-minute conversation with one potential customer about their problems.",
+    "steps": [
+      "Pick one person from your Day 2 list",
+      "Ask about their current challenges, not your solution",
+      "Listen more than you talk",
+      "Take notes on their exact words and pain points"
+    ],
+    "resources": [
+      {
+        "title": "Customer Interview Script",
+        "url": "https://www.intercom.com/blog/customer-interview-questions/",
+        "type": "template"
+      },
+      {
+        "title": "The Mom Test Book Summary",
+        "url": "https://www.youtube.com/watch?v=yUaFWqZUv6c",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have notes from one real conversation with a potential customer."
+  },
+  {
+    "day": 5,
+    "title": "Define Your Minimum Viable Product (MVP)",
+    "description": "Start with the smallest version that solves the core problem.",
+    "task": "Write down the simplest version of your product that people would pay for.",
+    "steps": [
+      "List all the features you think your product needs",
+      "Circle only the 3 most essential ones",
+      "Cross out everything else for version 1",
+      "Write a one-paragraph description of this minimal version"
+    ],
+    "resources": [
+      {
+        "title": "MVP Definition Guide",
+        "url": "https://blog.crisp.se/2016/01/25/henrikkniberg/making-sense-of-mvp",
+        "type": "article"
+      },
+      {
+        "title": "How to Build an MVP",
+        "url": "https://www.youtube.com/watch?v=0P7nCmln7PM",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have a clear description of your MVP with 3 core features."
+  },
+  {
+    "day": 6,
+    "title": "Set Up Social Media Profiles",
+    "description": "Establish your brand presence and start building an audience.",
+    "task": "Create business profiles on 2-3 relevant social media platforms.",
+    "steps": [
+      "Choose platforms where your customers spend time",
+      "Use consistent naming and branding across platforms",
+      "Write a clear bio that explains what you do",
+      "Post your first piece of content introducing yourself"
+    ],
+    "resources": [
+      {
+        "title": "Social Media Bio Templates",
+        "url": "https://blog.hootsuite.com/social-media-bio-templates/",
+        "type": "template"
+      },
+      {
+        "title": "Building a Brand on Social Media",
+        "url": "https://www.youtube.com/watch?v=pQS1T2NqWQ4",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have active profiles on 2-3 platforms with your first post published."
+  },
+  {
+    "day": 7,
+    "title": "Get Your First Customer Feedback",
+    "description": "Assumptions kill startups. Real feedback saves months of wasted effort and guides you toward what customers actually want.",
+    "task": "Interview 3 potential customers about your business idea to validate your assumptions and gather real market insights.",
+    "steps": [
+      "List 10 people who might be interested in your product or service",
+      "Reach out using this template message to request 15-minute feedback calls",
+      "Schedule and conduct the interviews using prepared questions",
+      "Document key insights and patterns from each conversation"
+    ],
+    "resources": [
+      {
+        "title": "Customer Interview Script Template",
+        "url": "https://www.strategyzer.com/canvas/value-proposition-canvas",
+        "type": "template"
+      },
+      {
+        "title": "How to Conduct Customer Interviews",
+        "url": "https://www.youtube.com/watch?v=2b3xG_YjgvI",
+        "type": "video"
+      },
+      {
+        "title": "Email Template for Interview Requests",
+        "url": "https://blog.hubspot.com/marketing/customer-interview-email-templates",
+        "type": "template"
+      }
+    ],
+    "successCriteria": "You have completed 3 customer interviews and documented at least 5 key insights about your target market's needs and pain points."
+  },
+  {
+    "day": 8,
+    "title": "Create Your First Marketing Message",
+    "description": "Turn your customer insights into compelling copy that resonates.",
+    "task": "Write a marketing message based on your customer feedback.",
+    "steps": [
+      "Review your customer interview notes",
+      "Identify the exact words customers used to describe their problems",
+      "Write 3 different versions of your marketing message",
+      "Test each version with a friend or potential customer"
+    ],
+    "resources": [
+      {
+        "title": "Copywriting Formulas",
+        "url": "https://blog.hubspot.com/marketing/copywriting-formulas",
+        "type": "article"
+      },
+      {
+        "title": "Customer Language in Marketing",
+        "url": "https://www.youtube.com/watch?v=l8V5zCn8w2s",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have 3 different marketing messages that use your customers' actual language."
+  },
+  {
+    "day": 9,
+    "title": "Build an Email List of 10 People",
+    "description": "Start collecting interested prospects before you have anything to sell.",
+    "task": "Get 10 people to sign up for updates about your business.",
+    "steps": [
+      "Share your landing page with friends and family",
+      "Post about your project on social media",
+      "Ask your customer interviewees if they want updates",
+      "Reach out to people in relevant online communities"
+    ],
+    "resources": [
+      {
+        "title": "Mailchimp Getting Started",
+        "url": "https://mailchimp.com/help/getting-started-with-mailchimp/",
+        "type": "tool"
+      },
+      {
+        "title": "Building Your First Email List",
+        "url": "https://www.youtube.com/watch?v=vKsoD8DG7vQ",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have 10 email addresses of people interested in your business."
+  },
+  {
+    "day": 10,
+    "title": "Price Your Product or Service",
+    "description": "Set a price that reflects value, not just costs.",
+    "task": "Determine what you'll charge for your MVP.",
+    "steps": [
+      "Research what competitors charge for similar solutions",
+      "Calculate the value you provide to customers",
+      "Start with a price that feels slightly uncomfortable (good sign)",
+      "Write down your pricing with a simple explanation"
+    ],
+    "resources": [
+      {
+        "title": "Pricing Strategy Guide",
+        "url": "https://blog.hubspot.com/service/what-to-charge-for-services",
+        "type": "article"
+      },
+      {
+        "title": "Value-Based Pricing",
+        "url": "https://www.youtube.com/watch?v=8mLFPGr9jNs",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have a clear price for your MVP with reasoning behind it."
+  },
+  {
+    "day": 11,
+    "title": "Create Your First Sales Process",
+    "description": "Map out exactly how you'll turn prospects into paying customers.",
+    "task": "Write down the steps someone takes to buy from you.",
+    "steps": [
+      "Map the customer journey from awareness to purchase",
+      "Identify where prospects might have questions or objections",
+      "Create a simple script or template for sales conversations",
+      "Practice your pitch with a friend"
+    ],
+    "resources": [
+      {
+        "title": "Sales Process Template",
+        "url": "https://blog.hubspot.com/sales/sales-process-template",
+        "type": "template"
+      },
+      {
+        "title": "Consultative Selling Basics",
+        "url": "https://www.youtube.com/watch?v=7Wn4oKNT7S0",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have a documented sales process and practiced your pitch."
+  },
+  {
+    "day": 12,
+    "title": "Make Your First Sales Attempt",
+    "description": "The only way to learn to sell is by actually selling.",
+    "task": "Try to sell your MVP to one person, even if it's not built yet.",
+    "steps": [
+      "Pick your most promising prospect",
+      "Explain the value and ask for the sale",
+      "Handle objections with empathy",
+      "Document what you learn, whether they buy or not"
+    ],
+    "resources": [
+      {
+        "title": "Overcoming Sales Objections",
+        "url": "https://blog.hubspot.com/sales/handling-common-sales-objections",
+        "type": "article"
+      },
+      {
+        "title": "Making Your First Sale",
+        "url": "https://www.youtube.com/watch?v=JRnj4dw2XRM",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You attempted to sell to one person and documented the conversation."
+  },
+  {
+    "day": 13,
+    "title": "Get Customer Feedback on Pricing",
+    "description": "Validate your pricing with real market feedback.",
+    "task": "Ask 5 potential customers what they think about your price.",
+    "steps": [
+      "Present your solution and price to potential customers",
+      "Ask: 'What do you think about this price?'",
+      "Listen for reactions: too high, too low, or just right",
+      "Adjust your pricing based on feedback patterns"
+    ],
+    "resources": [
+      {
+        "title": "Price Testing Methods",
+        "url": "https://blog.hubspot.com/service/pricing-strategy-examples",
+        "type": "article"
+      },
+      {
+        "title": "Customer Pricing Interviews",
+        "url": "https://www.youtube.com/watch?v=yYMWR7rK0tU",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have pricing feedback from 5 potential customers and adjusted if needed."
+  },
+  {
+    "day": 14,
+    "title": "Refine Your Value Proposition",
+    "description": "Use everything you've learned to sharpen your core message.",
+    "task": "Rewrite your value proposition based on customer feedback.",
+    "steps": [
+      "Review all customer conversations and feedback",
+      "Identify the most compelling benefits customers mentioned",
+      "Rewrite your one-sentence pitch using their language",
+      "Test the new version with a fresh set of people"
+    ],
+    "resources": [
+      {
+        "title": "Value Proposition Examples",
+        "url": "https://blog.hubspot.com/marketing/value-proposition-examples",
+        "type": "article"
+      },
+      {
+        "title": "Crafting Compelling Value Props",
+        "url": "https://www.youtube.com/watch?v=ReM1uqmVfP0",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have a refined value proposition that uses customer language."
+  },
+  {
+    "day": 15,
+    "title": "Set Up Basic Analytics Tracking",
+    "description": "Start measuring what matters for your business growth.",
+    "task": "Install Google Analytics and set up basic tracking for your landing page.",
+    "steps": [
+      "Create a Google Analytics account",
+      "Install the tracking code on your landing page",
+      "Set up goals for email signups",
+      "Check that data is flowing correctly"
+    ],
+    "resources": [
+      {
+        "title": "Google Analytics Setup Guide",
+        "url": "https://support.google.com/analytics/answer/1008015",
+        "type": "tool"
+      },
+      {
+        "title": "Analytics for Beginners",
+        "url": "https://www.youtube.com/watch?v=gBeMELnKSh0",
+        "type": "video"
+      }
+    ],
+    "successCriteria": "You have Google Analytics installed and tracking your landing page visitors."
+  }
+]

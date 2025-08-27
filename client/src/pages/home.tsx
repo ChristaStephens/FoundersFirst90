@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from "wouter";
 import { DailyMission } from '@/components/daily-mission';
 import { ProgressDashboard } from '@/components/progress-dashboard';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -19,6 +20,7 @@ import tymfloWordmark from '@/assets/tymflo-wordmark.png';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('today');
+  const [, setLocation] = useLocation();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDay, setCelebratedDay] = useState(0);
   const [showMilestonePrompt, setShowMilestonePrompt] = useState(false);
@@ -351,7 +353,16 @@ export default function Home() {
       </main>
 
       {/* Bottom Navigation */}
-      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <BottomNavigation 
+        activeTab={activeTab} 
+        onTabChange={(tab) => {
+          if (tab === 'community') {
+            setLocation('/community');
+          } else {
+            setActiveTab(tab);
+          }
+        }} 
+      />
       
       {/* Celebration Modal */}
       {showCelebration && (

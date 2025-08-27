@@ -211,6 +211,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Community API Routes
+  app.get("/api/community/posts", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 20;
+      const posts = await storage.getCommunityPosts(limit);
+      res.json({ posts });
+    } catch (error) {
+      console.error("Error fetching community posts:", error);
+      res.status(500).json({ message: "Failed to fetch community posts" });
+    }
+  });
+
+  app.post("/api/community/posts", async (req, res) => {
+    try {
+      const { type, day, title, content, isAnonymous } = req.body;
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const post = await storage.createCommunityPost({
+        userId,
+        type,
+        day: day || null,
+        title,
+        content,
+        isAnonymous: isAnonymous || false,
+      });
+      
+      res.json({ post });
+    } catch (error) {
+      console.error("Error creating community post:", error);
+      res.status(500).json({ message: "Failed to create post" });
+    }
+  });
+
+  app.post("/api/community/posts/:postId/like", async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      await storage.likeCommunityPost(userId, postId);
+      res.json({ message: "Post liked successfully" });
+    } catch (error) {
+      console.error("Error liking post:", error);
+      res.status(500).json({ message: "Failed to like post" });
+    }
+  });
+
+  app.get("/api/community/posts/:postId/comments", async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const comments = await storage.getPostComments(postId);
+      res.json({ comments });
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      res.status(500).json({ message: "Failed to fetch comments" });
+    }
+  });
+
+  app.post("/api/community/posts/:postId/comments", async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const { content, isAnonymous } = req.body;
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const comment = await storage.createComment({
+        postId,
+        userId,
+        content,
+        isAnonymous: isAnonymous || false,
+      });
+      
+      res.json({ comment });
+    } catch (error) {
+      console.error("Error creating comment:", error);
+      res.status(500).json({ message: "Failed to create comment" });
+    }
+  });
+
+  app.get("/api/community/leaderboard", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const leaderboard = await storage.getCommunityLeaderboard(limit);
+      res.json({ leaderboard });
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard" });
+    }
+  });
+
+  app.get("/api/community/partners", async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const partners = await storage.getAccountabilityPartners(userId);
+      res.json({ partners });
+    } catch (error) {
+      console.error("Error fetching accountability partners:", error);
+      res.status(500).json({ message: "Failed to fetch partners" });
+    }
+  });
+
+  app.post("/api/community/partners", async (req, res) => {
+    try {
+      const { partnerId } = req.body;
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const partnership = await storage.createAccountabilityPartner({
+        userId,
+        partnerId,
+        status: "pending",
+      });
+      
+      res.json({ partnership });
+    } catch (error) {
+      console.error("Error creating accountability partnership:", error);
+      res.status(500).json({ message: "Failed to create partnership" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

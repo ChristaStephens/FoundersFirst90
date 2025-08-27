@@ -111,3 +111,139 @@ export type DailyCompletion = typeof dailyCompletions.$inferSelect;
 export type InsertDailyCompletion = z.infer<typeof insertCompletionSchema>;
 export type UserAchievement = typeof userAchievements.$inferSelect;
 export type InsertUserAchievement = z.infer<typeof insertAchievementSchema>;
+
+// Community Features Tables
+export const accountabilityPartners = pgTable("accountability_partners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  partnerId: varchar("partner_id").references(() => users.id).notNull(),
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, active, completed, cancelled
+  startedAt: timestamp("started_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const communityPosts = pgTable("community_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // milestone, struggle, win, question, motivation
+  day: integer("day"),
+  title: varchar("title", { length: 200 }).notNull(),
+  content: text("content").notNull(),
+  isAnonymous: boolean("is_anonymous").default(false),
+  likesCount: integer("likes_count").default(0),
+  commentsCount: integer("comments_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const postLikes = pgTable("post_likes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  postId: varchar("post_id").references(() => communityPosts.id, { onDelete: "cascade" }).notNull(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const postComments = pgTable("post_comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  postId: varchar("post_id").references(() => communityPosts.id, { onDelete: "cascade" }).notNull(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  content: text("content").notNull(),
+  isAnonymous: boolean("is_anonymous").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const communityStats = pgTable("community_stats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  postsShared: integer("posts_shared").default(0),
+  likesReceived: integer("likes_received").default(0),
+  commentsReceived: integer("comments_received").default(0),
+  partnershipsCompleted: integer("partnerships_completed").default(0),
+  communityRank: integer("community_rank"),
+  lastActiveAt: timestamp("last_active_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Community relations
+export const accountabilityPartnersRelations = relations(accountabilityPartners, ({ one }) => ({
+  user: one(users, {
+    fields: [accountabilityPartners.userId],
+    references: [users.id],
+    relationName: "userPartner",
+  }),
+  partner: one(users, {
+    fields: [accountabilityPartners.partnerId],
+    references: [users.id],
+    relationName: "partnerUser",
+  }),
+}));
+
+export const communityPostsRelations = relations(communityPosts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [communityPosts.userId],
+    references: [users.id],
+  }),
+  likes: many(postLikes),
+  comments: many(postComments),
+}));
+
+export const postLikesRelations = relations(postLikes, ({ one }) => ({
+  post: one(communityPosts, {
+    fields: [postLikes.postId],
+    references: [communityPosts.id],
+  }),
+  user: one(users, {
+    fields: [postLikes.userId],
+    references: [users.id],
+  }),
+}));
+
+export const postCommentsRelations = relations(postComments, ({ one }) => ({
+  post: one(communityPosts, {
+    fields: [postComments.postId],
+    references: [communityPosts.id],
+  }),
+  user: one(users, {
+    fields: [postComments.userId],
+    references: [users.id],
+  }),
+}));
+
+export const communityStatsRelations = relations(communityStats, ({ one }) => ({
+  user: one(users, {
+    fields: [communityStats.userId],
+    references: [users.id],
+  }),
+}));
+
+// Community schemas
+export const insertCommunityPostSchema = createInsertSchema(communityPosts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  likesCount: true,
+  commentsCount: true,
+});
+
+export const insertPostCommentSchema = createInsertSchema(postComments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAccountabilityPartnerSchema = createInsertSchema(accountabilityPartners).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Community types
+export type AccountabilityPartner = typeof accountabilityPartners.$inferSelect;
+export type InsertAccountabilityPartner = z.infer<typeof insertAccountabilityPartnerSchema>;
+export type CommunityPost = typeof communityPosts.$inferSelect;
+export type InsertCommunityPost = z.infer<typeof insertCommunityPostSchema>;
+export type PostLike = typeof postLikes.$inferSelect;
+export type InsertPostLike = typeof postLikes.$inferInsert;
+export type PostComment = typeof postComments.$inferSelect;
+export type InsertPostComment = z.infer<typeof insertPostCommentSchema>;
+export type CommunityStats = typeof communityStats.$inferSelect;
+export type InsertCommunityStats = typeof communityStats.$inferInsert;

@@ -9,6 +9,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
   const tabs = [
     { id: 'today', label: 'Today', icon: '📅' },
     { id: 'progress', label: 'Progress', icon: '📊' },
+    { id: 'community', label: 'Community', icon: '👥' },
     { id: 'settings', label: 'Settings', icon: '⚙️' },
   ];
 

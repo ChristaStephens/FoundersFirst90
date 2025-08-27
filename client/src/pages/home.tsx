@@ -460,7 +460,7 @@ export default function Home() {
       />
 
       {/* Header */}
-      <header className="bg-card/90 backdrop-blur-sm border-b border-border sticky top-0 z-40 shadow-lg">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="group hover-wiggle">
@@ -498,14 +498,14 @@ export default function Home() {
       {/* Main Content with Colorful Tabs */}
       <main className="max-w-md mx-auto pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white/80 backdrop-blur-sm border border-purple-200 rounded-xl p-1 shadow-lg hover-glow" data-testid="tab-navigation">
+          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white border border-purple-200 rounded-xl p-1 shadow-lg" data-testid="tab-navigation">
             <TabsTrigger 
               value="today" 
               className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 
               data-testid="tab-today"
             >
               <Calendar className="w-4 h-4 group-data-[state=active]:animate-wiggle group-hover:animate-float transition-transform duration-200" />
-              <div className="absolute inset-0 rounded-lg bg-pink-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg bg-pink-500/20 opacity-0 group-data-[state=active]:opacity-100 pointer-events-none"></div>
             </TabsTrigger>
             <TabsTrigger 
               value="startup" 
@@ -513,7 +513,7 @@ export default function Home() {
               data-testid="tab-build"
             >
               <Building2 className="w-4 h-4 group-data-[state=active]:animate-heartbeat group-hover:animate-float transition-transform duration-200" />
-              <div className="absolute inset-0 rounded-lg bg-blue-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg bg-blue-500/20 opacity-0 group-data-[state=active]:opacity-100 pointer-events-none"></div>
             </TabsTrigger>
             <TabsTrigger 
               value="learning" 
@@ -521,7 +521,7 @@ export default function Home() {
               data-testid="tab-learn"
             >
               <BookOpen className="w-4 h-4 group-data-[state=active]:animate-jello group-hover:animate-float transition-transform duration-200" />
-              <div className="absolute inset-0 rounded-lg bg-green-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg bg-green-500/20 opacity-0 group-data-[state=active]:opacity-100 pointer-events-none"></div>
             </TabsTrigger>
             <TabsTrigger 
               value="progress" 
@@ -529,7 +529,7 @@ export default function Home() {
               data-testid="tab-progress"
             >
               <Sparkles className="w-4 h-4 group-data-[state=active]:animate-sparkle group-hover:animate-float transition-transform duration-200" />
-              <div className="absolute inset-0 rounded-lg bg-orange-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg bg-orange-500/20 opacity-0 group-data-[state=active]:opacity-100 pointer-events-none"></div>
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
@@ -537,7 +537,7 @@ export default function Home() {
               data-testid="tab-goals"
             >
               <Crown className="w-4 h-4 group-data-[state=active]:animate-wiggle group-hover:animate-float transition-transform duration-200" />
-              <div className="absolute inset-0 rounded-lg bg-gray-500/20 opacity-0 group-data-[state=active]:opacity-100 animate-glow pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg bg-gray-500/20 opacity-0 group-data-[state=active]:opacity-100 pointer-events-none"></div>
             </TabsTrigger>
           </TabsList>
           

@@ -26,7 +26,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-sm border-t border-border z-50 shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
       <div className="max-w-md mx-auto px-4">
         <div className="flex justify-around py-2">
           {tabs.map((tab, index) => {
@@ -50,7 +50,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full animate-sparkle" />
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
                 )}
                 
                 {/* Icon with hover animation */}
@@ -79,7 +79,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 
                 {/* Glow effect for active tab */}
                 {isActive && (
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/5 to-primary/10 animate-glow pointer-events-none" />
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/5 to-primary/10 pointer-events-none" />
                 )}
               </button>
             );

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Save, BookOpen, Target, Lightbulb, Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import missions from '@/data/missions.json';
 
 interface DailyNotesProps {
   day: number;
@@ -183,6 +184,8 @@ interface PreviousDayReviewProps {
 export function PreviousDayReview({ previousDay }: PreviousDayReviewProps) {
   if (!previousDay || previousDay.day < 1) return null;
 
+  const mission = missions.find(m => m.day === previousDay.day);
+
   return (
     <Card className="shadow-sm border border-primary/20 bg-primary/5" data-testid="previous-day-review">
       <CardHeader className="pb-3">
@@ -222,10 +225,26 @@ export function PreviousDayReview({ previousDay }: PreviousDayReviewProps) {
           </div>
         )}
 
-        {!previousDay.notes && !previousDay.reflections && (
-          <p className="text-sm text-muted-foreground italic">
-            No notes or reflections recorded for this day.
-          </p>
+        {!previousDay.notes && !previousDay.reflections && mission && (
+          <div className="text-sm text-muted-foreground">
+            <p className="font-medium mb-2">Day {previousDay.day} Mission Summary:</p>
+            <div className="bg-background p-3 rounded-lg border">
+              <p className="font-medium text-foreground mb-1">✓ {mission.title}</p>
+              <p className="italic mb-2">{mission.description}</p>
+              <p className="text-xs"><strong>Task:</strong> {mission.task}</p>
+              <p className="text-xs mt-1 opacity-75">Mission completed successfully - no additional notes were recorded</p>
+            </div>
+          </div>
+        )}
+        
+        {!previousDay.notes && !previousDay.reflections && !mission && (
+          <div className="text-sm text-muted-foreground">
+            <p className="font-medium mb-2">Day {previousDay.day} Summary:</p>
+            <div className="bg-background p-3 rounded-lg border">
+              <p className="italic">✓ Mission completed successfully</p>
+              <p className="text-xs mt-1">No additional notes were recorded for this day</p>
+            </div>
+          </div>
         )}
 
         {previousDay.completedAt && (

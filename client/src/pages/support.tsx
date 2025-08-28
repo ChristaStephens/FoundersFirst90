@@ -8,15 +8,15 @@ interface SupportProps {
 
 export default function Support({ onBack }: SupportProps) {
   const handleEmailSupport = () => {
-    window.open('mailto:help@founderfirst90.com?subject=Support Request', '_blank');
+    window.open('mailto:hello@tymflo.com?subject=Founder\'s First 90 - Support Request', '_blank');
   };
 
   const handleBugReport = () => {
-    window.open('mailto:bugs@founderfirst90.com?subject=Bug Report&body=Please describe the issue you encountered:', '_blank');
+    window.open('mailto:hello@tymflo.com?subject=Founder\'s First 90 - Bug Report&body=Please describe the issue you encountered:', '_blank');
   };
 
   const handleFeatureRequest = () => {
-    window.open('mailto:feedback@founderfirst90.com?subject=Feature Request&body=I would like to suggest:', '_blank');
+    window.open('mailto:hello@tymflo.com?subject=Founder\'s First 90 - Feature Request&body=I would like to suggest:', '_blank');
   };
 
   return (
@@ -136,10 +136,9 @@ export default function Support({ onBack }: SupportProps) {
             <h2 className="text-lg font-bold mb-4">Contact Information</h2>
             <div className="space-y-2 text-sm">
               <div className="bg-gray-50 p-3 rounded-lg space-y-1">
-                <p><strong>General Support:</strong> help@founderfirst90.com</p>
-                <p><strong>Bug Reports:</strong> bugs@founderfirst90.com</p>
-                <p><strong>Feature Requests:</strong> feedback@founderfirst90.com</p>
-                <p><strong>Business Inquiries:</strong> business@founderfirst90.com</p>
+                <p><strong>Email:</strong> hello@tymflo.com</p>
+                <p><strong>Website:</strong> www.tymflo.com</p>
+                <p><strong>Company:</strong> TymFlo</p>
               </div>
             </div>
           </CardContent>

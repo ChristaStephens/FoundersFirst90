@@ -104,8 +104,8 @@ export default function TermsOfService({ onBack }: TermsOfServiceProps) {
           <div className="space-y-2 text-sm">
             <p>For questions about these Terms of Service:</p>
             <div className="bg-gray-50 p-3 rounded-lg">
-              <p><strong>Email:</strong> legal@founderfirst90.com</p>
-              <p><strong>Support:</strong> help@founderfirst90.com</p>
+              <p><strong>Email:</strong> hello@tymflo.com</p>
+              <p><strong>Website:</strong> www.tymflo.com</p>
             </div>
           </div>
         </section>

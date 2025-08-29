@@ -907,6 +907,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ received: true });
   });
 
+  // Create payment intent for "pay what you think is fair" model
+  app.post("/api/create-payment-intent", async (req, res) => {
+    try {
+      const { amount, currency = 'usd' } = req.body;
+      
+      // Validate amount
+      if (!amount || amount < 5) {
+        return res.status(400).json({ 
+          message: "Amount must be at least $5" 
+        });
+      }
+      
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: currency,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+      
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      console.error('Stripe error:', error);
+      res.status(500).json({ message: "Error creating payment intent: " + error.message });
+    }
+  });
+
   // Start free trial
   app.post("/api/start-trial", async (req, res) => {
     try {

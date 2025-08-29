@@ -22,6 +22,8 @@ import { MicroLearning } from '@/components/MicroLearning';
 import CustomChallenges from '@/components/CustomChallenges';
 import EnhancedMicroLearning from '@/components/EnhancedMicroLearning';
 import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
+import { EndDayDialog } from '@/components/EndDayDialog';
+import { TimeLockDisplay } from '@/components/TimeLockDisplay';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -50,6 +52,7 @@ export default function Home() {
   );
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState(userName);
+  const [showEndDayDialog, setShowEndDayDialog] = useState(false);
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDay, setCelebratedDay] = useState(0);
@@ -199,6 +202,12 @@ export default function Home() {
 
   const renderTodayTab = () => (
     <div className="animate-fadeIn pb-4 space-y-4">
+      {/* Time Lock Display */}
+      <TimeLockDisplay 
+        currentDay={progress?.currentDay || 1}
+        onEndDay={() => setShowEndDayDialog(true)}
+      />
+      
       {/* Enhanced Progress Overview */}
       <div>
         <EnhancedProgressBar 
@@ -940,6 +949,13 @@ export default function Home() {
           onClose={() => setShowMilestonePrompt(false)}
         />
       )}
+
+      {/* End Day Dialog */}
+      <EndDayDialog
+        isOpen={showEndDayDialog}
+        onClose={() => setShowEndDayDialog(false)}
+        currentDay={progress?.currentDay || 1}
+      />
     </div>
   );
 }

@@ -40,7 +40,7 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
 
   // Initialize step responses from existing data
   useEffect(() => {
-    if (dayData?.completion?.stepResponses) {
+    if (dayData && 'completion' in dayData && dayData.completion?.stepResponses) {
       setStepResponses(dayData.completion.stepResponses);
     }
   }, [dayData]);
@@ -48,12 +48,9 @@ export function DailyMission({ mission, isCompleted, onComplete, currentDay }: D
   // Save step responses
   const saveResponsesMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest(`/api/save-step-responses`, {
-        method: 'POST',
-        body: JSON.stringify({
-          day: currentDay,
-          stepResponses
-        })
+      await apiRequest('POST', '/api/save-step-responses', {
+        day: currentDay,
+        stepResponses
       });
     },
     onSuccess: () => {

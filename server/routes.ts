@@ -9,7 +9,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-06-20",
+  apiVersion: "2025-07-30.basil",
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -85,6 +85,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'User not found' });
       }
       
+      // Check if day is unlocked for completion
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+      
+      // Prevent completing future days or going too fast
+      if (day > progress.currentDay) {
+        return res.status(400).json({ 
+          message: 'Cannot complete future days. Focus on building daily habits!',
+          canAdvance: false 
+        });
+      }
+      
+      // Check if enough time has passed since last completion (24 hours cooldown)
+      if (progress.lastDayCompletedAt && progress.nextDayUnlocksAt) {
+        const now = new Date();
+        if (day > progress.currentDay - 1 && now < progress.nextDayUnlocksAt) {
+          const hoursLeft = Math.ceil((progress.nextDayUnlocksAt.getTime() - now.getTime()) / (1000 * 60 * 60));
+          return res.status(429).json({ 
+            message: `Your next day unlocks in ${hoursLeft} hours. Building daily habits takes time!`,
+            canAdvance: false,
+            nextUnlockTime: progress.nextDayUnlocksAt
+          });
+        }
+      }
+      
       // Get or create daily completion
       let completion = await storage.getDailyCompletion(userId, day);
       
@@ -126,12 +153,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
+        const now = new Date();
+        const nextDayUnlockTime = new Date(now.getTime() + (18 * 60 * 60 * 1000)); // 18 hours from now (customizable)
+        
         const updatedProgress = await storage.updateUserProgress(userId, {
           currentDay: Math.max(currentProgress.currentDay, day + 1),
           streak: newStreak,
           bestStreak: Math.max(currentProgress.bestStreak, newStreak),
           buildingLevel: Math.min(totalCompleted + 1, 90),
-          totalCompletedDays: totalCompleted
+          totalCompletedDays: totalCompleted,
+          lastDayCompletedAt: now,
+          nextDayUnlocksAt: nextDayUnlockTime
         });
 
         res.json({ completion, progress: updatedProgress });
@@ -139,6 +171,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error completing day:', error);
       res.status(500).json({ message: 'Failed to complete day' });
+    }
+  });
+
+  // End Day - allows user to set when next day unlocks (Finch-style)
+  app.post('/api/end-day', async (req, res) => {
+    try {
+      const { customUnlockTime } = req.body; // Optional: user can set custom unlock time
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+      
+      const now = new Date();
+      let nextUnlockTime;
+      
+      if (customUnlockTime) {
+        // User specified when they want next day to unlock
+        nextUnlockTime = new Date(customUnlockTime);
+        
+        // Ensure it's at least 8 hours from now (minimum rest period)
+        const minUnlockTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+        if (nextUnlockTime < minUnlockTime) {
+          nextUnlockTime = minUnlockTime;
+        }
+      } else {
+        // Default: 18 hours from now
+        nextUnlockTime = new Date(now.getTime() + (18 * 60 * 60 * 1000));
+      }
+      
+      const updatedProgress = await storage.updateUserProgress(userId, {
+        lastDayCompletedAt: now,
+        nextDayUnlocksAt: nextUnlockTime,
+        updatedAt: new Date()
+      });
+      
+      res.json({ 
+        message: 'Day ended successfully! See you tomorrow.',
+        nextUnlockTime: nextUnlockTime,
+        progress: updatedProgress 
+      });
+    } catch (error) {
+      console.error('Error ending day:', error);
+      res.status(500).json({ message: 'Failed to end day' });
+    }
+  });
+
+  // Check if next day is unlocked
+  app.get('/api/can-advance', async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const progress = await storage.getUserProgress(userId);
+      if (!progress) {
+        return res.status(404).json({ message: 'Progress not found' });
+      }
+      
+      const now = new Date();
+      const canAdvance = !progress.nextDayUnlocksAt || now >= progress.nextDayUnlocksAt;
+      
+      let timeLeft = 0;
+      if (progress.nextDayUnlocksAt && now < progress.nextDayUnlocksAt) {
+        timeLeft = Math.ceil((progress.nextDayUnlocksAt.getTime() - now.getTime()) / (1000 * 60 * 60));
+      }
+      
+      res.json({
+        canAdvance,
+        timeLeft,
+        nextUnlockTime: progress.nextDayUnlocksAt,
+        currentDay: progress.currentDay
+      });
+    } catch (error) {
+      console.error('Error checking advancement:', error);
+      res.status(500).json({ message: 'Failed to check advancement' });
     }
   });
 

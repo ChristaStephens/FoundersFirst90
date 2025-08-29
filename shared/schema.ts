@@ -41,6 +41,9 @@ export const userProgress = pgTable("user_progress", {
   bestStreak: integer("best_streak").notNull().default(0),
   buildingLevel: integer("building_level").notNull().default(1),
   totalCompletedDays: integer("total_completed_days").notNull().default(0),
+  lastDayCompletedAt: timestamp("last_day_completed_at"),
+  nextDayUnlocksAt: timestamp("next_day_unlocks_at"),
+  journeyStartedAt: timestamp("journey_started_at").defaultNow(),
   
   // Gamification fields
   founderCoins: integer("founder_coins").notNull().default(50), // Primary currency - start with 50 coins

@@ -24,11 +24,19 @@ import {
   RefreshCw
 } from 'lucide-react';
 
+interface MiniQuiz {
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
 interface Lesson {
   title: string;
   content: string;
   type: 'text' | 'video' | 'interactive';
   duration: number;
+  miniQuiz?: MiniQuiz;
 }
 
 interface Quiz {
@@ -135,77 +143,97 @@ const intermediateModules: EnhancedLearningModule[] = [
     lessons: [
       {
         title: 'Understanding MVP Principles',
-        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort.\n\n**Core MVP Philosophy:**\nThe MVP methodology was pioneered by Eric Ries in "The Lean Startup" and has become the foundation of modern startup development. The key insight: you\'re not building a product, you\'re testing a hypothesis.\n\n**The Three Pillars of MVP Success:**\n1. **Minimum** - Build only what\'s absolutely necessary to test your core assumption\n2. **Viable** - It must actually solve the core problem (even if roughly)\n3. **Product** - Customers must be willing to use/pay for it\n\n**Common MVP Mistakes (and how to avoid them):**\n• Building too many features → Focus on ONE core problem\n• Perfecting the UI/UX → Prioritize functionality over polish\n• Skipping customer validation → Talk to users before AND after building\n• Not measuring properly → Define success metrics upfront\n\n**Real MVP Examples:**\n• **Airbnb**: Started with air mattresses in founders\' apartment\n• **Dropbox**: Demo video before building the product\n• **Zappos**: Took photos of shoes in stores, bought only when ordered\n• **Buffer**: Landing page with signup before building the tool\n\n**Your MVP Framework:**\n1. Identify your riskiest assumption about customers\n2. Design the smallest test to validate/invalidate it\n3. Build only what\'s needed for that test\n4. Measure real customer behavior (not opinions)\n5. Learn and iterate based on data',
+        content: '## What is an MVP?\n\nAn MVP (Minimum Viable Product) is **not** a basic version of your final product. It\'s the smallest version that allows you to learn from customers with minimal effort.\n\n## Core Philosophy\n\nThe MVP methodology was pioneered by Eric Ries in "The Lean Startup". The key insight: **you\'re not building a product, you\'re testing a hypothesis.**\n\n## The Three Pillars of MVP Success\n\n### 1. Minimum\nBuild only what\'s absolutely necessary to test your core assumption\n\n### 2. Viable  \nIt must actually solve the core problem (even if roughly)\n\n### 3. Product\nCustomers must be willing to use/pay for it\n\n## Common MVP Mistakes\n\n❌ **Building too many features** → Focus on ONE core problem  \n❌ **Perfecting the UI/UX** → Prioritize functionality over polish  \n❌ **Skipping customer validation** → Talk to users before AND after building  \n❌ **Not measuring properly** → Define success metrics upfront\n\n## Real MVP Examples\n\n**Airbnb:** Started with air mattresses in founders\' apartment  \n**Dropbox:** Demo video before building the product  \n**Zappos:** Took photos of shoes in stores, bought only when ordered  \n**Buffer:** Landing page with signup before building the tool',
         type: 'text',
-        duration: 10
+        duration: 8,
+        miniQuiz: {
+          question: 'What is the primary purpose of an MVP?',
+          options: [
+            'To create a basic version of your final product',
+            'To test your core hypothesis about customer needs', 
+            'To save money on development costs',
+            'To get to market faster than competitors'
+          ],
+          correctAnswer: 1,
+          explanation: 'An MVP is specifically designed to test your fundamental assumptions about customer problems and solutions with the least amount of work.'
+        }
       },
       {
         title: 'Feature Prioritization Mastery',
-        content: 'Feature prioritization separates successful startups from feature-bloated failures. Most founders build what they think customers want, not what they actually need.\n\n**The Core Feature Test:**\nAsk: "What is the ONE thing that, if removed, would make this product completely useless?" This is your core feature. Everything else is enhancement.\n\n**The MoSCoW Method for Startups:**\n• **Must Have**: Core features that define your product\n• **Should Have**: Important but not critical for MVP\n• **Could Have**: Nice-to-have features for future releases\n• **Won\'t Have**: Features that dilute your core value proposition\n\n**The Kano Model Applied:**\n1. **Basic Needs**: Features customers expect (table stakes)\n2. **Performance Needs**: Features that differentiate you\n3. **Excitement Needs**: Features that delight customers\n\n**Feature Prioritization Framework:**\n1. **Customer Impact Score** (1-10): How much does this solve the core problem?\n2. **Implementation Effort** (1-10): How hard/expensive is this to build?\n3. **Risk Level** (1-10): How uncertain are we about customer adoption?\n4. **Strategic Value** (1-10): How well does this support business goals?\n\n**Formula**: Priority Score = (Impact × Strategic Value) / (Effort × Risk)\n\n**Real-World Example - Uber:**\n• Core Feature: Request ride with one tap\n• Should Have: GPS tracking, ETA\n• Could Have: Driver ratings, music preferences\n• Won\'t Have: In-car entertainment, food delivery (initially)\n\n**Your Action Plan:**\n1. List ALL potential features\n2. Score each using the framework above\n3. Rank by priority score\n4. Build only top 3 for MVP\n5. Validate with real customers before adding more',
+        content: '## The Core Feature Test\n\nAsk: **"What is the ONE thing that, if removed, would make this product completely useless?"**\n\nThis is your core feature. Everything else is enhancement.\n\n## The MoSCoW Method for Startups\n\n### Must Have\nCore features that define your product\n\n### Should Have  \nImportant but not critical for MVP\n\n### Could Have\nNice-to-have features for future releases\n\n### Won\'t Have\nFeatures that dilute your core value proposition\n\n## Feature Prioritization Framework\n\nScore each feature 1-10 on:\n\n1. **Customer Impact:** How much does this solve the core problem?\n2. **Implementation Effort:** How hard/expensive is this to build?\n3. **Risk Level:** How uncertain are we about customer adoption?\n4. **Strategic Value:** How well does this support business goals?\n\n### Formula\n**Priority Score = (Impact × Strategic Value) / (Effort × Risk)**\n\n## Real Example: Uber\n\n**Core Feature:** Request ride with one tap  \n**Should Have:** GPS tracking, ETA  \n**Could Have:** Driver ratings, music preferences  \n**Won\'t Have:** In-car entertainment, food delivery (initially)',
         type: 'text',
-        duration: 8
+        duration: 6,
+        miniQuiz: {
+          question: 'According to the framework, what should you do if a feature scores (Impact: 9, Strategic Value: 8) / (Effort: 3, Risk: 2) = 12?',
+          options: [
+            'Definitely build it first',
+            'Consider building it', 
+            'Probably buy/use existing solution',
+            'Skip it entirely'
+          ],
+          correctAnswer: 0,
+          explanation: 'A score of 12 is very high, indicating this should be a top priority to build.'
+        }
       },
       {
         title: 'Build vs Buy Decision Framework',
-        content: 'The build vs buy decision can make or break early-stage startups. Most founders default to building everything, burning through time and money unnecessarily.\n\n**The Strategic Framework:**\n\n**Build When:**\n• It\'s your core competitive advantage\n• No suitable solution exists in the market\n• You have specific, unique requirements\n• Long-term cost savings justify upfront investment\n• You need complete control over the technology\n\n**Buy/Use Existing When:**\n• It\'s not your core differentiator\n• Proven, reliable solutions exist\n• Time to market is critical\n• You have limited technical resources\n• Compliance/security standards are pre-built\n\n**The "Fake Door" Strategy:**\nTest demand before building anything:\n\n1. **Landing Page MVP**: Create a page describing your product\n2. **Wizard of Oz**: Manually fulfill what would be automated\n3. **Concierge MVP**: Personally deliver the service to early customers\n4. **Video Demo**: Show how the product would work (Dropbox approach)\n\n**Real Success Stories:**\n• **Zappos**: Photographed shoes in stores, bought only when customers ordered\n• **Groupon**: Started as a WordPress blog with manual deal posting\n• **Airbnb**: Used Craigslist integration instead of building their own marketplace\n• **Stripe**: Focused on payment processing, not building a complete e-commerce platform\n\n**Decision Matrix Template:**\nFor each feature, score 1-5:\n• Business Impact: How critical is this to success?\n• Differentiation: Does this make you unique?\n• Complexity: How hard is this to build well?\n• Time Sensitivity: How quickly do you need this?\n• Resource Availability: Do you have the skills/budget?\n\n**Formula**: Build Score = (Impact × Differentiation) / (Complexity × Time Pressure)\n\nIf score > 3, consider building. If < 2, definitely buy/use existing.\n\n**The 70% Rule**: If an existing solution meets 70% of your needs, use it and focus your building efforts on the remaining 30% that truly differentiates you.',
+        content: '## When to Build vs Buy\n\n### Build When:\n✅ It\'s your core competitive advantage  \n✅ No suitable solution exists in the market  \n✅ You have specific, unique requirements  \n✅ Long-term cost savings justify upfront investment\n\n### Buy/Use Existing When:\n✅ It\'s not your core differentiator  \n✅ Proven, reliable solutions exist  \n✅ Time to market is critical  \n✅ You have limited technical resources\n\n## The "Fake Door" Strategy\n\nTest demand before building anything:\n\n### 1. Landing Page MVP\nCreate a page describing your product\n\n### 2. Wizard of Oz\nManually fulfill what would be automated\n\n### 3. Concierge MVP  \nPersonally deliver the service to early customers\n\n### 4. Video Demo\nShow how the product would work (Dropbox approach)\n\n## Success Stories\n\n**Zappos:** Photographed shoes in stores, bought only when customers ordered  \n**Groupon:** Started as a WordPress blog with manual deal posting  \n**Airbnb:** Used Craigslist integration instead of building marketplace\n\n## The 70% Rule\n\nIf an existing solution meets 70% of your needs, use it and focus building efforts on the remaining 30% that truly differentiates you.',
         type: 'interactive',
-        duration: 12
+        duration: 7,
+        miniQuiz: {
+          question: 'In the Build vs Buy framework, when should you definitely buy/use existing solutions?',
+          options: [
+            'When it\'s your core competitive advantage',
+            'When you want complete control over technology',
+            'When proven solutions exist and it\'s not your differentiator', 
+            'When you have unlimited development resources'
+          ],
+          correctAnswer: 2,
+          explanation: 'Buy when proven solutions exist for non-core functionality. Save your building efforts for what truly differentiates you.'
+        }
       },
       {
-        title: 'Customer Validation Mastery',
-        content: 'Customer validation is where most startups fail. They ask the wrong questions, talk to the wrong people, and misinterpret the answers.\n\n**The Mom Test Methodology:**\nDeveloped by Rob Fitzpatrick, this approach prevents customers from lying to you (even when they try to be nice).\n\n**Rules of The Mom Test:**\n1. **Talk about their life, not your idea**\n2. **Ask about specifics in the past, not generics or opinions about the future**\n3. **Talk less and listen more**\n\n**Bad Questions vs Good Questions:**\n\n❌ Bad: "Would you buy a product that did X?"\n✅ Good: "Tell me about the last time you needed to solve X."\n\n❌ Bad: "How much would you pay for this?"\n✅ Good: "What\'s the most expensive solution you\'ve tried for this problem?"\n\n❌ Bad: "What features would you want?"\n✅ Good: "Walk me through the last time this was a problem."\n\n❌ Bad: "Do you think this is a good idea?"\n✅ Good: "How are you currently dealing with this?"\n\n**The Customer Discovery Process:**\n\n**Phase 1: Problem Discovery (Weeks 1-2)**\n• Interview 10-15 potential customers\n• Focus: Understand their current pain points\n• Goal: Validate the problem exists and is significant\n\n**Phase 2: Solution Validation (Weeks 3-4)**\n• Show mockups/prototypes to previous interviewees\n• Focus: Does your solution address their pain?\n• Goal: Validate product-market fit potential\n\n**Phase 3: Business Model Validation (Weeks 5-6)**\n• Test pricing, sales channels, and value proposition\n• Focus: Will they actually pay for this?\n• Goal: Validate business viability\n\n**Interview Script Template:**\n\n1. **Opening (2 minutes)**\n   "I\'m working on [problem area] and would love to learn from your experience."\n\n2. **Problem Discovery (15 minutes)**\n   • "Tell me about the last time you encountered [problem]"\n   • "What did you do to solve it?"\n   • "How did that work out?"\n   • "What was frustrating about that experience?"\n\n3. **Current Solutions (10 minutes)**\n   • "What tools/methods do you currently use?"\n   • "What do you like/dislike about those?"\n   • "How much time/money do you spend on this?"\n\n4. **Closing (3 minutes)**\n   • "Who else should I talk to about this?"\n   • "Would you be interested in seeing what we build?"\n\n**Red Flags to Watch For:**\n• "I would definitely buy this!" (without seeing price/details)\n• "Everyone would want this!" (nobody represents everyone)\n• "You should add feature X, Y, Z" (feature creep)\n• Generic praise without specific use cases\n\n**Green Lights:**\n• Detailed stories about current pain points\n• Specific examples of failed solutions they\'ve tried\n• Questions about pricing and availability\n• Offers to pilot or pre-order\n\n**Post-Interview Analysis:**\n• What specific problems did they mention?\n• How are they currently solving this?\n• How much time/money do they spend on current solutions?\n• What would need to be true for them to switch?\n\n**The 10/3/1 Rule:**\n• Interview 10 people to find 3 who have the problem\n• Of those 3, only 1 will actually buy\n• You need 100+ interviews to find 10 paying customers',
+        title: 'Customer Validation with the Mom Test',
+        content: '## The Mom Test Methodology\n\nDeveloped by Rob Fitzpatrick, this approach prevents customers from lying to you (even when they try to be nice).\n\n## Three Rules\n\n1. **Talk about their life, not your idea**\n2. **Ask about specifics in the past, not opinions about the future**  \n3. **Talk less and listen more**\n\n## Bad vs Good Questions\n\n❌ **Bad:** "Would you buy a product that did X?"  \n✅ **Good:** "Tell me about the last time you needed to solve X."\n\n❌ **Bad:** "How much would you pay for this?"  \n✅ **Good:** "What\'s the most expensive solution you\'ve tried?"\n\n❌ **Bad:** "What features would you want?"  \n✅ **Good:** "Walk me through the last time this was a problem."\n\n## Customer Discovery Process\n\n### Phase 1: Problem Discovery (Weeks 1-2)\n• Interview 10-15 potential customers  \n• Focus: Understand current pain points  \n• Goal: Validate the problem exists and is significant\n\n### Phase 2: Solution Validation (Weeks 3-4)  \n• Show mockups/prototypes to previous interviewees  \n• Focus: Does your solution address their pain?  \n• Goal: Validate product-market fit potential\n\n### Phase 3: Business Model Validation (Weeks 5-6)\n• Test pricing, sales channels, and value proposition  \n• Focus: Will they actually pay for this?  \n• Goal: Validate business viability\n\n## The 10/3/1 Rule\n\n• Interview **10 people** to find **3** who have the problem  \n• Of those 3, only **1** will actually buy  \n• You need **100+ interviews** to find 10 paying customers',
         type: 'text',
-        duration: 15
+        duration: 10,
+        miniQuiz: {
+          question: 'Which question follows the "Mom Test" principle?',
+          options: [
+            'Would you pay $10/month for this service?',
+            'Do you think this is a good idea?',
+            'Tell me about the last time you struggled with organizing files',
+            'Would you recommend this to a friend?'
+          ],
+          correctAnswer: 2,
+          explanation: 'The Mom Test focuses on past behavior and specific experiences rather than hypothetical future actions.'
+        }
       }
     ],
     quizzes: [
       {
-        question: 'What is the primary purpose of building an MVP?',
+        question: 'What\'s the most critical factor when deciding to build your MVP?',
         options: [
-          'To create a basic version of your final product',
-          'To test core hypotheses with minimal effort',
-          'To save money on development costs',
-          'To get to market faster than competitors'
+          'Having all the features planned out',
+          'Identifying your riskiest customer assumption to test',
+          'Perfecting the user interface design',
+          'Getting enough funding to build everything'
         ],
         correctAnswer: 1,
-        explanation: 'An MVP is specifically designed to test your fundamental assumptions about customer problems and solutions with the least amount of work.',
-        followUp: 'Remember: MVPs are about learning, not launching.'
+        explanation: 'The MVP should focus on testing your biggest unknowns about customer behavior and needs.',
+        followUp: 'Start with your riskiest assumption - if it\'s wrong, everything else falls apart.'
       },
       {
-        question: 'Which question follows the "Mom Test" principle?',
+        question: 'According to the Build vs Buy framework, what\'s the best approach for startup authentication?',
         options: [
-          'Would you pay $10/month for this service?',
-          'Do you think this is a good idea?',
-          'Tell me about the last time you struggled with organizing your files',
-          'Would you recommend this to a friend?'
+          'Build a custom authentication system for security',
+          'Use proven solutions like Auth0 or Firebase Auth',
+          'Skip authentication until you have more users',
+          'Only use social login options'
         ],
-        correctAnswer: 2,
-        explanation: 'The Mom Test focuses on past behavior and specific experiences rather than hypothetical future actions.',
-        followUp: 'Ask about what people have done, not what they might do.'
-      },
-      {
-        question: 'According to the feature prioritization framework, what should you do if a feature scores (Impact: 9, Strategic Value: 8) / (Effort: 3, Risk: 2) = 12?',
-        options: [
-          'Definitely build it first',
-          'Consider building it',
-          'Probably buy/use existing solution',
-          'Skip it entirely'
-        ],
-        correctAnswer: 0,
-        explanation: 'A score of 12 is very high (formula: Impact × Strategic Value / Effort × Risk = 9×8/3×2 = 12), indicating this should be a top priority to build.',
-        followUp: 'High-impact, high-strategic value features with low effort and risk are perfect candidates for your MVP.'
-      },
-      {
-        question: 'In the Build vs Buy decision framework, when should you definitely buy/use existing solutions?',
-        options: [
-          'When it\'s your core competitive advantage',
-          'When you want complete control over the technology',
-          'When proven solutions exist and it\'s not your differentiator',
-          'When you have unlimited development resources'
-        ],
-        correctAnswer: 2,
-        explanation: 'Buy when proven solutions exist for non-core functionality. Save your building efforts for what truly differentiates you.',
-        followUp: 'The 70% rule: If existing solutions meet 70% of your needs, use them and build the remaining 30% that\'s unique.'
+        correctAnswer: 1,
+        explanation: 'Authentication is rarely a differentiator for startups and proven solutions are more secure than custom builds.',
+        followUp: 'Focus your development efforts on features that make you unique in the market.'
       }
     ],
     resources: [
@@ -685,10 +713,10 @@ export default function EnhancedMicroLearning() {
                               <div className="space-y-6">
                                 {/* Lessons Section */}
                                 <div>
-                                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                                    <BookOpen className="w-4 h-4" />
+                                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <BookOpen className="w-5 h-5" />
                                     Lessons ({selectedModule.lessons.length})
-                                  </h4>
+                                  </h3>
                                   <div className="space-y-3">
                                     {selectedModule.lessons.map((lesson, index) => (
                                       <Card key={index} className="border-l-4 border-l-blue-500">

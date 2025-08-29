@@ -27,8 +27,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
-      <div className="max-w-md mx-auto px-4 flex justify-center">
-        <div className="flex justify-around py-2">
+      <div className="max-w-md mx-auto px-4">
+        <div className="flex justify-around items-center py-2">
           {tabs.map((tab, index) => {
             const isActive = activeTab === tab.id;
             const isClicked = clickedTab === tab.id;
@@ -38,9 +38,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
                 className={cn(
-                  "group relative flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-300 hover:scale-105",
+                  "group relative flex flex-col items-center py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 min-w-[60px]",
                   isActive
-                    ? "text-white bg-[#FF6B35] shadow-lg border-2 border-[#FF6B35]"
+                    ? "text-white bg-[#FF6B35] shadow-lg"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                   isClicked && "animate-rubberBand",
                   "hover-lift hover-glow"
@@ -58,7 +58,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={cn(
                     "text-lg mb-1 transition-transform duration-200",
                     "group-hover:" + tab.hoverAnimation,
-                    isActive ? "opacity-100 filter brightness-0 invert" : "opacity-70"
+                    isActive ? "opacity-100" : "opacity-70"
                   )}
                 >
                   {tab.icon}
@@ -66,8 +66,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 
                 {/* Label */}
                 <span className={cn(
-                  "text-xs font-medium transition-all duration-200",
-                  isActive ? "text-white font-bold drop-shadow-sm" : "text-muted-foreground"
+                  "text-xs font-medium transition-all duration-200 text-center",
+                  isActive ? "text-white font-bold" : "text-gray-600"
                 )}>
                   {tab.label}
                 </span>

@@ -135,25 +135,25 @@ const intermediateModules: EnhancedLearningModule[] = [
     lessons: [
       {
         title: 'Understanding MVP Principles',
-        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort. The goal is to test your core hypothesis about customer needs.',
+        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort.\n\n**Core MVP Philosophy:**\nThe MVP methodology was pioneered by Eric Ries in "The Lean Startup" and has become the foundation of modern startup development. The key insight: you\'re not building a product, you\'re testing a hypothesis.\n\n**The Three Pillars of MVP Success:**\n1. **Minimum** - Build only what\'s absolutely necessary to test your core assumption\n2. **Viable** - It must actually solve the core problem (even if roughly)\n3. **Product** - Customers must be willing to use/pay for it\n\n**Common MVP Mistakes (and how to avoid them):**\n• Building too many features → Focus on ONE core problem\n• Perfecting the UI/UX → Prioritize functionality over polish\n• Skipping customer validation → Talk to users before AND after building\n• Not measuring properly → Define success metrics upfront\n\n**Real MVP Examples:**\n• **Airbnb**: Started with air mattresses in founders\' apartment\n• **Dropbox**: Demo video before building the product\n• **Zappos**: Took photos of shoes in stores, bought only when ordered\n• **Buffer**: Landing page with signup before building the tool\n\n**Your MVP Framework:**\n1. Identify your riskiest assumption about customers\n2. Design the smallest test to validate/invalidate it\n3. Build only what\'s needed for that test\n4. Measure real customer behavior (not opinions)\n5. Learn and iterate based on data',
         type: 'text',
         duration: 10
       },
       {
-        title: 'Identifying Core Features',
-        content: 'Focus on the single most important problem your product solves. Ask: "What is the one thing that, if removed, would make this product useless?" That\'s your core feature.',
+        title: 'Feature Prioritization Mastery',
+        content: 'Feature prioritization separates successful startups from feature-bloated failures. Most founders build what they think customers want, not what they actually need.\n\n**The Core Feature Test:**\nAsk: "What is the ONE thing that, if removed, would make this product completely useless?" This is your core feature. Everything else is enhancement.\n\n**The MoSCoW Method for Startups:**\n• **Must Have**: Core features that define your product\n• **Should Have**: Important but not critical for MVP\n• **Could Have**: Nice-to-have features for future releases\n• **Won\'t Have**: Features that dilute your core value proposition\n\n**The Kano Model Applied:**\n1. **Basic Needs**: Features customers expect (table stakes)\n2. **Performance Needs**: Features that differentiate you\n3. **Excitement Needs**: Features that delight customers\n\n**Feature Prioritization Framework:**\n1. **Customer Impact Score** (1-10): How much does this solve the core problem?\n2. **Implementation Effort** (1-10): How hard/expensive is this to build?\n3. **Risk Level** (1-10): How uncertain are we about customer adoption?\n4. **Strategic Value** (1-10): How well does this support business goals?\n\n**Formula**: Priority Score = (Impact × Strategic Value) / (Effort × Risk)\n\n**Real-World Example - Uber:**\n• Core Feature: Request ride with one tap\n• Should Have: GPS tracking, ETA\n• Could Have: Driver ratings, music preferences\n• Won\'t Have: In-car entertainment, food delivery (initially)\n\n**Your Action Plan:**\n1. List ALL potential features\n2. Score each using the framework above\n3. Rank by priority score\n4. Build only top 3 for MVP\n5. Validate with real customers before adding more',
         type: 'text',
         duration: 8
       },
       {
-        title: 'Building vs Buying',
-        content: 'Before writing code, explore no-code solutions, existing tools, or manual processes. Many successful startups began with "fake doors" - testing demand before building.',
+        title: 'Build vs Buy Decision Framework',
+        content: 'The build vs buy decision can make or break early-stage startups. Most founders default to building everything, burning through time and money unnecessarily.\n\n**The Strategic Framework:**\n\n**Build When:**\n• It\'s your core competitive advantage\n• No suitable solution exists in the market\n• You have specific, unique requirements\n• Long-term cost savings justify upfront investment\n• You need complete control over the technology\n\n**Buy/Use Existing When:**\n• It\'s not your core differentiator\n• Proven, reliable solutions exist\n• Time to market is critical\n• You have limited technical resources\n• Compliance/security standards are pre-built\n\n**The "Fake Door" Strategy:**\nTest demand before building anything:\n\n1. **Landing Page MVP**: Create a page describing your product\n2. **Wizard of Oz**: Manually fulfill what would be automated\n3. **Concierge MVP**: Personally deliver the service to early customers\n4. **Video Demo**: Show how the product would work (Dropbox approach)\n\n**Real Success Stories:**\n• **Zappos**: Photographed shoes in stores, bought only when customers ordered\n• **Groupon**: Started as a WordPress blog with manual deal posting\n• **Airbnb**: Used Craigslist integration instead of building their own marketplace\n• **Stripe**: Focused on payment processing, not building a complete e-commerce platform\n\n**Decision Matrix Template:**\nFor each feature, score 1-5:\n• Business Impact: How critical is this to success?\n• Differentiation: Does this make you unique?\n• Complexity: How hard is this to build well?\n• Time Sensitivity: How quickly do you need this?\n• Resource Availability: Do you have the skills/budget?\n\n**Formula**: Build Score = (Impact × Differentiation) / (Complexity × Time Pressure)\n\nIf score > 3, consider building. If < 2, definitely buy/use existing.\n\n**The 70% Rule**: If an existing solution meets 70% of your needs, use it and focus your building efforts on the remaining 30% that truly differentiates you.',
         type: 'interactive',
         duration: 12
       },
       {
-        title: 'Customer Validation Framework',
-        content: 'Use the "Mom Test" approach: Ask about past behavior, not future intentions. "Tell me about the last time you..." instead of "Would you use..."',
+        title: 'Customer Validation Mastery',
+        content: 'Customer validation is where most startups fail. They ask the wrong questions, talk to the wrong people, and misinterpret the answers.\n\n**The Mom Test Methodology:**\nDeveloped by Rob Fitzpatrick, this approach prevents customers from lying to you (even when they try to be nice).\n\n**Rules of The Mom Test:**\n1. **Talk about their life, not your idea**\n2. **Ask about specifics in the past, not generics or opinions about the future**\n3. **Talk less and listen more**\n\n**Bad Questions vs Good Questions:**\n\n❌ Bad: "Would you buy a product that did X?"\n✅ Good: "Tell me about the last time you needed to solve X."\n\n❌ Bad: "How much would you pay for this?"\n✅ Good: "What\'s the most expensive solution you\'ve tried for this problem?"\n\n❌ Bad: "What features would you want?"\n✅ Good: "Walk me through the last time this was a problem."\n\n❌ Bad: "Do you think this is a good idea?"\n✅ Good: "How are you currently dealing with this?"\n\n**The Customer Discovery Process:**\n\n**Phase 1: Problem Discovery (Weeks 1-2)**\n• Interview 10-15 potential customers\n• Focus: Understand their current pain points\n• Goal: Validate the problem exists and is significant\n\n**Phase 2: Solution Validation (Weeks 3-4)**\n• Show mockups/prototypes to previous interviewees\n• Focus: Does your solution address their pain?\n• Goal: Validate product-market fit potential\n\n**Phase 3: Business Model Validation (Weeks 5-6)**\n• Test pricing, sales channels, and value proposition\n• Focus: Will they actually pay for this?\n• Goal: Validate business viability\n\n**Interview Script Template:**\n\n1. **Opening (2 minutes)**\n   "I\'m working on [problem area] and would love to learn from your experience."\n\n2. **Problem Discovery (15 minutes)**\n   • "Tell me about the last time you encountered [problem]"\n   • "What did you do to solve it?"\n   • "How did that work out?"\n   • "What was frustrating about that experience?"\n\n3. **Current Solutions (10 minutes)**\n   • "What tools/methods do you currently use?"\n   • "What do you like/dislike about those?"\n   • "How much time/money do you spend on this?"\n\n4. **Closing (3 minutes)**\n   • "Who else should I talk to about this?"\n   • "Would you be interested in seeing what we build?"\n\n**Red Flags to Watch For:**\n• "I would definitely buy this!" (without seeing price/details)\n• "Everyone would want this!" (nobody represents everyone)\n• "You should add feature X, Y, Z" (feature creep)\n• Generic praise without specific use cases\n\n**Green Lights:**\n• Detailed stories about current pain points\n• Specific examples of failed solutions they\'ve tried\n• Questions about pricing and availability\n• Offers to pilot or pre-order\n\n**Post-Interview Analysis:**\n• What specific problems did they mention?\n• How are they currently solving this?\n• How much time/money do they spend on current solutions?\n• What would need to be true for them to switch?\n\n**The 10/3/1 Rule:**\n• Interview 10 people to find 3 who have the problem\n• Of those 3, only 1 will actually buy\n• You need 100+ interviews to find 10 paying customers',
         type: 'text',
         duration: 15
       }
@@ -182,6 +182,30 @@ const intermediateModules: EnhancedLearningModule[] = [
         correctAnswer: 2,
         explanation: 'The Mom Test focuses on past behavior and specific experiences rather than hypothetical future actions.',
         followUp: 'Ask about what people have done, not what they might do.'
+      },
+      {
+        question: 'According to the feature prioritization framework, what should you do if a feature scores (Impact: 9, Strategic Value: 8) / (Effort: 3, Risk: 2) = 12?',
+        options: [
+          'Definitely build it first',
+          'Consider building it',
+          'Probably buy/use existing solution',
+          'Skip it entirely'
+        ],
+        correctAnswer: 0,
+        explanation: 'A score of 12 is very high (formula: Impact × Strategic Value / Effort × Risk = 9×8/3×2 = 12), indicating this should be a top priority to build.',
+        followUp: 'High-impact, high-strategic value features with low effort and risk are perfect candidates for your MVP.'
+      },
+      {
+        question: 'In the Build vs Buy decision framework, when should you definitely buy/use existing solutions?',
+        options: [
+          'When it\'s your core competitive advantage',
+          'When you want complete control over the technology',
+          'When proven solutions exist and it\'s not your differentiator',
+          'When you have unlimited development resources'
+        ],
+        correctAnswer: 2,
+        explanation: 'Buy when proven solutions exist for non-core functionality. Save your building efforts for what truly differentiates you.',
+        followUp: 'The 70% rule: If existing solutions meet 70% of your needs, use them and build the remaining 30% that\'s unique.'
       }
     ],
     resources: [
@@ -190,10 +214,12 @@ const intermediateModules: EnhancedLearningModule[] = [
       { title: 'No-Code Tool Directory', url: 'https://www.nocode.tech/tools', type: 'tool' }
     ],
     practicalExercises: [
-      'Define your core value proposition in one sentence',
-      'List 3 assumptions about your customers you need to validate',
-      'Design a landing page to test demand before building',
-      'Create a customer interview script using Mom Test principles'
+      'Complete MVP Canvas: Problem, Solution, Key Metrics, Unfair Advantage, Channels, Customer Segments, Cost Structure, Revenue Streams',
+      'Create your Build vs Buy decision matrix for your top 5 features',
+      'Conduct 10 customer interviews using the Mom Test framework and document insights',
+      'Design and launch a landing page MVP to test demand (include signup form and metrics tracking)',
+      'Build a feature prioritization backlog using the Impact/Effort scoring system',
+      'Create a customer validation testing plan with specific hypotheses and success metrics'
     ],
     unlockRequirement: { type: 'day', value: 5 },
     icon: Rocket,
@@ -339,8 +365,8 @@ const advancedModules: EnhancedLearningModule[] = [
     points: 50,
     lessons: [
       {
-        title: 'Understanding Seed Rounds',
-        content: 'Seed rounds are typically $250K-$2M investments to help you validate product-market fit. Investors want to see traction, team strength, and market potential.',
+        title: 'Seed Funding Landscape Mastery',
+        content: 'Seed funding is the most critical round for early-stage startups. Understanding the landscape, timing, and investor expectations can make the difference between success and failure.\n\n**Seed Round Fundamentals:**\n\n**Typical Range**: $250K - $2M (Pre-seed: $10K-$500K)\n**Equity Given Up**: 10-25% (aim for 15-20%)\n**Timeline**: 3-6 months fundraising process\n**Use of Funds**: 18-24 months runway\n\n**What Seed Investors Look For:**\n\n1. **Team (40% of decision)**\n   • Domain expertise in the problem area\n   • Previous startup experience or relevant skills\n   • Complementary co-founder skills\n   • Ability to execute and learn quickly\n\n2. **Traction (30% of decision)**\n   • Product-market fit signals\n   • User growth and engagement metrics\n   • Revenue (even if small)\n   • Customer validation and testimonials\n\n3. **Market (20% of decision)**\n   • Large addressable market ($1B+ TAM)\n   • Market timing and trends\n   • Competitive landscape understanding\n   • Market entry strategy\n\n4. **Product (10% of decision)**\n   • Clear value proposition\n   • Defensible technology or approach\n   • Scalable business model\n   • Product roadmap and vision\n\n**Seed Funding Sources:**\n\n**Angel Investors:**\n• Individual investors ($5K-$100K checks)\n• Often successful entrepreneurs or executives\n• Provide mentorship and network access\n• Quick decision-making (2-4 weeks)\n\n**Seed VCs:**\n• Institutional funds ($50K-$500K checks)\n• More formal process and due diligence\n• Larger follow-on potential\n• 6-12 week decision process\n\n**Accelerators:**\n• Programs like Y Combinator, Techstars\n• $100K-$250K for 6-10% equity\n• 3-6 month programs with demo day\n• Access to investor networks\n\n**Friends & Family:**\n• Personal network investments\n• Typically $1K-$25K per person\n• Often convertible notes or SAFE agreements\n• Fastest funding source\n\n**Crowdfunding:**\n• Platforms like Republic, SeedInvest\n• Regulatory compliance required\n• Public validation of concept\n• Marketing and customer acquisition benefits\n\n**Timing Your Seed Round:**\n\n**Too Early Signs:**\n• No product built yet\n• Haven\'t talked to customers\n• Team isn\'t complete\n• No clear go-to-market strategy\n\n**Perfect Timing:**\n• MVP built and tested\n• Early customer traction\n• Clear problem-solution fit\n• Ready to scale (hire, marketing, product)\n• 3-6 months of runway left\n\n**Too Late:**\n• Already at scale (Series A territory)\n• Significant revenue ($100K+ ARR)\n• Large team (15+ people)\n• Established market position\n\n**Seed Round Metrics to Track:**\n\n**SaaS Metrics:**\n• Monthly Recurring Revenue (MRR)\n• Customer Acquisition Cost (CAC)\n• Lifetime Value (LTV)\n• Monthly Active Users (MAU)\n• Churn rate\n\n**Marketplace Metrics:**\n• Gross Merchandise Volume (GMV)\n• Take rate\n• Supply and demand growth\n• Repeat usage rate\n• Transaction frequency\n\n**Consumer App Metrics:**\n• Daily/Monthly Active Users\n• Retention rates (D1, D7, D30)\n• Session length and frequency\n• Viral coefficient\n• User acquisition cost\n\n**The Seed Funding Process:**\n\n**Week 1-2: Preparation**\n• Finalize pitch deck\n• Update financial model\n• Prepare data room\n• Create investor target list\n\n**Week 3-8: Active Fundraising**\n• Send initial outreach emails\n• Conduct first meetings\n• Follow up with materials\n• Negotiate term sheets\n\n**Week 9-12: Due Diligence & Closing**\n• Legal documentation\n• Reference calls\n• Final negotiations\n• Wire transfers and closing\n\n**Red Flags for Seed Investors:**\n• Unrealistic market size claims\n• No clear competitive differentiation\n• Founder-market fit concerns\n• Lack of customer validation\n• Unclear use of funds\n• Team dysfunction or gaps\n• Legal or IP issues\n• Unrealistic valuation expectations',
         type: 'text',
         duration: 15
       },
@@ -376,10 +402,12 @@ const advancedModules: EnhancedLearningModule[] = [
       { title: 'Pitch Deck Examples', url: 'https://www.alexanderjarvis.com/pitch-deck-collection/', type: 'article' }
     ],
     practicalExercises: [
-      'Create a 10-slide pitch deck',
-      'Practice your 2-minute elevator pitch',
-      'Research 10 relevant investors for your industry',
-      'Build a fundraising timeline and strategy'
+      'Build a comprehensive 12-slide pitch deck following YC format with: Problem, Solution, Market, Product, Traction, Business Model, Competition, Team, Financials, Funding Ask, Use of Funds, Appendix',
+      'Create detailed financial projections for 3 years including: Revenue model, Key metrics, Unit economics, Hiring plan, Burn rate, Runway analysis',
+      'Develop investor targeting strategy: Research 50 relevant investors, categorize by stage/industry, create personalized outreach templates',
+      'Practice pitch delivery: Record 2-minute elevator pitch, 10-minute full pitch, and Q&A scenarios',
+      'Build data room with: Financial models, Legal documents, Customer references, Product demos, Team bios, Market research',
+      'Create fundraising timeline with milestones, deadlines, and decision points over 16-week process'
     ],
     unlockRequirement: { type: 'day', value: 30 },
     icon: TrendingUp,

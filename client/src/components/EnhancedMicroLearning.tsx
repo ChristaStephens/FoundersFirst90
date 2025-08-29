@@ -63,7 +63,67 @@ interface EnhancedLearningModule {
   };
 }
 
-const enhancedModules: EnhancedLearningModule[] = [
+// Beginner modules (free content)
+const beginnerModules: EnhancedLearningModule[] = [
+  {
+    id: 'ceo-vs-founder',
+    title: 'CEO vs Founder: Understanding Your Role',
+    description: 'Learn the difference between CEO and Founder roles and decide which responsibilities you\'ll take on.',
+    category: 'fundamentals',
+    difficulty: 'beginner',
+    estimatedTime: 20,
+    points: 10,
+    lessons: [
+      {
+        title: 'What is a Founder?',
+        content: 'A founder is someone who starts a company. Founders identify problems, create solutions, and bring the initial vision to life. Key responsibilities include idea development, initial funding, team building, and setting company culture.',
+        type: 'text',
+        duration: 5
+      },
+      {
+        title: 'What is a CEO?',
+        content: 'A CEO (Chief Executive Officer) runs the day-to-day operations of a company. CEOs focus on strategy execution, team management, investor relations, and scaling operations. They\'re accountable to the board and shareholders.',
+        type: 'text',
+        duration: 5
+      },
+      {
+        title: 'Role Decision Framework',
+        content: 'Founders focus on vision and creation; CEOs focus on execution and growth. Many founders become CEOs, but not all CEOs are founders. Some founders step back to focus on product while hiring experienced CEOs.',
+        type: 'interactive',
+        duration: 10
+      }
+    ],
+    quizzes: [
+      {
+        question: 'What is the primary role of a founder?',
+        options: [
+          'Managing daily operations',
+          'Creating the initial vision and starting the company',
+          'Handling investor relations',
+          'Scaling the business'
+        ],
+        correctAnswer: 1,
+        explanation: 'Founders are primarily responsible for creating the initial vision and starting the company.',
+        followUp: 'Many successful founders later transition to CEO roles or hire experienced CEOs.'
+      }
+    ],
+    resources: [
+      { title: 'Founder vs CEO Guide', url: 'https://www.ycombinator.com/library/8h-founder-vs-ceo', type: 'article' },
+      { title: 'First-Time Founder Guide', url: 'https://blog.ycombinator.com/advice-for-first-time-founders/', type: 'article' }
+    ],
+    practicalExercises: [
+      'List 5 founder responsibilities you want to keep',
+      'List 5 CEO responsibilities you need help with',
+      'Create a 6-month role transition plan'
+    ],
+    unlockRequirement: { type: 'day', value: 1 },
+    icon: Users,
+    color: { from: 'from-blue-500', to: 'to-purple-600', accent: 'text-blue-600' }
+  }
+];
+
+// Intermediate modules (premium content) 
+const intermediateModules: EnhancedLearningModule[] = [
   {
     id: 'mvp-mastery',
     title: 'MVP Development Mastery',
@@ -75,19 +135,19 @@ const enhancedModules: EnhancedLearningModule[] = [
     lessons: [
       {
         title: 'Understanding MVP Principles',
-        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort. The goal is to test your core hypothesis about customer needs.\n\nKey MVP Principles:\n• Start with your riskiest assumption\n• Build only what\'s needed to test that assumption\n• Measure real customer behavior, not opinions\n• Learn fast, iterate faster\n\nCommon MVP Mistakes:\n• Building too many features\n• Perfect polish before testing\n• Ignoring customer feedback\n• Scaling before validation\n\nRemember: An MVP is about learning, not launching. Focus on validated learning over feature completeness.',
+        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort. The goal is to test your core hypothesis about customer needs.',
         type: 'text',
         duration: 10
       },
       {
         title: 'Identifying Core Features',
-        content: 'Focus on the single most important problem your product solves. Ask: "What is the one thing that, if removed, would make this product useless?" That\'s your core feature.\n\nCore Feature Framework:\n1. List all potential features\n2. Rank by customer impact (1-10)\n3. Rank by implementation difficulty (1-10)\n4. Calculate impact/effort ratio\n5. Start with highest ratio features\n\nThe "Must Have" Test:\n• Would users still pay without this feature?\n• Does this solve the primary problem?\n• Can we validate this assumption quickly?\n\nExample: For Uber, the core feature wasn\'t GPS tracking or ratings - it was "request a ride with one tap." Everything else was enhancement.',
+        content: 'Focus on the single most important problem your product solves. Ask: "What is the one thing that, if removed, would make this product useless?" That\'s your core feature.',
         type: 'text',
         duration: 8
       },
       {
-        title: 'Building vs Buying Decision Framework',
-        content: 'Before writing code, explore no-code solutions, existing tools, or manual processes. Many successful startups began with "fake doors" - testing demand before building.\n\nDecision Matrix:\n\nBuild When:\n• Core differentiator for your business\n• No suitable alternatives exist\n• You have specific requirements\n• Long-term cost savings\n\nBuy/Use Existing When:\n• Non-core functionality\n• Proven solutions available\n• Time to market is critical\n• Limited technical resources\n\nValidation Before Building:\n1. Create landing pages\n2. Manual fulfillment\n3. Wizard of Oz testing\n4. Concierge MVP approach\n\nReal Example: Zappos started by taking photos of shoes in stores and only buying them when customers ordered online.',
+        title: 'Building vs Buying',
+        content: 'Before writing code, explore no-code solutions, existing tools, or manual processes. Many successful startups began with "fake doors" - testing demand before building.',
         type: 'interactive',
         duration: 12
       },
@@ -125,7 +185,7 @@ const enhancedModules: EnhancedLearningModule[] = [
       }
     ],
     resources: [
-      { title: 'The Lean Startup Methodology', url: 'http://theleanstartup.com/principles', type: 'article' },
+      { title: 'The Lean Startup Methodology', url: 'https://leanstartup.co/principles', type: 'article' },
       { title: 'MVP Case Studies Collection', url: 'https://www.ycombinator.com/library/4Q-a-minimum-viable-product-is-not-a-product-it-s-a-process', type: 'article' },
       { title: 'No-Code Tool Directory', url: 'https://www.nocode.tech/tools', type: 'tool' }
     ],
@@ -267,6 +327,74 @@ const enhancedModules: EnhancedLearningModule[] = [
   }
 ];
 
+// Advanced modules (premium content)
+const advancedModules: EnhancedLearningModule[] = [
+  {
+    id: 'funding-mastery',
+    title: 'Funding & Investment Mastery',
+    description: 'Master fundraising, understand investors, and navigate seed rounds successfully.',
+    category: 'finance',
+    difficulty: 'advanced',
+    estimatedTime: 60,
+    points: 50,
+    lessons: [
+      {
+        title: 'Understanding Seed Rounds',
+        content: 'Seed rounds are typically $250K-$2M investments to help you validate product-market fit. Investors want to see traction, team strength, and market potential.',
+        type: 'text',
+        duration: 15
+      },
+      {
+        title: 'Investor Types & Expectations',
+        content: 'Angel investors vs VCs: Angels invest their own money and provide mentorship. VCs invest fund money and expect scalable returns. Each has different expectations and timelines.',
+        type: 'text',
+        duration: 15
+      },
+      {
+        title: 'Pitch Deck Mastery',
+        content: 'A winning pitch deck tells a story: Problem, Solution, Market, Business Model, Traction, Team, Financials, Funding Ask. Keep it to 10-12 slides maximum.',
+        type: 'interactive',
+        duration: 30
+      }
+    ],
+    quizzes: [
+      {
+        question: 'What do seed investors primarily look for?',
+        options: [
+          'Perfect product and profitability',
+          'Strong team and early traction',
+          'Detailed financial projections',
+          'Complete business plan'
+        ],
+        correctAnswer: 1,
+        explanation: 'Seed investors focus on team quality and early signs of traction/product-market fit.',
+        followUp: 'Show momentum rather than perfection at the seed stage.'
+      }
+    ],
+    resources: [
+      { title: 'Fundraising Guide', url: 'https://www.ycombinator.com/library/4A-a-guide-to-seed-fundraising', type: 'article' },
+      { title: 'Pitch Deck Examples', url: 'https://www.alexanderjarvis.com/pitch-deck-collection/', type: 'article' }
+    ],
+    practicalExercises: [
+      'Create a 10-slide pitch deck',
+      'Practice your 2-minute elevator pitch',
+      'Research 10 relevant investors for your industry',
+      'Build a fundraising timeline and strategy'
+    ],
+    unlockRequirement: { type: 'day', value: 30 },
+    icon: TrendingUp,
+    color: { from: 'from-purple-500', to: 'to-pink-600', accent: 'text-purple-600' }
+  }
+];
+
+// Combine all modules based on user's subscription status
+const getAllModules = (isPremium: boolean) => {
+  if (isPremium) {
+    return [...beginnerModules, ...intermediateModules, ...advancedModules];
+  }
+  return beginnerModules;
+};
+
 export default function EnhancedMicroLearning() {
   const [selectedModule, setSelectedModule] = useState<EnhancedLearningModule | null>(null);
   const [completedModules, setCompletedModules] = useLocalStorage<string[]>('enhanced-completed-modules', []);
@@ -275,7 +403,28 @@ export default function EnhancedMicroLearning() {
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
   const [moduleProgress, setModuleProgress] = useLocalStorage<Record<string, number>>('module-progress', {});
+  const [activeExercise, setActiveExercise] = useState<string | null>(null);
+  const [difficulty, setDifficulty] = useState<'beginner' | 'intermediate' | 'advanced'>('beginner');
+  const [isPremium, setIsPremium] = useState(false); // This would come from subscription status
   const { toast } = useToast();
+
+  // Check subscription status on mount
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const response = await fetch('/api/subscription/status');
+        const data = await response.json();
+        setIsPremium(data.subscriptionStatus === 'active' || data.subscriptionStatus === 'trialing');
+      } catch (error) {
+        console.log('Subscription check failed, defaulting to free tier');
+        setIsPremium(false);
+      }
+    };
+    checkSubscription();
+  }, []);
+
+  // Get modules based on subscription status
+  const enhancedModules = getAllModules(isPremium);
 
   const resetQuiz = () => {
     setCurrentQuiz(0);
@@ -388,12 +537,25 @@ export default function EnhancedMicroLearning() {
             const completed = completedModules.includes(module.id);
             const progress = getProgressPercentage(module.id);
             
+            const isPremiumContent = module.difficulty === 'intermediate' || module.difficulty === 'advanced';
+            const canAccess = !isPremiumContent || isPremium;
+            
             return (
-              <Card key={module.id} className={`transition-all hover:shadow-md ${!unlocked ? 'opacity-60' : ''}`}>
+              <Card 
+                key={module.id} 
+                className={`transition-all hover:shadow-md ${!unlocked || !canAccess ? 'opacity-60' : ''} ${
+                  isPremiumContent && !isPremium ? 'border-yellow-300 bg-gradient-to-r from-yellow-50 to-orange-50' : ''
+                }`}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${module.color.from} ${module.color.to}`}>
+                    <div className={`p-2 rounded-lg bg-gradient-to-br ${module.color.from} ${module.color.to} relative`}>
                       <IconComponent className="w-5 h-5 text-white" />
+                      {isPremiumContent && !isPremium && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                          <Star className="w-2 h-2 text-white" />
+                        </div>
+                      )}
                     </div>
                     
                     <div className="flex-1 min-w-0">
@@ -442,12 +604,30 @@ export default function EnhancedMicroLearning() {
                         <DialogTrigger asChild>
                           <Button
                             size="sm"
-                            disabled={!unlocked}
-                            className={`w-full ${completed ? 'bg-green-600 hover:bg-green-700' : `bg-gradient-to-r ${module.color.from} ${module.color.to} hover:opacity-90`}`}
-                            onClick={() => setSelectedModule(module)}
+                            disabled={!unlocked || !canAccess}
+                            className={`w-full ${
+                              !canAccess ? 'bg-yellow-500 hover:bg-yellow-600' :
+                              completed ? 'bg-green-600 hover:bg-green-700' : 
+                              `bg-gradient-to-r ${module.color.from} ${module.color.to} hover:opacity-90`
+                            }`}
+                            onClick={() => {
+                              if (!canAccess) {
+                                toast({
+                                  title: "Premium Content",
+                                  description: "Upgrade to access intermediate and advanced learning modules.",
+                                });
+                                return;
+                              }
+                              setSelectedModule(module);
+                            }}
                             data-testid={`learn-${module.id}`}
                           >
-                            {completed ? (
+                            {!canAccess ? (
+                              <>
+                                <Star className="w-4 h-4 mr-1" />
+                                Upgrade to Access
+                              </>
+                            ) : completed ? (
                               <>
                                 <CheckCircle className="w-4 h-4 mr-1" />
                                 Review
@@ -491,35 +671,134 @@ export default function EnhancedMicroLearning() {
                                               {lesson.duration} min
                                             </Badge>
                                           </div>
-                                          <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{lesson.content}</div>
+                                          <p className="text-sm text-gray-600 leading-relaxed">{lesson.content}</p>
                                           {lesson.type === 'interactive' && (
-                                            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                              <h6 className="font-medium text-blue-900 mb-2">Interactive Exercise</h6>
-                                              <p className="text-sm text-blue-800 mb-3">
-                                                Practice the Build vs Buy decision framework with your own startup idea:
-                                              </p>
-                                              <div className="space-y-2 text-sm">
-                                                <div className="flex items-start gap-2">
-                                                  <span className="font-medium text-blue-900">1.</span>
-                                                  <span>List 3 features you think your product needs</span>
-                                                </div>
-                                                <div className="flex items-start gap-2">
-                                                  <span className="font-medium text-blue-900">2.</span>
-                                                  <span>For each feature, ask: "Build, buy, or validate first?"</span>
-                                                </div>
-                                                <div className="flex items-start gap-2">
-                                                  <span className="font-medium text-blue-900">3.</span>
-                                                  <span>Identify one feature you can test without building</span>
-                                                </div>
-                                              </div>
-                                              <Button size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700" onClick={() => {
-                                                toast({
-                                                  title: "Exercise Started!",
-                                                  description: "Take 5 minutes to work through this framework with your startup idea.",
-                                                });
-                                              }}>
-                                                Start Exercise
+                                            <div className="mt-4">
+                                              <Button 
+                                                size="sm" 
+                                                variant="outline" 
+                                                className="mb-3"
+                                                onClick={() => {
+                                                  setActiveExercise(activeExercise === lesson.title ? null : lesson.title);
+                                                }}
+                                              >
+                                                {activeExercise === lesson.title ? 'Hide Exercise' : 'Try Interactive Exercise'}
                                               </Button>
+                                              
+                                              {activeExercise === lesson.title && (
+                                                <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                  <h6 className="font-medium text-blue-900 mb-2">Interactive Exercise</h6>
+                                                  {lesson.title === 'Role Decision Framework' && (
+                                                    <div className="space-y-3">
+                                                      <p className="text-sm text-blue-800">
+                                                        Use this framework to decide which responsibilities you'll take on:
+                                                      </p>
+                                                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                                        <div className="space-y-2">
+                                                          <h6 className="font-medium text-blue-900">Founder Responsibilities:</h6>
+                                                          <div className="space-y-1">
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Vision & Strategy</span>
+                                                            </label>
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Product Development</span>
+                                                            </label>
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Company Culture</span>
+                                                            </label>
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Initial Funding</span>
+                                                            </label>
+                                                          </div>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                          <h6 className="font-medium text-blue-900">CEO Responsibilities:</h6>
+                                                          <div className="space-y-1">
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Daily Operations</span>
+                                                            </label>
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Team Management</span>
+                                                            </label>
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Investor Relations</span>
+                                                            </label>
+                                                            <label className="flex items-center gap-2">
+                                                              <input type="checkbox" className="text-blue-600" />
+                                                              <span>Financial Management</span>
+                                                            </label>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <Button 
+                                                        size="sm" 
+                                                        className="bg-blue-600 hover:bg-blue-700"
+                                                        onClick={() => {
+                                                          toast({
+                                                            title: "Exercise Complete!",
+                                                            description: "You've identified your key responsibilities. Remember to revisit this as you grow.",
+                                                          });
+                                                        }}
+                                                      >
+                                                        Complete Assessment
+                                                      </Button>
+                                                    </div>
+                                                  )}
+                                                  
+                                                  {lesson.title === 'Building vs Buying' && (
+                                                    <div className="space-y-3">
+                                                      <p className="text-sm text-blue-800 mb-3">
+                                                        Practice the Build vs Buy decision framework:
+                                                      </p>
+                                                      <div className="space-y-3">
+                                                        <div>
+                                                          <label className="block text-sm font-medium text-blue-900 mb-1">
+                                                            Feature to evaluate:
+                                                          </label>
+                                                          <input 
+                                                            type="text" 
+                                                            placeholder="e.g., User authentication system"
+                                                            className="w-full p-2 border rounded text-sm"
+                                                          />
+                                                        </div>
+                                                        <div className="grid grid-cols-3 gap-2 text-xs">
+                                                          <div className="text-center">
+                                                            <div className="font-medium text-blue-900">Build</div>
+                                                            <div className="text-gray-600">Custom control</div>
+                                                          </div>
+                                                          <div className="text-center">
+                                                            <div className="font-medium text-blue-900">Buy</div>
+                                                            <div className="text-gray-600">Fast deployment</div>
+                                                          </div>
+                                                          <div className="text-center">
+                                                            <div className="font-medium text-blue-900">Validate</div>
+                                                            <div className="text-gray-600">Test first</div>
+                                                          </div>
+                                                        </div>
+                                                        <Button 
+                                                          size="sm" 
+                                                          className="bg-blue-600 hover:bg-blue-700"
+                                                          onClick={() => {
+                                                            toast({
+                                                              title: "Great thinking!",
+                                                              description: "Apply this framework to all major decisions.",
+                                                            });
+                                                          }}
+                                                        >
+                                                          Save Decision
+                                                        </Button>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              )}
                                             </div>
                                           )}
                                         </CardContent>

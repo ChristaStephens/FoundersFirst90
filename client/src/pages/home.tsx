@@ -19,6 +19,7 @@ import SkillProgressTracker from '@/components/SkillProgressTracker';
 import OnboardingTour, { useOnboarding } from '@/components/OnboardingTour';
 import EnhancedIntegration from '@/components/EnhancedIntegration';
 import { MicroLearning } from '@/components/MicroLearning';
+import CustomChallenges from '@/components/CustomChallenges';
 import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
@@ -175,6 +176,11 @@ export default function Home() {
       {/* Daily Challenges */}
       <div className="px-4 mb-4">
         <DailyChallenges />
+      </div>
+      
+      {/* Custom Challenges */}
+      <div className="px-4 mb-4">
+        <CustomChallenges />
       </div>
 
       {/* Subscription Status Bar */}

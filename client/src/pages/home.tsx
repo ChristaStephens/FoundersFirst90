@@ -608,7 +608,7 @@ export default function Home() {
   );
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 text-foreground min-h-screen" data-testid="app-container">
+    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 text-foreground min-h-screen mobile-nav-fix" data-testid="app-container">
       {/* Onboarding Tour */}
       <OnboardingTour 
         isVisible={showOnboarding}

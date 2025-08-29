@@ -3,6 +3,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile safe area support */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Ensure proper mobile layout */
+html, body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for mobile navigation */
+@media (max-width: 768px) {
+  .mobile-nav-fix {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 80px);
+  }
+}
+
 :root {
   /* Vibrant Mobile-First Colors inspired by Finch/Office Cat */
   --background: hsl(320, 40%, 97%);

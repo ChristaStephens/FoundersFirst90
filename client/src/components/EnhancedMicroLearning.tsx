@@ -557,7 +557,7 @@ export default function EnhancedMicroLearning() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-[#FF6B35]" />
-          Enhanced Micro-Learning
+          Micro-Learning
         </CardTitle>
         <p className="text-sm text-muted-foreground">
           Comprehensive modules with lessons, quizzes, and practical exercises
@@ -585,9 +585,24 @@ export default function EnhancedMicroLearning() {
           </div>
         </div>
 
+        {/* Difficulty Filter */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {(['beginner', 'intermediate', 'advanced'] as const).map((level) => (
+            <Button
+              key={level}
+              variant={difficulty === level ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDifficulty(level)}
+              className="capitalize"
+            >
+              {level}
+            </Button>
+          ))}
+        </div>
+
         {/* Module Grid */}
         <div className="grid gap-4">
-          {enhancedModules.map((module) => {
+          {enhancedModules.filter(m => m.difficulty === difficulty).map((module) => {
             const IconComponent = module.icon;
             const unlocked = isUnlocked(module);
             const completed = completedModules.includes(module.id);
@@ -662,7 +677,7 @@ export default function EnhancedMicroLearning() {
                         <Button
                             size="sm"
                             disabled={!unlocked || !canAccess}
-                            className={`w-full ${
+                            className={`w-full mt-3 ${
                               !canAccess ? 'bg-yellow-500 hover:bg-yellow-600' :
                               completed ? 'bg-green-600 hover:bg-green-700' : 
                               `bg-gradient-to-r ${module.color.from} ${module.color.to} hover:opacity-90`
@@ -905,6 +920,15 @@ export default function EnhancedMicroLearning() {
             );
           })}
         </div>
+        
+        {/* Empty State */}
+        {enhancedModules.filter(m => m.difficulty === difficulty).length === 0 && (
+          <div className="text-center py-8">
+            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">No modules available for {difficulty} level</p>
+            <p className="text-sm text-gray-500 mt-2">Try selecting a different difficulty level</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

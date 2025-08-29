@@ -75,19 +75,19 @@ const enhancedModules: EnhancedLearningModule[] = [
     lessons: [
       {
         title: 'Understanding MVP Principles',
-        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort. The goal is to test your core hypothesis about customer needs.',
+        content: 'An MVP is not about building a basic version of your product - it\'s about building the smallest version that allows you to learn from customers with minimal effort. The goal is to test your core hypothesis about customer needs.\n\nKey MVP Principles:\n• Start with your riskiest assumption\n• Build only what\'s needed to test that assumption\n• Measure real customer behavior, not opinions\n• Learn fast, iterate faster\n\nCommon MVP Mistakes:\n• Building too many features\n• Perfect polish before testing\n• Ignoring customer feedback\n• Scaling before validation\n\nRemember: An MVP is about learning, not launching. Focus on validated learning over feature completeness.',
         type: 'text',
         duration: 10
       },
       {
         title: 'Identifying Core Features',
-        content: 'Focus on the single most important problem your product solves. Ask: "What is the one thing that, if removed, would make this product useless?" That\'s your core feature.',
+        content: 'Focus on the single most important problem your product solves. Ask: "What is the one thing that, if removed, would make this product useless?" That\'s your core feature.\n\nCore Feature Framework:\n1. List all potential features\n2. Rank by customer impact (1-10)\n3. Rank by implementation difficulty (1-10)\n4. Calculate impact/effort ratio\n5. Start with highest ratio features\n\nThe "Must Have" Test:\n• Would users still pay without this feature?\n• Does this solve the primary problem?\n• Can we validate this assumption quickly?\n\nExample: For Uber, the core feature wasn\'t GPS tracking or ratings - it was "request a ride with one tap." Everything else was enhancement.',
         type: 'text',
         duration: 8
       },
       {
-        title: 'Building vs Buying',
-        content: 'Before writing code, explore no-code solutions, existing tools, or manual processes. Many successful startups began with "fake doors" - testing demand before building.',
+        title: 'Building vs Buying Decision Framework',
+        content: 'Before writing code, explore no-code solutions, existing tools, or manual processes. Many successful startups began with "fake doors" - testing demand before building.\n\nDecision Matrix:\n\nBuild When:\n• Core differentiator for your business\n• No suitable alternatives exist\n• You have specific requirements\n• Long-term cost savings\n\nBuy/Use Existing When:\n• Non-core functionality\n• Proven solutions available\n• Time to market is critical\n• Limited technical resources\n\nValidation Before Building:\n1. Create landing pages\n2. Manual fulfillment\n3. Wizard of Oz testing\n4. Concierge MVP approach\n\nReal Example: Zappos started by taking photos of shoes in stores and only buying them when customers ordered online.',
         type: 'interactive',
         duration: 12
       },
@@ -125,9 +125,9 @@ const enhancedModules: EnhancedLearningModule[] = [
       }
     ],
     resources: [
-      { title: 'The Lean Startup Methodology', url: 'https://theleanstartup.com/', type: 'article' },
-      { title: 'MVP Success Stories', url: 'https://blog.ycombinator.com/mvp-examples/', type: 'video' },
-      { title: 'No-Code MVP Tools', url: 'https://nocode.tech/', type: 'tool' }
+      { title: 'The Lean Startup Methodology', url: 'http://theleanstartup.com/principles', type: 'article' },
+      { title: 'MVP Case Studies Collection', url: 'https://www.ycombinator.com/library/4Q-a-minimum-viable-product-is-not-a-product-it-s-a-process', type: 'article' },
+      { title: 'No-Code Tool Directory', url: 'https://www.nocode.tech/tools', type: 'tool' }
     ],
     practicalExercises: [
       'Define your core value proposition in one sentence',
@@ -189,7 +189,8 @@ const enhancedModules: EnhancedLearningModule[] = [
     ],
     resources: [
       { title: 'Customer Development Guide', url: 'https://steveblank.com/category/customer-development/', type: 'article' },
-      { title: 'Interview Best Practices', url: 'https://www.intercom.com/blog/customer-interview-questions/', type: 'video' }
+      { title: 'Customer Interview Guide', url: 'https://www.ycombinator.com/library/6g-how-to-talk-to-users', type: 'article' },
+      { title: 'User Research Templates', url: 'https://www.figma.com/community/file/1037282699267350863', type: 'tool' }
     ],
     practicalExercises: [
       'Interview 5 potential customers this week',
@@ -250,8 +251,9 @@ const enhancedModules: EnhancedLearningModule[] = [
       }
     ],
     resources: [
-      { title: 'SaaS Metrics Guide', url: 'https://www.forentrepreneurs.com/saas-metrics-2/', type: 'article' },
-      { title: 'Financial Modeling Templates', url: 'https://visible.vc/blog/startup-financial-model/', type: 'tool' }
+      { title: 'SaaS Metrics 2.0 Guide', url: 'https://www.forentrepreneurs.com/saas-metrics-2/', type: 'article' },
+      { title: 'Startup Financial Models', url: 'https://techcrunch.com/2017/06/01/saas-startup-financial-model/', type: 'article' },
+      { title: 'Financial Planning Tools', url: 'https://www.google.com/sheets/about/', type: 'tool' }
     ],
     practicalExercises: [
       'Build a 3-year financial model for your startup',
@@ -489,11 +491,36 @@ export default function EnhancedMicroLearning() {
                                               {lesson.duration} min
                                             </Badge>
                                           </div>
-                                          <p className="text-sm text-gray-600 leading-relaxed">{lesson.content}</p>
+                                          <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{lesson.content}</div>
                                           {lesson.type === 'interactive' && (
-                                            <Button size="sm" variant="outline" className="mt-2">
-                                              Try Interactive Exercise
-                                            </Button>
+                                            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                              <h6 className="font-medium text-blue-900 mb-2">Interactive Exercise</h6>
+                                              <p className="text-sm text-blue-800 mb-3">
+                                                Practice the Build vs Buy decision framework with your own startup idea:
+                                              </p>
+                                              <div className="space-y-2 text-sm">
+                                                <div className="flex items-start gap-2">
+                                                  <span className="font-medium text-blue-900">1.</span>
+                                                  <span>List 3 features you think your product needs</span>
+                                                </div>
+                                                <div className="flex items-start gap-2">
+                                                  <span className="font-medium text-blue-900">2.</span>
+                                                  <span>For each feature, ask: "Build, buy, or validate first?"</span>
+                                                </div>
+                                                <div className="flex items-start gap-2">
+                                                  <span className="font-medium text-blue-900">3.</span>
+                                                  <span>Identify one feature you can test without building</span>
+                                                </div>
+                                              </div>
+                                              <Button size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700" onClick={() => {
+                                                toast({
+                                                  title: "Exercise Started!",
+                                                  description: "Take 5 minutes to work through this framework with your startup idea.",
+                                                });
+                                              }}>
+                                                Start Exercise
+                                              </Button>
+                                            </div>
                                           )}
                                         </CardContent>
                                       </Card>

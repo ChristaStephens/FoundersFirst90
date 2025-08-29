@@ -37,13 +37,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let progress = await storage.getUserProgress(userId);
       if (!progress) {
+        const now = new Date();
         progress = await storage.createUserProgress({
           userId: userId,
           currentDay: 1,
           streak: 0,
           bestStreak: 0,
           buildingLevel: 1,
-          totalCompletedDays: 0
+          totalCompletedDays: 0,
+          journeyStartedAt: now,
+          startDate: now  // Set start date to today when user first initializes
         });
       }
 
@@ -54,6 +57,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error initializing user:', error);
       res.status(500).json({ message: 'Failed to initialize user' });
+    }
+  });
+
+  // Reset journey start date - for when user wants to start fresh
+  app.post('/api/reset-journey', async (req, res) => {
+    try {
+      const userId = await getDemoUserId();
+      if (!userId) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const now = new Date();
+      const updatedProgress = await storage.updateUserProgress(userId, {
+        currentDay: 1,
+        streak: 0,
+        totalCompletedDays: 0,
+        startDate: now,
+        journeyStartedAt: now,
+        lastDayCompletedAt: null,
+        nextDayUnlocksAt: null,
+        updatedAt: now
+      });
+
+      // Clear all completions
+      await storage.clearAllCompletions(userId);
+
+      res.json({ 
+        message: 'Journey reset successfully! Your 90-day journey starts today.',
+        progress: updatedProgress 
+      });
+    } catch (error) {
+      console.error('Error resetting journey:', error);
+      res.status(500).json({ message: 'Failed to reset journey' });
     }
   });
 

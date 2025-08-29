@@ -66,6 +66,7 @@ export interface IStorage {
   getAllDailyCompletions(userId: string): Promise<DailyCompletion[]>;
   createDailyCompletion(completion: InsertDailyCompletion): Promise<DailyCompletion>;
   updateDailyCompletion(userId: string, day: number, updates: Partial<DailyCompletion>): Promise<DailyCompletion>;
+  clearAllCompletions(userId: string): Promise<void>;
   
   // Achievements
   getUserAchievements(userId: string): Promise<UserAchievement[]>;
@@ -185,6 +186,10 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(dailyCompletions.userId, userId), eq(dailyCompletions.day, day)))
       .returning();
     return updatedCompletion;
+  }
+
+  async clearAllCompletions(userId: string): Promise<void> {
+    await db.delete(dailyCompletions).where(eq(dailyCompletions.userId, userId));
   }
 
   // Achievements

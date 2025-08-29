@@ -494,6 +494,42 @@ export default function Home() {
       {/* Journey Section */}
       <Card className="shadow-sm border border-border">
         <CardContent className="p-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">Journey Settings</h2>
+          <div className="space-y-3">
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="font-medium text-blue-800 mb-2">Reset Journey Start Date</h3>
+              <p className="text-sm text-blue-600 mb-3">
+                Start your 90-day journey fresh from today. This will reset your progress and set today as day 1.
+              </p>
+              <Button
+                onClick={() => {
+                  if (confirm('Are you sure you want to reset your journey? This will clear all progress and start fresh from today.')) {
+                    fetch('/api/reset-journey', { method: 'POST' })
+                      .then(res => res.json())
+                      .then(data => {
+                        alert('Journey reset successfully! Your 90-day journey starts today.');
+                        window.location.reload();
+                      })
+                      .catch(error => {
+                        alert('Failed to reset journey. Please try again.');
+                      });
+                  }
+                }}
+                variant="outline"
+                size="sm"
+                className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                data-testid="reset-journey-button"
+              >
+                Reset Journey Start Date
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Journey Stats */}
+      <Card className="shadow-sm border border-border">
+        <CardContent className="p-4">
           <h2 className="text-lg font-bold text-foreground mb-4">Your Journey</h2>
           <div className="space-y-3">
             <div className="flex justify-between items-center">

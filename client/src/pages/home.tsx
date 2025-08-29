@@ -158,6 +158,32 @@ export default function Home() {
     });
   };
 
+  const getMotivationalQuote = (day: number) => {
+    const quotes = [
+      "Every expert was once a beginner. Every pro was once an amateur.", // Days 1-5
+      "The journey of a thousand miles begins with one step.", // Days 6-10
+      "Success is not final, failure is not fatal: it is the courage to continue that counts.", // Days 11-15
+      "Don't watch the clock; do what it does. Keep going.", // Days 16-20
+      "The future depends on what you do today.", // Days 21-25
+      "Great things never come from comfort zones.", // Days 26-30
+      "Success is the sum of small efforts repeated day-in and day-out.", // Days 31-35
+      "The only impossible journey is the one you never begin.", // Days 36-40
+      "Your limitation—it's only your imagination.", // Days 41-45
+      "Push yourself, because no one else is going to do it for you.", // Days 46-50
+      "Sometimes later becomes never. Do it now.", // Days 51-55
+      "Dream it. Wish it. Do it.", // Days 56-60
+      "Success doesn't just find you. You have to go out and get it.", // Days 61-65
+      "The harder you work for something, the greater you'll feel when you achieve it.", // Days 66-70
+      "Don't stop when you're tired. Stop when you're done.", // Days 71-75
+      "Wake up with determination. Go to bed with satisfaction.", // Days 76-80
+      "Do something today that your future self will thank you for.", // Days 81-85
+      "You are closer than you think. Keep pushing forward.", // Days 86-90
+    ];
+    
+    const quoteIndex = Math.floor((day - 1) / 5);
+    return quotes[Math.min(quoteIndex, quotes.length - 1)];
+  };
+
   const getProgressPercentage = () => {
     return Math.round((progress.totalCompletedDays / 90) * 100);
   };
@@ -327,11 +353,7 @@ export default function Home() {
       <div className="p-4">
         <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 text-center">
           <p className="text-sm text-foreground font-medium mb-1">
-            {progress.currentDay <= 30 
-              ? "Every expert was once a beginner. Every pro was once an amateur." 
-              : progress.currentDay <= 60 
-              ? "Success is the sum of small efforts repeated day-in and day-out."
-              : "You are closer than you think. Keep pushing forward."}
+            {getMotivationalQuote(progress.currentDay)}
           </p>
           <p className="text-xs text-muted-foreground">- Daily Motivation</p>
         </div>

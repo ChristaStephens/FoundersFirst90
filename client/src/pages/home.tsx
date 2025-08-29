@@ -24,6 +24,7 @@ import EnhancedMicroLearning from '@/components/EnhancedMicroLearning';
 import { FinancialGoalWizard } from '@/components/FinancialGoalWizard';
 import { EndDayDialog } from '@/components/EndDayDialog';
 import { TimeLockDisplay } from '@/components/TimeLockDisplay';
+import { BetaEmailCollector } from '@/components/BetaEmailCollector';
 import { useProgress, useLocalProgress } from '@/hooks/use-progress';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -47,6 +48,11 @@ export default function Home() {
   // User settings state
   const [showTestingPanel, setShowTestingPanel] = useState(false);
   const [testingCode, setTestingCode] = useState('');
+  const [isBetaMode, setIsBetaMode] = useState(
+    localStorage.getItem('founderBetaMode') === 'true'
+  );
+  const [showBetaEmailCollector, setShowBetaEmailCollector] = useState(false);
+  const [betaEmail, setBetaEmail] = useState('');
   const [userName, setUserName] = useState(
     localStorage.getItem('founderUserName') || 'Founder'
   );
@@ -54,6 +60,13 @@ export default function Home() {
   const [tempName, setTempName] = useState(userName);
   const [showEndDayDialog, setShowEndDayDialog] = useState(false);
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
+  
+  // Check for beta mode on app load and show email collector if needed
+  useEffect(() => {
+    if (isBetaMode && !localStorage.getItem('founderBetaEmail') && !showBetaEmailCollector) {
+      setShowBetaEmailCollector(true);
+    }
+  }, [isBetaMode, showBetaEmailCollector]);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDay, setCelebratedDay] = useState(0);
   const [showMilestonePrompt, setShowMilestonePrompt] = useState(false);
@@ -425,6 +438,23 @@ export default function Home() {
     }
   };
 
+  // Handle beta mode
+  const toggleBetaMode = () => {
+    const newBetaMode = !isBetaMode;
+    setIsBetaMode(newBetaMode);
+    localStorage.setItem('founderBetaMode', newBetaMode.toString());
+    
+    if (newBetaMode && !localStorage.getItem('founderBetaEmail')) {
+      setShowBetaEmailCollector(true);
+    }
+  };
+
+  const handleBetaEmailSubmit = async (email: string) => {
+    setBetaEmail(email);
+    // In a real app, this would send to your backend
+    console.log('Beta email submitted:', email);
+  };
+
   const handleNameSave = () => {
     if (tempName.trim()) {
       setUserName(tempName.trim());
@@ -665,6 +695,104 @@ export default function Home() {
                 <span className="text-xs text-gray-400">Coming Soon</span>
               </div>
             </button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Beta Testing Section */}
+      <Card className="shadow-sm border border-orange-200 bg-orange-50/50">
+        <CardContent className="p-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">🧪 Beta Testing</h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Beta Mode</p>
+                <p className="text-xs text-muted-foreground">
+                  Enable beta features and feedback collection
+                </p>
+              </div>
+              <Button
+                onClick={toggleBetaMode}
+                variant={isBetaMode ? "default" : "outline"}
+                size="sm"
+                className={isBetaMode ? "bg-orange-500 hover:bg-orange-600" : ""}
+                data-testid="toggle-beta-mode"
+              >
+                {isBetaMode ? 'Beta ON' : 'Enable Beta'}
+              </Button>
+            </div>
+            
+            {isBetaMode && (
+              <>
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <h3 className="font-medium text-blue-800 mb-2">📝 Submit Feedback</h3>
+                  <p className="text-sm text-blue-600 mb-3">
+                    Help us improve! Report bugs, request features, or share your experience.
+                  </p>
+                  <textarea
+                    placeholder="What would you like to share? Feature requests, bugs, or general feedback..."
+                    className="w-full p-3 text-sm border border-blue-200 rounded-lg resize-none"
+                    rows={3}
+                    data-testid="beta-feedback-input"
+                  />
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      size="sm"
+                      className="bg-blue-500 hover:bg-blue-600 text-white"
+                      onClick={() => {
+                        const textarea = document.querySelector('[data-testid="beta-feedback-input"]') as HTMLTextAreaElement;
+                        if (textarea?.value.trim()) {
+                          // Store feedback locally for beta testing
+                          const feedback = {
+                            message: textarea.value,
+                            timestamp: new Date().toISOString(),
+                            userAgent: navigator.userAgent
+                          };
+                          const existingFeedback = JSON.parse(localStorage.getItem('founderBetaFeedback') || '[]');
+                          existingFeedback.push(feedback);
+                          localStorage.setItem('founderBetaFeedback', JSON.stringify(existingFeedback));
+                          
+                          alert('Thank you for your feedback! It has been recorded for review.');
+                          textarea.value = '';
+                        }
+                      }}
+                      data-testid="submit-beta-feedback"
+                    >
+                      Submit Feedback
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        const feedbackData = localStorage.getItem('founderBetaFeedback');
+                        if (feedbackData) {
+                          const blob = new Blob([feedbackData], { type: 'application/json' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'beta-feedback.json';
+                          a.click();
+                          URL.revokeObjectURL(url);
+                        }
+                      }}
+                      data-testid="export-beta-feedback"
+                    >
+                      Export All Feedback
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                  <h3 className="font-medium text-green-800 mb-1">✅ Beta Tester Benefits</h3>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Early access to new features</li>
+                    <li>• Direct influence on development</li>
+                    <li>• Free premium access during beta</li>
+                    <li>• Special badge when we launch</li>
+                  </ul>
+                </div>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -970,6 +1098,8 @@ export default function Home() {
         }} 
       />
       
+
+      
       {/* Celebration Modal */}
       {showCelebration && (
         <CompletionCelebration
@@ -992,6 +1122,13 @@ export default function Home() {
         isOpen={showEndDayDialog}
         onClose={() => setShowEndDayDialog(false)}
         currentDay={progress?.currentDay || 1}
+      />
+
+      {/* Beta Email Collector */}
+      <BetaEmailCollector
+        isOpen={showBetaEmailCollector}
+        onClose={() => setShowBetaEmailCollector(false)}
+        onEmailSubmit={handleBetaEmailSubmit}
       />
     </div>
   );

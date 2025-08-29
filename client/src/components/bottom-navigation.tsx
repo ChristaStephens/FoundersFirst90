@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface BottomNavigationProps {
   activeTab: string;
@@ -25,8 +26,22 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     setTimeout(() => setClickedTab(null), 600);
   };
 
+  const isBetaMode = localStorage.getItem('founderBetaMode') === 'true';
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg safe-area-inset-bottom">
+      {/* Beta Indicator */}
+      {isBetaMode && (
+        <div className="text-center py-1 bg-orange-50 border-b border-orange-200">
+          <div className="text-xs text-gray-600">
+            "Success is not final, failure is not fatal: it is the courage to continue that counts."
+            <Badge className="ml-2 bg-orange-500 text-white text-xs px-2 py-0.5">
+              Beta
+            </Badge>
+          </div>
+        </div>
+      )}
+      
       <div className="w-full max-w-md mx-auto px-1 pb-safe">
         <div className="flex justify-around items-center py-2 px-2">
           {tabs.map((tab, index) => {

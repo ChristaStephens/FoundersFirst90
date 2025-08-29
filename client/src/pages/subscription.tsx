@@ -249,6 +249,21 @@ export default function SubscriptionPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-orange-50 p-4">
         <div className="max-w-md mx-auto pt-8">
+          {/* Back Button */}
+          <div className="mb-6">
+            <button 
+              onClick={() => {
+                setShowPayment(false);
+                setClientSecret('');
+              }}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              data-testid="back-to-pricing"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Pricing
+            </button>
+          </div>
+          
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="flex items-center gap-2 justify-center">

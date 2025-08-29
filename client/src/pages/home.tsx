@@ -189,9 +189,9 @@ export default function Home() {
   };
 
   const renderTodayTab = () => (
-    <div className="animate-fadeIn pb-4">
+    <div className="animate-fadeIn pb-4 space-y-4">
       {/* Enhanced Progress Overview */}
-      <div className="p-4">
+      <div>
         <EnhancedProgressBar 
           currentDay={progress.currentDay}
           totalDays={90}
@@ -201,18 +201,18 @@ export default function Home() {
       </div>
 
       {/* Daily Challenges */}
-      <div className="px-4 mb-4">
+      <div>
         <DailyChallenges />
       </div>
       
       {/* Custom Challenges */}
-      <div className="px-4 mb-4">
+      <div>
         <CustomChallenges />
       </div>
 
       {/* Subscription Status Bar */}
       {isTrialing && subscriptionData?.trialEndsAt && (
-        <div className="mx-4 mb-4">
+        <div>
           <Card className="border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
@@ -240,7 +240,7 @@ export default function Home() {
       )}
 
       {/* Today's Mission */}
-      <div className="p-4">
+      <div>
         {needsUpgrade ? (
           <Card className="shadow-lg border-2 border-[#FF6B35]/20 bg-gradient-to-br from-[#FF6B35]/5 to-purple-500/5">
             <CardContent className="p-8 text-center">
@@ -328,7 +328,7 @@ export default function Home() {
       )}
 
       {/* Daily Notes */}
-      <div className="p-4">
+      <div>
         <DailyNotes
           day={progress.currentDay}
           notes={currentNotes}
@@ -342,7 +342,7 @@ export default function Home() {
       </div>
 
       {/* Building Progress */}
-      <div className="p-4">
+      <div>
         <BuildingProgress 
           level={progress.buildingLevel}
           completedDays={progress.totalCompletedDays}
@@ -350,7 +350,7 @@ export default function Home() {
       </div>
 
       {/* Motivational Quote */}
-      <div className="p-4">
+      <div>
         <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 text-center">
           <p className="text-sm text-foreground font-medium mb-1">
             {getMotivationalQuote(progress.currentDay)}
@@ -362,7 +362,7 @@ export default function Home() {
   );
 
   const renderProgressTab = () => (
-    <div className="animate-fadeIn p-4 space-y-4">
+    <div className="animate-fadeIn space-y-4">
       <BuildingProgress 
         level={progress.buildingLevel}
         completedDays={progress.totalCompletedDays}
@@ -380,7 +380,7 @@ export default function Home() {
   );
 
   const renderStartupTab = () => (
-    <div className="animate-fadeIn p-4 space-y-6" data-testid="startup-building">
+    <div className="animate-fadeIn space-y-6" data-testid="startup-building">
       <EnhancedIntegration />
       <InteractiveBuilding />
       <SkillProgressTracker />
@@ -389,13 +389,13 @@ export default function Home() {
   );
 
   const renderLearningTab = () => (
-    <div className="animate-fadeIn p-4 space-y-4">
+    <div className="animate-fadeIn space-y-4">
       <EnhancedMicroLearning />
     </div>
   );
 
   const renderSettingsTab = () => (
-    <div className="animate-fadeIn p-4 space-y-4">
+    <div className="animate-fadeIn space-y-4">
       {/* Profile Section */}
       <Card className="shadow-sm border border-border">
         <CardContent className="p-4">
@@ -670,9 +670,9 @@ export default function Home() {
       </div>
 
       {/* Main Content with Colorful Tabs */}
-      <main className="max-w-md mx-auto pb-24">
+      <main className="max-w-md mx-auto pb-24 px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mx-4 mb-4 bg-white border border-purple-200 rounded-xl p-1 shadow-lg" data-testid="tab-navigation">
+          <TabsList className="grid w-full grid-cols-5 mb-4 bg-white border border-purple-200 rounded-xl p-1 shadow-lg" data-testid="tab-navigation">
             <TabsTrigger 
               value="today" 
               className="group relative data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-purple-600 data-[state=active]:text-white rounded-lg text-xs transition-all duration-300 hover:scale-105 hover-lift" 

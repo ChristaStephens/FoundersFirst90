@@ -41,12 +41,29 @@ export function BetaEmailCollector({ isOpen, onClose, onEmailSubmit }: BetaEmail
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-8 h-8 text-green-600" />
+            <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-10 h-10 text-white animate-pulse" />
             </div>
-            <h2 className="text-xl font-bold text-green-800 mb-2">Welcome to the Beta!</h2>
-            <p className="text-green-600">
-              You're now part of our exclusive beta testing community. Let's build something amazing together!
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">🎉 You're In!</h2>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+              <p className="text-green-800 font-medium mb-2">
+                Welcome to the Founder's First 90 Beta!
+              </p>
+              <p className="text-green-700 text-sm">
+                You're now part of our exclusive community of early entrepreneurs. 
+                Your feedback will help shape the future of startup education.
+              </p>
+            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <p className="text-blue-800 text-sm font-medium mb-1">What's Next?</p>
+              <ul className="text-blue-700 text-xs text-left space-y-1">
+                <li>• Start your 90-day entrepreneurship journey</li>
+                <li>• Share feedback in the Settings tab</li>
+                <li>• Help us build something amazing together</li>
+              </ul>
+            </div>
+            <p className="text-xs text-gray-500">
+              Ready to begin your founder journey? Let's go!
             </p>
           </CardContent>
         </Card>

@@ -48,10 +48,13 @@ export default function Home() {
   // User settings state
   const [showTestingPanel, setShowTestingPanel] = useState(false);
   const [testingCode, setTestingCode] = useState('');
+  // Beta mode is ON by default, can only be disabled by dev team
   const [isBetaMode, setIsBetaMode] = useState(
-    localStorage.getItem('founderBetaMode') === 'true'
+    localStorage.getItem('founderBetaMode') !== 'false' // Default to true unless explicitly disabled
   );
-  const [showBetaEmailCollector, setShowBetaEmailCollector] = useState(false);
+  const [showBetaEmailCollector, setShowBetaEmailCollector] = useState(
+    !localStorage.getItem('founderBetaEmail') && localStorage.getItem('founderBetaMode') !== 'false'
+  );
   const [betaEmail, setBetaEmail] = useState('');
   const [userName, setUserName] = useState(
     localStorage.getItem('founderUserName') || 'Founder'
@@ -61,12 +64,19 @@ export default function Home() {
   const [showEndDayDialog, setShowEndDayDialog] = useState(false);
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
   
-  // Check for beta mode on app load and show email collector if needed
+  // Initialize beta mode and email collector on app load
   useEffect(() => {
-    if (isBetaMode && !localStorage.getItem('founderBetaEmail') && !showBetaEmailCollector) {
+    // Set beta mode to true by default if not explicitly set
+    if (!localStorage.getItem('founderBetaMode')) {
+      localStorage.setItem('founderBetaMode', 'true');
+      setIsBetaMode(true);
+    }
+    
+    // Show email collector if no email is stored and beta mode is enabled
+    if (isBetaMode && !localStorage.getItem('founderBetaEmail')) {
       setShowBetaEmailCollector(true);
     }
-  }, [isBetaMode, showBetaEmailCollector]);
+  }, []);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDay, setCelebratedDay] = useState(0);
   const [showMilestonePrompt, setShowMilestonePrompt] = useState(false);
@@ -438,8 +448,13 @@ export default function Home() {
     }
   };
 
-  // Handle beta mode
+  // Handle beta mode (only allow disabling with dev code)
   const toggleBetaMode = () => {
+    if (isBetaMode && !showTestingPanel) {
+      alert('Beta mode can only be disabled by the development team.');
+      return;
+    }
+    
     const newBetaMode = !isBetaMode;
     setIsBetaMode(newBetaMode);
     localStorage.setItem('founderBetaMode', newBetaMode.toString());
@@ -451,7 +466,16 @@ export default function Home() {
 
   const handleBetaEmailSubmit = async (email: string) => {
     setBetaEmail(email);
-    // In a real app, this would send to your backend
+    // Store the email and add to beta tester list
+    const betaEmails = JSON.parse(localStorage.getItem('founderBetaEmails') || '[]');
+    const emailEntry = {
+      email: email.toLowerCase(),
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    };
+    betaEmails.push(emailEntry);
+    localStorage.setItem('founderBetaEmails', JSON.stringify(betaEmails));
+    
     console.log('Beta email submitted:', email);
   };
 
@@ -884,7 +908,46 @@ export default function Home() {
               Free Trial
             </button>
           </div>
-          <div className="mt-3 pt-3 border-t border-gray-200">
+          <div className="mt-3 pt-3 border-t border-gray-200 space-y-2">
+            <div className="p-2 bg-blue-50 rounded border border-blue-200">
+              <h4 className="font-medium text-blue-800 text-xs mb-1">📧 Beta Email Collection</h4>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-xs"
+                  onClick={() => {
+                    const emails = JSON.parse(localStorage.getItem('founderBetaEmails') || '[]');
+                    const emailList = emails.map((entry: any) => 
+                      `${entry.email} (${new Date(entry.timestamp).toLocaleDateString()})`
+                    ).join('\n');
+                    alert(emailList || 'No beta emails collected yet.');
+                  }}
+                  data-testid="view-beta-emails"
+                >
+                  View ({JSON.parse(localStorage.getItem('founderBetaEmails') || '[]').length})
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-blue-500 hover:bg-blue-600 text-white text-xs"
+                  onClick={() => {
+                    const emails = localStorage.getItem('founderBetaEmails');
+                    if (emails) {
+                      const blob = new Blob([emails], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'beta-emails.json';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }
+                  }}
+                  data-testid="export-beta-emails"
+                >
+                  Export
+                </Button>
+              </div>
+            </div>
             <button 
               onClick={() => {
                 // Clear all test data

@@ -27,8 +27,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
-      <div className="w-full">
-        <div className="flex justify-evenly items-center py-3 px-2">
+      <div className="max-w-md mx-auto w-full">
+        <div className="flex justify-evenly items-center py-3 px-4">
           {tabs.map((tab, index) => {
             const isActive = activeTab === tab.id;
             const isClicked = clickedTab === tab.id;

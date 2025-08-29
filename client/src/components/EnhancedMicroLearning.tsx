@@ -619,7 +619,8 @@ export default function EnhancedMicroLearning() {
                 }`}
               >
                 <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
+                  <div className="flex flex-col space-y-4">
+                    <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg bg-gradient-to-br ${module.color.from} ${module.color.to} relative`}>
                       <IconComponent className="w-5 h-5 text-white" />
                       {isPremiumContent && !isPremium && (
@@ -671,6 +672,7 @@ export default function EnhancedMicroLearning() {
                         </p>
                       )}
                     </div>
+                  </div>
                     
                     <Dialog>
                       <DialogTrigger asChild>

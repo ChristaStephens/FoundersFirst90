@@ -655,10 +655,11 @@ export default function EnhancedMicroLearning() {
                           Unlock: {module.unlockRequirement.value} {module.unlockRequirement.type.replace('_', ' ')}
                         </p>
                       )}
-                      
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
+                    </div>
+                    
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
                             size="sm"
                             disabled={!unlocked || !canAccess}
                             className={`w-full ${
@@ -717,291 +718,187 @@ export default function EnhancedMicroLearning() {
                                     <BookOpen className="w-5 h-5" />
                                     Lessons ({selectedModule.lessons.length})
                                   </h3>
-                                  <div className="space-y-3">
+                                  <div className="space-y-6">
                                     {selectedModule.lessons.map((lesson, index) => (
-                                      <Card key={index} className="border-l-4 border-l-blue-500">
-                                        <CardContent className="p-4">
-                                          <div className="flex justify-between items-start mb-2">
-                                            <h5 className="font-medium">{lesson.title}</h5>
-                                            <Badge variant="outline" className="text-xs">
-                                              {lesson.duration} min
-                                            </Badge>
-                                          </div>
-                                          <p className="text-sm text-gray-600 leading-relaxed">{lesson.content}</p>
-                                          {lesson.type === 'interactive' && (
-                                            <div className="mt-4">
-                                              <Button 
-                                                size="sm" 
-                                                variant="outline" 
-                                                className="mb-3"
-                                                onClick={() => {
-                                                  setActiveExercise(activeExercise === lesson.title ? null : lesson.title);
-                                                }}
-                                              >
-                                                {activeExercise === lesson.title ? 'Hide Exercise' : 'Try Interactive Exercise'}
-                                              </Button>
-                                              
-                                              {activeExercise === lesson.title && (
-                                                <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                                  <h6 className="font-medium text-blue-900 mb-2">Interactive Exercise</h6>
-                                                  {lesson.title === 'Role Decision Framework' && (
-                                                    <div className="space-y-3">
-                                                      <p className="text-sm text-blue-800">
-                                                        Use this framework to decide which responsibilities you'll take on:
-                                                      </p>
-                                                      <div className="grid md:grid-cols-2 gap-4 text-sm">
-                                                        <div className="space-y-2">
-                                                          <h6 className="font-medium text-blue-900">Founder Responsibilities:</h6>
-                                                          <div className="space-y-1">
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Vision & Strategy</span>
-                                                            </label>
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Product Development</span>
-                                                            </label>
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Company Culture</span>
-                                                            </label>
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Initial Funding</span>
-                                                            </label>
-                                                          </div>
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                          <h6 className="font-medium text-blue-900">CEO Responsibilities:</h6>
-                                                          <div className="space-y-1">
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Daily Operations</span>
-                                                            </label>
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Team Management</span>
-                                                            </label>
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Investor Relations</span>
-                                                            </label>
-                                                            <label className="flex items-center gap-2">
-                                                              <input type="checkbox" className="text-blue-600" />
-                                                              <span>Financial Management</span>
-                                                            </label>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                      <Button 
-                                                        size="sm" 
-                                                        className="bg-blue-600 hover:bg-blue-700"
-                                                        onClick={() => {
-                                                          toast({
-                                                            title: "Exercise Complete!",
-                                                            description: "You've identified your key responsibilities. Remember to revisit this as you grow.",
-                                                          });
-                                                        }}
-                                                      >
-                                                        Complete Assessment
-                                                      </Button>
-                                                    </div>
-                                                  )}
-                                                  
-                                                  {lesson.title === 'Building vs Buying' && (
-                                                    <div className="space-y-3">
-                                                      <p className="text-sm text-blue-800 mb-3">
-                                                        Practice the Build vs Buy decision framework:
-                                                      </p>
-                                                      <div className="space-y-3">
-                                                        <div>
-                                                          <label className="block text-sm font-medium text-blue-900 mb-1">
-                                                            Feature to evaluate:
-                                                          </label>
-                                                          <input 
-                                                            type="text" 
-                                                            placeholder="e.g., User authentication system"
-                                                            className="w-full p-2 border rounded text-sm"
-                                                          />
-                                                        </div>
-                                                        <div className="grid grid-cols-3 gap-2 text-xs">
-                                                          <div className="text-center">
-                                                            <div className="font-medium text-blue-900">Build</div>
-                                                            <div className="text-gray-600">Custom control</div>
-                                                          </div>
-                                                          <div className="text-center">
-                                                            <div className="font-medium text-blue-900">Buy</div>
-                                                            <div className="text-gray-600">Fast deployment</div>
-                                                          </div>
-                                                          <div className="text-center">
-                                                            <div className="font-medium text-blue-900">Validate</div>
-                                                            <div className="text-gray-600">Test first</div>
-                                                          </div>
-                                                        </div>
-                                                        <Button 
-                                                          size="sm" 
-                                                          className="bg-blue-600 hover:bg-blue-700"
-                                                          onClick={() => {
-                                                            toast({
-                                                              title: "Great thinking!",
-                                                              description: "Apply this framework to all major decisions.",
-                                                            });
-                                                          }}
-                                                        >
-                                                          Save Decision
-                                                        </Button>
-                                                      </div>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              )}
+                                      <div key={index} className="space-y-4">
+                                        <Card className="p-6">
+                                          <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                                              {index + 1}
                                             </div>
-                                          )}
-                                        </CardContent>
-                                      </Card>
+                                            <div className="flex-1">
+                                              <h4 className="text-lg font-semibold">{lesson.title}</h4>
+                                              <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <Clock className="w-4 h-4" />
+                                                {lesson.duration} min read
+                                              </div>
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="prose prose-sm max-w-none">
+                                            {lesson.content.split('\n').map((line, pIndex) => {
+                                              if (line.startsWith('## ')) {
+                                                return <h3 key={pIndex} className="text-lg font-semibold mt-6 mb-3 text-gray-800">{line.replace('## ', '')}</h3>;
+                                              } else if (line.startsWith('### ')) {
+                                                return <h4 key={pIndex} className="text-base font-medium mt-4 mb-2 text-gray-700">{line.replace('### ', '')}</h4>;
+                                              } else if (line.startsWith('**') && line.endsWith('**')) {
+                                                return <p key={pIndex} className="font-semibold mb-2 text-gray-800">{line.replace(/\*\*/g, '')}</p>;
+                                              } else if (line.startsWith('❌') || line.startsWith('✅')) {
+                                                return <p key={pIndex} className="mb-2 pl-2">{line}</p>;
+                                              } else if (line.startsWith('•')) {
+                                                return <p key={pIndex} className="mb-1 ml-4">{line}</p>;
+                                              } else if (line.trim()) {
+                                                return <p key={pIndex} className="mb-3 text-gray-700">{line}</p>;
+                                              }
+                                              return null;
+                                            })}
+                                          </div>
+                                        </Card>
+                                        
+                                        {/* Mini Quiz after each lesson */}
+                                        {lesson.miniQuiz && (
+                                          <Card className="p-4 bg-blue-50 border-blue-200">
+                                            <div className="flex items-center gap-2 mb-3">
+                                              <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                                                <span className="text-white text-xs font-bold">?</span>
+                                              </div>
+                                              <h5 className="font-medium text-blue-800">Knowledge Check</h5>
+                                            </div>
+                                            
+                                            <div className="space-y-3">
+                                              <p className="font-medium text-gray-800">{lesson.miniQuiz.question}</p>
+                                              
+                                              <div className="space-y-2">
+                                                {lesson.miniQuiz.options.map((option, optIndex) => (
+                                                  <button
+                                                    key={optIndex}
+                                                    className="w-full text-left p-3 rounded-lg border hover:bg-blue-100 transition-colors"
+                                                    onClick={() => {
+                                                      if (optIndex === lesson.miniQuiz!.correctAnswer) {
+                                                        toast({
+                                                          title: "Correct! ✓",
+                                                          description: lesson.miniQuiz!.explanation,
+                                                        });
+                                                      } else {
+                                                        toast({
+                                                          title: "Try again",
+                                                          description: `Hint: ${lesson.miniQuiz!.explanation}`,
+                                                          variant: "destructive",
+                                                        });
+                                                      }
+                                                    }}
+                                                  >
+                                                    <span className="font-medium mr-2">{String.fromCharCode(65 + optIndex)}.</span>
+                                                    {option}
+                                                  </button>
+                                                ))}
+                                              </div>
+                                            </div>
+                                          </Card>
+                                        )}
+                                      </div>
                                     ))}
                                   </div>
                                 </div>
 
-                                {/* Resources Section */}
+                                {/* Section Quiz */}
                                 <div>
-                                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                                    <Lightbulb className="w-4 h-4" />
-                                    Resources
-                                  </h4>
-                                  <div className="grid gap-2">
-                                    {selectedModule.resources.map((resource, index) => (
-                                      <button 
-                                        key={index} 
-                                        className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded text-sm hover:bg-gray-100 transition-colors cursor-pointer"
-                                        onClick={() => openResource(resource)}
-                                        data-testid={`resource-${index}`}
-                                      >
-                                        {resource.type === 'video' && <PlayCircle className="w-4 h-4 text-red-600" />}
-                                        {resource.type === 'article' && <BookOpen className="w-4 h-4 text-blue-600" />}
-                                        {resource.type === 'tool' && <Lightbulb className="w-4 h-4 text-yellow-600" />}
-                                        <span className="flex-1 text-left">{resource.title}</span>
-                                        <ChevronRight className="w-3 h-3 text-gray-400" />
-                                      </button>
+                                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <Award className="w-5 h-5" />
+                                    Section Quiz ({selectedModule.quizzes.length} questions)
+                                  </h3>
+                                  
+                                  <div className="space-y-4">
+                                    {selectedModule.quizzes.map((quiz, index) => (
+                                      <Card key={index} className="p-4">
+                                        <div className="space-y-4">
+                                          <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                                              {index + 1}
+                                            </div>
+                                            <p className="font-medium">{quiz.question}</p>
+                                          </div>
+                                          
+                                          <div className="space-y-2 ml-8">
+                                            {quiz.options.map((option, optIndex) => (
+                                              <button
+                                                key={optIndex}
+                                                className="w-full text-left p-3 rounded-lg border hover:bg-purple-50 transition-colors"
+                                                onClick={() => {
+                                                  if (optIndex === quiz.correctAnswer) {
+                                                    toast({
+                                                      title: "Correct! ✓",
+                                                      description: quiz.explanation,
+                                                    });
+                                                  } else {
+                                                    toast({
+                                                      title: "Try again",
+                                                      description: `Hint: ${quiz.explanation}`,
+                                                      variant: "destructive",
+                                                    });
+                                                  }
+                                                }}
+                                              >
+                                                <span className="font-medium mr-2">{String.fromCharCode(65 + optIndex)}.</span>
+                                                {option}
+                                              </button>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      </Card>
                                     ))}
                                   </div>
                                 </div>
 
                                 {/* Practical Exercises */}
                                 <div>
-                                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                                    <Target className="w-4 h-4" />
+                                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <Target className="w-5 h-5" />
                                     Practical Exercises
-                                  </h4>
-                                  <div className="space-y-2">
+                                  </h3>
+                                  
+                                  <div className="space-y-3">
                                     {selectedModule.practicalExercises.map((exercise, index) => (
-                                      <div key={index} className="flex items-start gap-2 p-2 bg-gray-50 rounded">
-                                        <Target className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                                        <span className="text-sm">{exercise}</span>
-                                      </div>
+                                      <Card key={index} className="p-4 bg-green-50 border-green-200">
+                                        <div className="flex items-start gap-3">
+                                          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">
+                                            {index + 1}
+                                          </div>
+                                          <p className="text-sm text-green-800 flex-1">{exercise}</p>
+                                        </div>
+                                      </Card>
                                     ))}
                                   </div>
                                 </div>
 
-                                {/* Quiz Section */}
-                                {selectedModule.quizzes.length > 0 && (
-                                  <div>
-                                    <div className="flex items-center justify-between mb-3">
-                                      <h4 className="font-semibold flex items-center gap-2">
-                                        <Award className="w-4 h-4" />
-                                        Knowledge Check ({selectedModule.quizzes.length} questions)
-                                      </h4>
-                                      {showResults && (
-                                        <Button size="sm" variant="outline" onClick={resetQuiz}>
-                                          <RefreshCw className="w-4 h-4 mr-1" />
-                                          Retry Quiz
-                                        </Button>
-                                      )}
-                                    </div>
-                                    
-                                    {!showResults ? (
-                                      <div className="space-y-4">
-                                        {selectedModule.quizzes.map((quiz, qIndex) => (
-                                          <Card key={qIndex} className="border-l-4 border-l-purple-500">
-                                            <CardContent className="p-4">
-                                              <h5 className="font-medium mb-3">
-                                                Question {qIndex + 1}: {quiz.question}
-                                              </h5>
-                                              <div className="space-y-2">
-                                                {quiz.options.map((option, oIndex) => (
-                                                  <label key={oIndex} className="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer">
-                                                    <input
-                                                      type="radio"
-                                                      name={`quiz-${qIndex}`}
-                                                      value={oIndex}
-                                                      checked={quizAnswers[qIndex] === oIndex}
-                                                      onChange={() => handleQuizAnswer(qIndex, oIndex)}
-                                                    />
-                                                    <span className="text-sm">{option}</span>
-                                                  </label>
-                                                ))}
-                                              </div>
-                                            </CardContent>
-                                          </Card>
-                                        ))}
-                                        
-                                        <Button 
-                                          onClick={submitQuiz}
-                                          disabled={Object.keys(quizAnswers).length < selectedModule.quizzes.length}
-                                          className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90"
-                                        >
-                                          Submit Quiz
-                                        </Button>
-                                      </div>
-                                    ) : (
-                                      <div className="space-y-4">
-                                        {selectedModule.quizzes.map((quiz, qIndex) => {
-                                          const userAnswer = quizAnswers[qIndex];
-                                          const isCorrect = userAnswer === quiz.correctAnswer;
-                                          
-                                          return (
-                                            <Card key={qIndex} className={`border-l-4 ${isCorrect ? 'border-l-green-500 bg-green-50' : 'border-l-red-500 bg-red-50'}`}>
-                                              <CardContent className="p-4">
-                                                <h5 className="font-medium mb-2">{quiz.question}</h5>
-                                                <p className="text-sm mb-2">
-                                                  <span className={isCorrect ? 'text-green-800' : 'text-red-800'}>
-                                                    Your answer: {quiz.options[userAnswer]} {isCorrect ? '✓' : '✗'}
-                                                  </span>
-                                                </p>
-                                                {!isCorrect && (
-                                                  <p className="text-sm text-green-800 mb-2">
-                                                    Correct answer: {quiz.options[quiz.correctAnswer]}
-                                                  </p>
-                                                )}
-                                                <p className="text-sm text-gray-700">{quiz.explanation}</p>
-                                                {quiz.followUp && (
-                                                  <p className="text-sm text-blue-700 mt-2 italic">{quiz.followUp}</p>
-                                                )}
-                                              </CardContent>
-                                            </Card>
-                                          );
-                                        })}
-                                        
-                                        <div className="text-center p-4 bg-gray-50 rounded">
-                                          <p className="text-lg font-semibold">
-                                            Score: {Math.round((selectedModule.quizzes.filter((_, i) => quizAnswers[i] === selectedModule.quizzes[i].correctAnswer).length / selectedModule.quizzes.length) * 100)}%
-                                          </p>
-                                          {Math.round((selectedModule.quizzes.filter((_, i) => quizAnswers[i] === selectedModule.quizzes[i].correctAnswer).length / selectedModule.quizzes.length) * 100) >= 80 ? (
-                                            <p className="text-green-600 text-sm">Excellent! Module completed.</p>
-                                          ) : (
-                                            <p className="text-orange-600 text-sm">Try again to master this topic (80% needed to complete).</p>
-                                          )}
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
+                                {/* Resources */}
+                                <div>
+                                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <Lightbulb className="w-5 h-5" />
+                                    Resources
+                                  </h3>
+                                  
+                                  <div className="space-y-2">
+                                    {selectedModule.resources.map((resource, index) => (
+                                      <button 
+                                        key={index} 
+                                        className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors cursor-pointer"
+                                        onClick={() => window.open(resource.url, '_blank')}
+                                      >
+                                        {resource.type === 'video' && <PlayCircle className="w-4 h-4 text-red-600" />}
+                                        {resource.type === 'article' && <BookOpen className="w-4 h-4 text-blue-600" />}
+                                        {resource.type === 'tool' && <Lightbulb className="w-4 h-4 text-yellow-600" />}
+                                        <span className="flex-1 text-left text-sm">{resource.title}</span>
+                                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                                      </button>
+                                    ))}
+                                </div>
+                                </div>
                               </div>
                             </>
                           )}
                         </DialogContent>
                       </Dialog>
-                    </div>
                   </div>
                 </CardContent>
               </Card>

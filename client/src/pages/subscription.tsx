@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { Crown, Check, Zap, Users, BarChart3, Shield, Clock } from 'lucide-react';
+import { Crown, Check, Zap, Users, BarChart3, Shield, Clock, ArrowLeft } from 'lucide-react';
 
 // Stripe setup
 if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
@@ -154,6 +154,7 @@ export default function SubscriptionPage() {
 
   const [clientSecret, setClientSecret] = useState('');
   const [showPayment, setShowPayment] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('monthly');
 
   // Get subscription status
   const { data: subscriptionData, isLoading } = useQuery<{
@@ -276,6 +277,17 @@ export default function SubscriptionPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-orange-50">
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button 
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            data-testid="back-button"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </button>
+        </div>
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-[#FF6B35] bg-clip-text text-transparent">
@@ -334,11 +346,23 @@ export default function SubscriptionPage() {
               <Button 
                 onClick={handleStartTrial}
                 disabled={startTrialMutation.isPending}
-                className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90"
+                className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90 mb-4"
                 data-testid="button-start-trial"
               >
                 {startTrialMutation.isPending ? 'Starting Trial...' : 'Start Free Trial'}
               </Button>
+              
+              {/* What you get with trial */}
+              <div className="bg-white/80 rounded-lg p-3 text-left">
+                <h4 className="font-semibold text-sm mb-2 text-gray-800">What you'll unlock:</h4>
+                <ul className="text-xs text-gray-600 space-y-1">
+                  <li>• Complete 90-day founder journey</li>
+                  <li>• Advanced progress analytics</li>
+                  <li>• Achievement store & gamification</li>
+                  <li>• Community features & networking</li>
+                  <li>• Export your complete progress</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         )}

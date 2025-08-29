@@ -242,10 +242,13 @@ export function MicroLearning() {
       case 'modules_completed':
         return completedModules.length >= value;
       case 'missions_completed':
-        // This would need to be connected to actual progress data
-        return true; // For now, assume unlocked
+        const progressData = JSON.parse(localStorage.getItem('userProgress') || '{}');
+        const completedMissions = progressData.completedDays || 0;
+        return completedMissions >= value;
       case 'streak_days':
-        return true; // For now, assume unlocked
+        const streakData = JSON.parse(localStorage.getItem('userProgress') || '{}');
+        const currentStreak = streakData.currentStreak || 0;
+        return currentStreak >= value;
       default:
         return true;
     }
@@ -262,6 +265,12 @@ export function MicroLearning() {
     if (selectedModule && quizAnswer === selectedModule.content.quiz?.correctAnswer) {
       completeModule(selectedModule.id);
     }
+  };
+
+  const resetQuiz = () => {
+    setQuizAnswer(null);
+    setQuizSubmitted(false);
+    setShowQuiz(false);
   };
 
   return (
@@ -477,7 +486,16 @@ export function MicroLearning() {
                                                   Correct! Module completed.
                                                 </>
                                               ) : (
-                                                'Incorrect. Try again later.'
+                                                <>
+                                                  Incorrect. You can try again!
+                                                  <Button 
+                                                    onClick={resetQuiz}
+                                                    className="mt-2 w-full bg-blue-600 hover:bg-blue-700"
+                                                    data-testid="retry-quiz"
+                                                  >
+                                                    Try Again
+                                                  </Button>
+                                                </>
                                               )}
                                               <p className="text-sm mt-1">{selectedModule.content.quiz.explanation}</p>
                                             </div>

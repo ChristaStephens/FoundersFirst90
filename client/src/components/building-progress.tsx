@@ -92,7 +92,10 @@ export function BuildingProgress({ level, completedDays }: BuildingProgressProps
     <Card className="shadow-sm border border-border">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-foreground">Your Startup Building</h3>
+          <div>
+            <h3 className="text-lg font-bold text-foreground">Your Startup Building</h3>
+            <p className="text-xs text-muted-foreground">Build your empire one mission at a time</p>
+          </div>
           <span className="text-2xl" data-testid="building-emoji">{building.emoji}</span>
         </div>
         

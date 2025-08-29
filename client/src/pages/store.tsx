@@ -47,8 +47,8 @@ export default function Store() {
   });
 
   const purchaseMutation = useMutation({
-    mutationFn: async (itemId: string) => {
-      await apiRequest('POST', '/api/gamification/purchase', { itemId });
+    mutationFn: async (data: { storeItemId: string; quantity: number }) => {
+      await apiRequest('POST', '/api/gamification/purchase', data);
     },
     onSuccess: () => {
       toast({
@@ -86,7 +86,7 @@ export default function Store() {
       });
       return;
     }
-    purchaseMutation.mutate(item.id);
+    purchaseMutation.mutate({ storeItemId: item.id, quantity: 1 });
   };
 
   const getCategoryIcon = (category: string) => {

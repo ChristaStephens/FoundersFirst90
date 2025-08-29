@@ -27,7 +27,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
-      <div className="max-w-md mx-auto px-4">
+      <div className="max-w-md mx-auto px-4 flex justify-center">
         <div className="flex justify-around py-2">
           {tabs.map((tab, index) => {
             const isActive = activeTab === tab.id;
@@ -58,7 +58,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={cn(
                     "text-lg mb-1 transition-transform duration-200",
                     "group-hover:" + tab.hoverAnimation,
-                    isActive && "animate-float"
+                    isActive && "animate-float opacity-100",
+                    !isActive && "opacity-70"
                   )}
                 >
                   {tab.icon}

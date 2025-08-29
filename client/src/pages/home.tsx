@@ -548,6 +548,33 @@ export default function Home() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Subscription Management */}
+      <Card className="shadow-sm border border-blue-200 bg-blue-50/50">
+        <CardContent className="p-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">💳 Subscription</h2>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Status:</span>
+              <span className="text-sm font-semibold text-green-600">Premium Active</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Plan:</span>
+              <span className="text-sm font-semibold">Founder's Premium</span>
+            </div>
+            <div className="pt-2">
+              <Button 
+                onClick={() => setLocation('/subscription')}
+                variant="outline" 
+                className="w-full text-xs"
+                data-testid="manage-subscription"
+              >
+                Manage Subscription
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 

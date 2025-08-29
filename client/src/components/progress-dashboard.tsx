@@ -61,23 +61,44 @@ export function ProgressDashboard({ progress, achievements, progressPercentage }
             
             {/* Calendar Days - showing current week */}
             {Array.from({ length: 7 }, (_, i) => {
-              const dayNumber = progress.currentDay - (progress.currentDay % 7) + i + 1;
+              // Calculate the actual week based on the start date
+              const startDate = new Date(progress.startDate);
+              const currentDate = new Date(startDate);
+              currentDate.setDate(startDate.getDate() + progress.currentDay - 1);
+              
+              // Get the start of the current week (Sunday)
+              const startOfWeek = new Date(currentDate);
+              startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+              
+              // Calculate day number for this position in the week
+              const weekDate = new Date(startOfWeek);
+              weekDate.setDate(startOfWeek.getDate() + i);
+              
+              const daysDiff = Math.floor((weekDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+              const dayNumber = Math.max(1, Math.min(90, daysDiff));
+              
               const isCompleted = progress.completedDays.includes(dayNumber);
               const isCurrent = dayNumber === progress.currentDay;
+              const isFuture = dayNumber > progress.currentDay;
+              const isInRange = dayNumber >= 1 && dayNumber <= 90;
               
               return (
                 <div
                   key={i}
                   className={`aspect-square flex items-center justify-center text-xs font-medium rounded ${
-                    isCompleted
+                    !isInRange
+                      ? 'bg-transparent'
+                      : isCompleted
                       ? 'bg-success text-success-foreground'
                       : isCurrent
                       ? 'bg-primary text-primary-foreground'
+                      : isFuture
+                      ? 'bg-muted/30 text-muted-foreground'
                       : 'bg-muted text-muted-foreground'
                   }`}
                   data-testid={`calendar-day-${dayNumber}`}
                 >
-                  {dayNumber <= 90 ? dayNumber : ''}
+                  {isInRange ? dayNumber : ''}
                 </div>
               );
             })}

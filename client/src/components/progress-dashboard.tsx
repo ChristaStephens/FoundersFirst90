@@ -6,9 +6,10 @@ interface ProgressDashboardProps {
   progress: UserProgress;
   achievements: Achievement[];
   progressPercentage: number;
+  completions?: any[]; // Add completions to get the actual completed days
 }
 
-export function ProgressDashboard({ progress, achievements, progressPercentage }: ProgressDashboardProps) {
+export function ProgressDashboard({ progress, achievements, progressPercentage, completions = [] }: ProgressDashboardProps) {
   return (
     <div className="space-y-4">
       {/* Progress Overview */}
@@ -61,26 +62,38 @@ export function ProgressDashboard({ progress, achievements, progressPercentage }
             
             {/* Calendar Days - showing current week */}
             {Array.from({ length: 7 }, (_, i) => {
-              // Calculate the actual week based on the start date
-              const startDate = new Date(progress.startDate);
-              const currentDate = new Date(startDate);
-              currentDate.setDate(startDate.getDate() + progress.currentDay - 1);
+              // Today is Friday Aug 29, and we're on day 9
+              // So if today (Friday) = day 9, then the days should be:
+              // Sunday = day 7, Monday = day 8, Tuesday = day 9, Wednesday = day 10, Thursday = day 11, Friday = day 9, Saturday = day 10
+              // Wait, that doesn't make sense. Let me recalculate...
               
-              // Get the start of the current week (Sunday)
-              const startOfWeek = new Date(currentDate);
-              startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+              // If today is Friday and we're on day 9, then:
+              // Day 1 was Thursday of last week (Aug 21)
+              // This week: Sun=day 6, Mon=day 7, Tue=day 8, Wed=day 9, Thu=day 10, Fri=day 9, Sat=day 10
+              // Actually, the issue is we need to show TODAY (Friday) as day 9
               
-              // Calculate day number for this position in the week
-              const weekDate = new Date(startOfWeek);
-              weekDate.setDate(startOfWeek.getDate() + i);
+              const today = new Date(); // Friday Aug 29, 2025
+              const todayDayOfWeek = today.getDay(); // 5 (Friday)
+              const currentDay = progress.currentDay; // 9
               
-              const daysDiff = Math.floor((weekDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-              const dayNumber = Math.max(1, Math.min(90, daysDiff));
+              // Calculate what day number each day of THIS week should be
+              // If today (Friday = 5) is day 9, then:
+              // Sunday (0) = day 9 - 5 = day 4
+              // Monday (1) = day 9 - 4 = day 5  
+              // Tuesday (2) = day 9 - 3 = day 6
+              // Wednesday (3) = day 9 - 2 = day 7
+              // Thursday (4) = day 9 - 1 = day 8
+              // Friday (5) = day 9 = day 9
+              // Saturday (6) = day 9 + 1 = day 10
               
-              const isCompleted = progress.completedDays.includes(dayNumber);
-              const isCurrent = dayNumber === progress.currentDay;
-              const isFuture = dayNumber > progress.currentDay;
-              const isInRange = dayNumber >= 1 && dayNumber <= 90;
+              const dayNumber = currentDay - todayDayOfWeek + i;
+              const validDayNumber = Math.max(1, Math.min(90, dayNumber));
+              
+              // Check if this day is completed using the completions array
+              const isCompleted = completions.some(c => c.day === validDayNumber && c.completed);
+              const isCurrent = validDayNumber === progress.currentDay;
+              const isFuture = validDayNumber > progress.currentDay;
+              const isInRange = validDayNumber >= 1 && validDayNumber <= 90;
               
               return (
                 <div
@@ -96,9 +109,9 @@ export function ProgressDashboard({ progress, achievements, progressPercentage }
                       ? 'bg-muted/30 text-muted-foreground'
                       : 'bg-muted text-muted-foreground'
                   }`}
-                  data-testid={`calendar-day-${dayNumber}`}
+                  data-testid={`calendar-day-${validDayNumber}`}
                 >
-                  {isInRange ? dayNumber : ''}
+                  {isInRange ? validDayNumber : ''}
                 </div>
               );
             })}

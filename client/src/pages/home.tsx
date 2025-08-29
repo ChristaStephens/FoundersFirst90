@@ -394,6 +394,7 @@ export default function Home() {
         }}
         achievements={achievements}
         progressPercentage={getProgressPercentage()}
+        completions={completions}
       />
     </div>
   );

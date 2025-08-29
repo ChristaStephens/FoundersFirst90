@@ -40,7 +40,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 className={cn(
                   "group relative flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-300 hover:scale-105",
                   isActive
-                    ? "text-primary bg-primary/10 shadow-sm animate-fadeInScale"
+                    ? "text-white bg-[#FF6B35] shadow-lg border-2 border-[#FF6B35]"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                   isClicked && "animate-rubberBand",
                   "hover-lift hover-glow"
@@ -50,7 +50,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow-md" />
                 )}
                 
                 {/* Icon with hover animation */}
@@ -68,7 +68,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 {/* Label */}
                 <span className={cn(
                   "text-xs font-medium transition-all duration-200",
-                  isActive ? "text-primary font-semibold" : "text-muted-foreground"
+                  isActive ? "text-white font-bold" : "text-muted-foreground"
                 )}>
                   {tab.label}
                 </span>

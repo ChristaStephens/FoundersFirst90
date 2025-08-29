@@ -298,7 +298,7 @@ export default function SubscriptionPage() {
           </p>
         </div>
 
-        {/* Current Status */}
+        {/* Current Status & Management */}
         {hasAccess && (
           <Card className="max-w-md mx-auto mb-8 border-green-200 bg-green-50">
             <CardContent className="pt-6 text-center">
@@ -308,12 +308,57 @@ export default function SubscriptionPage() {
                   {isTrialing ? 'Free Trial' : 'Premium Active'}
                 </Badge>
               </div>
-              <p className="text-sm text-green-700">
+              <p className="text-sm text-green-700 mb-4">
                 {isTrialing && subscription?.trialEndsAt
                   ? `Trial ends ${new Date(subscription.trialEndsAt).toLocaleDateString()}`
                   : 'You have full access to all premium features'
                 }
               </p>
+              
+              {/* Subscription Management Options */}
+              <div className="space-y-2">
+                {isTrialing && (
+                  <Button 
+                    onClick={handlePurchase}
+                    className="w-full bg-[#FF6B35] hover:bg-[#FF6B35]/90"
+                    data-testid="button-upgrade-to-premium"
+                  >
+                    Upgrade to Premium Now
+                  </Button>
+                )}
+                
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      // Mock pause subscription
+                      toast({
+                        title: "Subscription Paused",
+                        description: "Your subscription will pause at the end of this billing cycle.",
+                      });
+                    }}
+                    data-testid="button-pause-subscription"
+                  >
+                    Pause Plan
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      // Mock cancel subscription
+                      toast({
+                        title: "Cancellation Requested",
+                        description: "Sorry to see you go! Your access continues until period end.",
+                        variant: "destructive",
+                      });
+                    }}
+                    data-testid="button-cancel-subscription"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         )}

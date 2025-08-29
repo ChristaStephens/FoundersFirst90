@@ -20,6 +20,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useToast } from '@/hooks/use-toast';
 
 interface LearningModule {
   id: string;
@@ -438,13 +439,26 @@ export function MicroLearning() {
                                         <h4 className="font-semibold mb-2">Resources</h4>
                                         <div className="space-y-2">
                                           {selectedModule.content.resources.map((resource, index) => (
-                                            <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded text-sm">
+                                            <button 
+                                              key={index} 
+                                              className="w-full flex items-center gap-2 p-2 bg-gray-50 rounded text-sm hover:bg-gray-100 transition-colors cursor-pointer"
+                                              onClick={() => {
+                                                // Simulate opening resource
+                                                toast({
+                                                  title: "Opening Resource",
+                                                  description: `Opening "${resource.title}" in a new tab`,
+                                                });
+                                                // In real app, would open resource.url
+                                                window.open('#', '_blank');
+                                              }}
+                                              data-testid={`resource-${index}`}
+                                            >
                                               {resource.type === 'video' && <PlayCircle className="w-4 h-4 text-red-600" />}
                                               {resource.type === 'article' && <BookOpen className="w-4 h-4 text-blue-600" />}
                                               {resource.type === 'tool' && <Lightbulb className="w-4 h-4 text-yellow-600" />}
-                                              <span>{resource.title}</span>
-                                              <ChevronRight className="w-3 h-3 text-gray-400 ml-auto" />
-                                            </div>
+                                              <span className="flex-1 text-left">{resource.title}</span>
+                                              <ChevronRight className="w-3 h-3 text-gray-400" />
+                                            </button>
                                           ))}
                                         </div>
                                       </div>

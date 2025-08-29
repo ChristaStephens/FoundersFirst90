@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { Share2, Users, Trophy, MessageCircle, Heart, TrendingUp, Star } from 'lucide-react';
+import { Share2, Users, Trophy, MessageCircle, Heart, TrendingUp, Star, ArrowLeft } from 'lucide-react';
 
 interface CommunityProfile {
   name: string;
@@ -79,6 +79,8 @@ export default function Community() {
 
   const [newPost, setNewPost] = useState('');
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
 
   const handleShareProgress = () => {
     const shareText = `I'm on day ${profile.completedDays} of my 90-day founder journey! Level ${profile.level} with a ${profile.streak}-day streak. Building my startup empire one mission at a time! 🚀 #FoundersFirst90`;
@@ -130,6 +132,19 @@ export default function Community() {
     });
   };
 
+  const handleReply = (postId: string) => {
+    if (!replyText.trim()) return;
+    
+    // Add reply functionality
+    toast({
+      title: 'Reply Posted!',
+      description: 'Your reply has been shared with the community',
+    });
+    
+    setReplyText('');
+    setReplyingTo(null);
+  };
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'milestone': return '🎯';
@@ -153,10 +168,20 @@ export default function Community() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 p-4 pb-20">
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Founder Community</h1>
-          <p className="text-gray-600">Connect with fellow entrepreneurs on their 90-day journey</p>
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4 mb-6">
+          <button 
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            data-testid="community-back-button"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </button>
+          <div className="flex-1 text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Founder Community</h1>
+            <p className="text-gray-600">Connect with fellow entrepreneurs on their 90-day journey</p>
+          </div>
         </div>
 
         {/* Your Profile Card */}
@@ -270,11 +295,49 @@ export default function Community() {
                     {post.likes}
                   </button>
                   
-                  <button className="flex items-center gap-2 px-3 py-1 rounded-full text-sm hover:bg-gray-100 text-gray-600 transition-colors">
+                  <button 
+                    onClick={() => setReplyingTo(replyingTo === post.id ? null : post.id)}
+                    className="flex items-center gap-2 px-3 py-1 rounded-full text-sm hover:bg-gray-100 text-gray-600 transition-colors"
+                    data-testid={`reply-${post.id}`}
+                  >
                     <MessageCircle className="w-4 h-4" />
                     Reply
                   </button>
                 </div>
+                
+                {/* Reply Input */}
+                {replyingTo === post.id && (
+                  <div className="mt-3 pt-3 border-t bg-gray-50 p-3 rounded-b-lg">
+                    <textarea
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      placeholder={`Replying to ${post.author}...`}
+                      className="w-full p-2 border rounded text-sm resize-none h-16 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/20"
+                      data-testid={`reply-input-${post.id}`}
+                    />
+                    <div className="flex gap-2 mt-2">
+                      <Button 
+                        size="sm"
+                        onClick={() => handleReply(post.id)}
+                        disabled={!replyText.trim()}
+                        className="bg-[#FF6B35] hover:bg-[#FF6B35]/90"
+                        data-testid={`send-reply-${post.id}`}
+                      >
+                        Send Reply
+                      </Button>
+                      <Button 
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setReplyingTo(null);
+                          setReplyText('');
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}

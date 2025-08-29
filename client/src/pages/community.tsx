@@ -15,6 +15,14 @@ interface CommunityProfile {
   bio: string;
 }
 
+interface CommunityReply {
+  id: string;
+  author: string;
+  authorLevel: number;
+  content: string;
+  timestamp: string;
+}
+
 interface CommunityPost {
   id: string;
   author: string;
@@ -24,6 +32,7 @@ interface CommunityPost {
   likes: number;
   category: 'milestone' | 'tip' | 'motivation' | 'question';
   isLiked?: boolean;
+  replies?: CommunityReply[];
 }
 
 export default function Community() {
@@ -135,7 +144,22 @@ export default function Community() {
   const handleReply = (postId: string) => {
     if (!replyText.trim()) return;
     
-    // Add reply functionality
+    const newReply = {
+      id: Date.now().toString(),
+      author: profile.name,
+      authorLevel: profile.level,
+      content: replyText,
+      timestamp: 'just now'
+    };
+    
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId 
+          ? { ...post, replies: [...(post.replies || []), newReply] }
+          : post
+      )
+    );
+    
     toast({
       title: 'Reply Posted!',
       description: 'Your reply has been shared with the community',
@@ -305,6 +329,27 @@ export default function Community() {
                   </button>
                 </div>
                 
+                {/* Replies Display */}
+                {post.replies && post.replies.length > 0 && (
+                  <div className="mt-3 pt-3 border-t space-y-3">
+                    {post.replies.map((reply) => (
+                      <div key={reply.id} className="bg-gray-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-gradient-to-br from-[#FF6B35] to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {reply.author.charAt(0)}
+                          </div>
+                          <span className="font-medium text-sm">{reply.author}</span>
+                          <Badge variant="outline" className="text-xs">
+                            Level {reply.authorLevel}
+                          </Badge>
+                          <span className="text-xs text-gray-500 ml-auto">{reply.timestamp}</span>
+                        </div>
+                        <p className="text-sm text-gray-700">{reply.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* Reply Input */}
                 {replyingTo === post.id && (
                   <div className="mt-3 pt-3 border-t bg-gray-50 p-3 rounded-b-lg">

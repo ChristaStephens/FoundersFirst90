@@ -58,8 +58,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={cn(
                     "text-lg mb-1 transition-transform duration-200",
                     "group-hover:" + tab.hoverAnimation,
-                    isActive && "animate-float opacity-100",
-                    !isActive && "opacity-70"
+                    isActive ? "opacity-100 filter brightness-0 invert" : "opacity-70"
                   )}
                 >
                   {tab.icon}
@@ -68,7 +67,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 {/* Label */}
                 <span className={cn(
                   "text-xs font-medium transition-all duration-200",
-                  isActive ? "text-white font-bold" : "text-muted-foreground"
+                  isActive ? "text-white font-bold drop-shadow-sm" : "text-muted-foreground"
                 )}>
                   {tab.label}
                 </span>

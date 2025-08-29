@@ -27,8 +27,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
-      <div className="max-w-md mx-auto px-4">
-        <div className="flex justify-around items-center py-2">
+      <div className="w-full">
+        <div className="flex justify-evenly items-center py-3 px-2">
           {tabs.map((tab, index) => {
             const isActive = activeTab === tab.id;
             const isClicked = clickedTab === tab.id;
@@ -38,57 +38,34 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
                 className={cn(
-                  "group relative flex flex-col items-center py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 min-w-[60px]",
+                  "flex flex-col items-center py-2 px-3 rounded-xl transition-all duration-300 hover:scale-105 flex-1 max-w-[80px]",
                   isActive
-                    ? "text-white bg-[#FF6B35] shadow-lg"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                  isClicked && "animate-rubberBand",
-                  "hover-lift hover-glow"
+                    ? "bg-[#FF6B35] text-white shadow-lg scale-105"
+                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100",
+                  isClicked && "animate-pulse"
                 )}
                 data-testid={`nav-${tab.id}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Active indicator */}
-                {isActive && (
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow-md" />
-                )}
-                
-                {/* Icon with hover animation */}
-                <span 
-                  className={cn(
-                    "text-lg mb-1 transition-transform duration-200",
-                    "group-hover:" + tab.hoverAnimation,
-                    isActive ? "opacity-100" : "opacity-70"
-                  )}
-                >
+                {/* Icon */}
+                <span className={cn(
+                  "text-xl mb-1 transition-all duration-200",
+                  isActive ? "text-white" : "text-gray-500"
+                )}>
                   {tab.icon}
                 </span>
                 
                 {/* Label */}
                 <span className={cn(
-                  "text-xs font-medium transition-all duration-200 text-center",
-                  isActive ? "text-white font-bold" : "text-gray-600"
+                  "text-xs font-medium transition-all duration-200",
+                  isActive ? "text-white font-bold" : "text-gray-500"
                 )}>
                   {tab.label}
                 </span>
-                
-                {/* Ripple effect on click */}
-                {isClicked && (
-                  <div className="absolute inset-0 rounded-lg bg-primary/20 animate-ping pointer-events-none" />
-                )}
-                
-                {/* Glow effect for active tab */}
-                {isActive && (
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/5 to-primary/10 pointer-events-none" />
-                )}
               </button>
             );
           })}
         </div>
       </div>
-      
-      {/* Bottom highlight bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20" />
     </nav>
   );
 }

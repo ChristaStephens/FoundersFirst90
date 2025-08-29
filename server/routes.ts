@@ -13,27 +13,50 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Helper function to get demo user ID
-  const getDemoUserId = async () => {
-    const user = await storage.getUserByUsername('demo');
-    return user?.id;
+  // Helper function to get or create user ID based on session
+  const getUserId = async (req: any) => {
+    // Ensure session exists
+    if (!req.session) {
+      req.session = {};
+    }
+    
+    // Generate a unique user ID based on session or create a random one
+    if (!req.session.userId) {
+      // Create a unique session-based user ID
+      const sessionId = req.sessionID || Math.random().toString(36).substring(2, 15);
+      req.session.userId = `user_${sessionId}`;
+    }
+    
+    // Try to find existing user
+    let user = await storage.getUserByUsername(req.session.userId);
+    if (!user) {
+      try {
+        // Create new user for this session
+        user = await storage.createUser({
+          username: req.session.userId,
+          password: 'session_user'
+        });
+      } catch (error: any) {
+        // If user already exists (race condition), try to fetch again
+        if (error.code === '23505') {
+          user = await storage.getUserByUsername(req.session.userId);
+          if (!user) {
+            throw new Error('Failed to create or fetch user');
+          }
+        } else {
+          throw error;
+        }
+      }
+    }
+    
+    return user.id;
   };
 
-  // Initialize demo user and progress if not exists
+  // Initialize user and progress based on session
   app.get('/api/init', async (req, res) => {
     try {
-      // Try to find existing user first
-      let user = await storage.getUserByUsername('demo');
-      if (!user) {
-        // Create new user with proper ID
-        user = await storage.createUser({
-          username: 'demo',
-          password: 'demo'
-        });
-      }
-
-      // Use the actual user ID from the database
-      const userId = user.id;
+      // Get or create user for this session
+      const userId = await getUserId(req);
       
       let progress = await storage.getUserProgress(userId);
       if (!progress) {
@@ -53,6 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Seed gamification data (store items and challenges)
       await seedGamificationData();
 
+      const user = await storage.getUser(userId);
       res.json({ user, progress });
     } catch (error) {
       console.error('Error initializing user:', error);
@@ -63,10 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Reset journey start date - for when user wants to start fresh
   app.post('/api/reset-journey', async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const now = new Date();
       const updatedProgress = await storage.updateUserProgress(userId, {
@@ -96,10 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user progress
   app.get('/api/progress', async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const progress = await storage.getUserProgress(userId);
       const completions = await storage.getAllDailyCompletions(userId);
@@ -116,10 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/complete-day', async (req, res) => {
     try {
       const { day, notes, reflections } = req.body;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       // Check if day is unlocked for completion
       const progress = await storage.getUserProgress(userId);
@@ -214,10 +229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/end-day', async (req, res) => {
     try {
       const { customUnlockTime } = req.body; // Optional: user can set custom unlock time
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const progress = await storage.getUserProgress(userId);
       if (!progress) {
@@ -261,10 +273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Check if next day is unlocked
   app.get('/api/can-advance', async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const progress = await storage.getUserProgress(userId);
       if (!progress) {
@@ -295,10 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/save-notes', async (req, res) => {
     try {
       const { day, notes, reflections } = req.body;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       let completion = await storage.getDailyCompletion(userId, day);
       
@@ -328,10 +334,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/save-step-responses', async (req, res) => {
     try {
       const { day, stepResponses } = req.body;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       let completion = await storage.getDailyCompletion(userId, day);
       
@@ -359,10 +362,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/day/:day', async (req, res) => {
     try {
       const day = parseInt(req.params.day);
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const completion = await storage.getDailyCompletion(userId, day);
       res.json({ completion });
@@ -387,10 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/community/posts", async (req, res) => {
     try {
       const { type, day, title, content, isAnonymous } = req.body;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const post = await storage.createCommunityPost({
         userId,
@@ -411,10 +408,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/community/posts/:postId/like", async (req, res) => {
     try {
       const { postId } = req.params;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       await storage.likeCommunityPost(userId, postId);
       res.json({ message: "Post liked successfully" });
@@ -439,10 +433,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { postId } = req.params;
       const { content, isAnonymous } = req.body;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const comment = await storage.createComment({
         postId,
@@ -471,10 +462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/community/partners", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       const partners = await storage.getAccountabilityPartners(userId);
       res.json({ partners });
     } catch (error) {
@@ -486,10 +474,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/community/partners", async (req, res) => {
     try {
       const { partnerId } = req.body;
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const partnership = await storage.createAccountabilityPartner({
         userId,
@@ -509,10 +494,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user token balance and statistics
   app.get("/api/gamification/tokens", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const progress = await storage.getUserProgress(userId);
       if (!progress) {
@@ -535,10 +517,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get token transaction history
   app.get("/api/gamification/transactions", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const limit = parseInt(req.query.limit as string) || 20;
       const transactions = await storage.getTokenTransactions(userId, limit);
@@ -552,10 +531,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Award tokens for completing tasks/challenges
   app.post("/api/gamification/award-tokens", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const { tokenType, amount, reason, metadata } = req.body;
       
@@ -610,10 +586,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Purchase store item
   app.post("/api/gamification/purchase", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const { storeItemId, quantity = 1 } = req.body;
       
@@ -694,10 +667,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get daily challenges with user completion status
   app.get("/api/gamification/challenges/daily", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const challenges = await storage.getDailyChallenges();
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -726,10 +696,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Complete daily challenge
   app.post("/api/gamification/challenges/:challengeId/complete", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const { challengeId } = req.params;
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -794,10 +761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Complete daily challenge (alternative route for frontend compatibility)
   app.post("/api/gamification/challenges/complete", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const { challengeId } = req.body;
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -864,10 +828,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user subscription status
   app.get("/api/subscription/status", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
       
       const user = await storage.getUser(userId);
       if (!user) {
@@ -913,10 +874,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/create-payment", async (req, res) => {
     try {
       const { discount = 0 } = req.body; // discount in cents
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
 
       const user = await storage.getUser(userId);
       if (!user) {
@@ -989,11 +947,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/confirm-payment", async (req, res) => {
     try {
       const { paymentIntentId } = req.body;
-      const userId = await getDemoUserId();
+      const userId = await getUserId(req);
       
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
 
       // Retrieve the payment intent to confirm it was successful
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -1086,10 +1041,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Start free trial
   app.post("/api/start-trial", async (req, res) => {
     try {
-      const userId = await getDemoUserId();
-      if (!userId) {
-        return res.status(404).json({ message: 'User not found' });
-      }
+      const userId = await getUserId(req);
 
       const user = await storage.getUser(userId);
       if (!user) {

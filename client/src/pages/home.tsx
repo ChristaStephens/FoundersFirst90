@@ -458,6 +458,79 @@ export default function Home() {
         </CardContent>
       </Card>
 
+      {/* Testing Tools (Dev Only) */}
+      <Card className="shadow-sm border border-orange-200 bg-orange-50/50">
+        <CardContent className="p-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">🧪 Testing Tools</h2>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <button 
+              onClick={() => setLocation('/subscription')}
+              className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              data-testid="test-subscription"
+            >
+              Subscription Page
+            </button>
+            <button 
+              onClick={() => {
+                // Simulate needing upgrade (day 8+)
+                localStorage.setItem('testMode', 'needsUpgrade');
+                window.location.reload();
+              }}
+              className="p-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
+              data-testid="test-upgrade-prompt"
+            >
+              Upgrade Prompt
+            </button>
+            <button 
+              onClick={() => {
+                // Trigger discount (3+ visits)
+                const visits = [
+                  new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toDateString(),
+                  new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toDateString(),
+                  new Date().toDateString()
+                ];
+                localStorage.setItem('subscriptionVisits', JSON.stringify(visits));
+                localStorage.removeItem('discountOffered');
+                setLocation('/subscription');
+              }}
+              className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+              data-testid="test-discount"
+            >
+              $10 Discount
+            </button>
+            <button 
+              onClick={() => {
+                // Show trial status
+                setLocation('/subscription');
+              }}
+              className="p-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+              data-testid="test-trial"
+            >
+              Free Trial
+            </button>
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <button 
+              onClick={() => {
+                // Clear all test data
+                localStorage.removeItem('testMode');
+                localStorage.removeItem('subscriptionVisits');
+                localStorage.removeItem('discountOffered');
+                localStorage.removeItem('milestone_shown_7');
+                localStorage.removeItem('milestone_shown_30');
+                localStorage.removeItem('milestone_shown_60');
+                localStorage.removeItem('milestone_shown_90');
+                window.location.reload();
+              }}
+              className="w-full p-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-xs"
+              data-testid="test-reset"
+            >
+              Reset Test Data
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Reset Progress */}
       <Card className="shadow-sm border border-border">
         <CardContent className="p-4">
